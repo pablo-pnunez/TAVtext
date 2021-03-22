@@ -18,7 +18,7 @@ class BOW2RST(KerasModelClass):
         rest_input = tf.keras.layers.Input(shape=(self.DATASET.CONFIG["num_palabras"],), name="input_rest")
         # output = tf.keras.layers.Dense(self.DATASET.DATA["N_RST"], activation='softmax', name="output_layer")(rest_input)
         x = tf.keras.layers.Dense(self.DATASET.DATA["N_RST"], name="output_layer")(rest_input)
-        x = tf.keras.layers.Dropout(.5)(x)
+        x = tf.keras.layers.Dropout(.2)(x)
         x = tf.keras.layers.BatchNormalization()(x)
         output = tf.keras.layers.Activation("softmax")(x)
 
@@ -36,6 +36,36 @@ class BOW2RST(KerasModelClass):
         model.compile(optimizer=tf.keras.optimizers.Adam(self.CONFIG["model"]["learning_rate"]), loss=tf.keras.losses.CategoricalCrossentropy(), metrics=metrics,)
 
         return model
+
+    def baseline(self, test=False):
+        """ Se calcula la popularidad para que actúe como baseline y se convierte a probabilidad """
+        if test:
+            dataset = self.DATASET.DATA["TRAIN_DEV"]
+        else:
+            dataset = self.DATASET.DATA["TRAIN_DEV"].loc[self.DATASET.DATA["TRAIN_DEV"]["dev"] == 0]
+
+        y_out = np.zeros((len(dataset), self.DATASET.DATA["N_RST"]))
+        y_out[np.expand_dims(list(range(len(y_out))), -1), np.expand_dims(dataset.id_restaurant, -1)] = 1
+
+        popularidad_vec = y_out.sum(axis=0) / sum(y_out.sum(axis=0))
+        pred_popularidad = np.row_stack([popularidad_vec]*len(dataset))
+
+        print_g("-"*50)
+        m = tf.keras.metrics.Accuracy()
+        m.update_state(y_true=y_out.argmax(axis=1), y_pred=pred_popularidad.argmax(axis=1))
+        print_g("ACCURACY por popularidad: %.4f" % (m.result().numpy()))
+        m.reset_states()
+
+        m = tf.keras.metrics.TopKCategoricalAccuracy(k=5)
+        m.update_state(y_true=y_out, y_pred=pred_popularidad)
+        print_g("TOP5ACC por popularidad:  %.4f" % (m.result().numpy()))
+        m.reset_states()
+
+        m = tf.keras.metrics.TopKCategoricalAccuracy(k=10)
+        m.update_state(y_true=y_out, y_pred=pred_popularidad)
+        print_g("TOP10ACC por popularidad:  %.4f" % (m.result().numpy()))
+        m.reset_states()
+        print_g("-"*50)
 
     def get_train_dev_sequences(self):
         train = BOW2RSTsequence(self, is_dev=0)
