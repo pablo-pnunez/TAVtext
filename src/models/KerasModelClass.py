@@ -30,28 +30,30 @@ class KerasModelClass(ModelClass):
         random.seed(self.CONFIG["model"]["seed"])
         tf.random.set_seed(self.CONFIG["model"]["seed"])
 
-    def train(self, dev=False, save_model=False):
+    def get_train_dev_sequences(self):
+        """ Retorna 2 secuencias, una para train y otra dev. Ej: return train, dev"""
+        raise NotImplementedError
 
-        train_seq = self.Sequence_TRAIN()
+    def train(self, dev=False, save_model=False, train_cfg={}):
+        train_seq, dev_seq = self.get_train_dev_sequences()
 
         if dev:
-            dev_seq = self.Sequence_DEV()
             self.__train_model__(train_sequence=train_seq, dev_sequence=dev_seq, save_model=save_model)
         else:
             self.__train_model__(train_sequence=train_seq, dev_sequence=None, save_model=save_model)
 
-    def __train_model__(self, train_sequence=None, dev_sequence=None, save_model=False, stop_monitor="val_loss", stop_mode="min"):
+    def __train_model__(self, train_sequence=None, dev_sequence=None, save_model=False):
 
         is_dev = dev_sequence is not None
 
-        train_cfg = {"verbose": 2, "workers": 1, "max_queue_size": 40}
+        train_cfg = {"verbose": 2, "workers": 1, "max_queue_size": 40, "stop_monitor": "loss", "stop_mode": "min"}
 
         callbacks = []
 
         # Learning rate decay (lineal o cosine)
         lrs = tf.keras.callbacks.LearningRateScheduler(lambda epoch, lr: linear_decay(current_lr=lr,
                                                                                       initial_rl=self.CONFIG["model"]["learning_rate"],
-                                                                                      final_lr=self.CONFIG["model"]["learning_rate"]/2,
+                                                                                      final_lr=self.CONFIG["model"]["final_learning_rate"],
                                                                                       epochs=self.CONFIG["model"]['epochs']))
         callbacks.append(lrs)
 
@@ -70,7 +72,8 @@ class KerasModelClass(ModelClass):
 
         # Si es DEV, se hace añade el EarlyStopping (Esta versión custom permite no mirar las x primeras epochs)
         else:
-            est = CustomStopper(monitor=stop_monitor, start_epoch=500, patience=100, verbose=1, mode=stop_mode)
+            est = CustomStopper(monitor=self.CONFIG["model"]["early_st_monitor"], start_epoch=self.CONFIG["model"]["early_st_first_epoch"],
+                                patience=self.CONFIG["model"]["early_st_patience"], verbose=1, mode=self.CONFIG["model"]["early_st_monitor_mode"])
             callbacks.append(est)
 
         # Si se quiere almacenar la salida del modelo (pesos/csv)
@@ -93,7 +96,8 @@ class KerasModelClass(ModelClass):
 
             # Solo guardar mirando "stop_monitor" en val cuando hay DEV
             if is_dev:
-                mc = tf.keras.callbacks.ModelCheckpoint(self.MODEL_PATH + final_folder + "weights", save_weights_only=True, save_best_only=True, monitor=stop_monitor, mode=stop_mode)
+                mc = tf.keras.callbacks.ModelCheckpoint(self.MODEL_PATH + final_folder + "weights", save_weights_only=True, save_best_only=True,
+                                                        monitor=self.CONFIG["model"]["early_st_monitor"], mode=self.CONFIG["model"]["early_st_monitor_mode"])
                 callbacks.append(mc)
 
         else:
@@ -127,15 +131,15 @@ class KerasModelClass(ModelClass):
         if save_model:
             done_epochs = len(hist.history["loss"])
             plt.figure(figsize=(int((done_epochs*8)/500), 8))  # HAY QUE MEJORAR ESTO
-            hplt = sns.lineplot(range(done_epochs), hist.history["f1"], label="f1")
+            hplt = sns.lineplot(range(done_epochs), hist.history[self.CONFIG["model"]["early_st_monitor"].replace("val", "")], label=self.CONFIG["model"]["early_st_monitor"].replace("val", ""))
             if is_dev:
-                hplt = sns.lineplot(range(done_epochs), hist.history["val_f1"], label="val_f1")
+                hplt = sns.lineplot(range(done_epochs), hist.history[self.CONFIG["model"]["early_st_monitor"]], label=self.CONFIG["model"]["early_st_monitor"])
             hplt.set_yticks(np.asarray(range(0, 110, 10)) / 100)
             hplt.set_xticks(range(0, done_epochs, 20))
             hplt.set_xticklabels(range(0, done_epochs, 20), rotation=45)
             hplt.set_title("Train history")
             hplt.set_xlabel("Epochs")
-            hplt.set_ylabel("F1")
+            hplt.set_ylabel(self.CONFIG["model"]["early_st_monitor"])
             hplt.grid(True)
             if not is_dev:
                 plt.savefig(self.MODEL_PATH + final_folder + "history.jpg")

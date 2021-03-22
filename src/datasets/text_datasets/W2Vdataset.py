@@ -1,16 +1,15 @@
 # -*- coding: utf-8 -*-
 
-from src.datasets.text_datasets.TextDatasetClass import *
+from src.datasets.text_datasets.TextDataset import *
 from src.Common import to_pickle
 
-import os
 import pandas as pd
 
 
-class W2VDatasetClass(TextDatasetClass):
+class W2Vdataset(TextDataset):
 
     def __init__(self, config):
-        TextDatasetClass.__init__(self, config=config)
+        TextDataset.__init__(self, config=config)
 
     def get_data(self, load=["ALL_TEXTS", "ALL_TITLES"]):
 
