@@ -144,5 +144,6 @@ class KerasModelClass(ModelClass):
             plt.clf()
 
         # Cargar el mejor modelo (por defecto está el de la última epoch)
-        print_g("Loading best model...")
-        self.MODEL.load_weights(self.MODEL_PATH + final_folder + "weights")
+        if save_model:
+            print_g("Loading best model...")
+            self.MODEL.load_weights(self.MODEL_PATH + final_folder + "weights")

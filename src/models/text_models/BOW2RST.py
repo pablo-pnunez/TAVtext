@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from src.Common import print_g
 from src.models.KerasModelClass import KerasModelClass
 from src.sequences.BaseSequence import BaseSequence
 

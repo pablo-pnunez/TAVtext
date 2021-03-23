@@ -39,10 +39,10 @@ class TextDataset(DatasetClass):
         rev['text'] = rev['text'].apply(lambda x: '%r' % x.lower())
         rev['title'] = rev['title'].apply(lambda x: '%r' % x.lower())
 
-        # Eliminar formatos (/n /t ...) y pasa a minuscula
-        rgx_b = r'(\\.)'
-        rev['text'] = rev['text'].apply(lambda x: re.sub(rgx_b, '', x).strip())
-        rev['title'] = rev['title'].apply(lambda x: re.sub(rgx_b, '', x).strip())
+        # Eliminar formatos (/n /t ...)
+        rgx_b = r'(\\.)+'
+        rev['text'] = rev['text'].apply(lambda x: re.sub(rgx_b, ' ', x).strip())
+        rev['title'] = rev['title'].apply(lambda x: re.sub(rgx_b, ' ', x).strip())
 
         # Cambiar signos de puntuación por espacios
         rgx_a = r'\s*[^\w\s]+\s*'
@@ -61,17 +61,21 @@ class TextDataset(DatasetClass):
             rev['text'] = rev['text'].apply(lambda x: re.sub(rgx_d, ' ', x).strip())
             rev['title'] = rev['title'].apply(lambda x: re.sub(rgx_d, ' ', x).strip())
 
-        # Obtener número de palabras de las reviews y del texto
+        # Obtener número de palabras de las reviews y del título
         rev["n_words_text"] = rev["text"].apply(lambda x: 0 if len(x) == 0 else len(x.split(" ")))
         rev["n_words_title"] = rev["title"].apply(lambda x: 0 if len(x) == 0 else len(x.split(" ")))
 
         # Eliminar reviews de tamaño 0 en texto y titulo
         rev = rev.loc[(rev["n_words_text"] > 0) & (rev["n_words_title"] > 0)]
 
+        # Obtener número de caracteres de las reviews y eliminar aquellas con más de 2000
+        rev["n_char_text"] = rev["text"].apply(lambda x: len(x))
+        rev = rev.loc[rev["n_char_text"] <= 2000]
+
         return rev
 
     def __get_es_stopwords__(self):
-        nltk.download('stopwords')
+        # nltk.download('stopwords')
 
         spanish_stopwords = stopwords.words('spanish')
         spanish_stopwords += ['además', 'allí', 'aquí', 'asturias', 'así', 'aunque', 'años', 'cada', 'casa', 'casi',

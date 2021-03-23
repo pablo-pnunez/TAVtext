@@ -70,7 +70,7 @@ class BOW2RSTdataset(TextDataset):
             all_data = all_data.groupby("id_restaurant").apply(data_split)
 
             train_dev = all_data.loc[all_data["test"] == 0].drop(columns=["test"])
-            test = all_data.loc[all_data["test"] == 0].drop(columns=["dev", "test"])
+            test = all_data.loc[all_data["test"] == 1].drop(columns=["dev", "test"])
 
             # Almacenar pickles
             to_pickle(self.DATASET_PATH, "FEATURES_NAME", features_name)
