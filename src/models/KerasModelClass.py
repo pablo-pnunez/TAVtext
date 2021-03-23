@@ -79,13 +79,9 @@ class KerasModelClass(ModelClass):
         # Si se quiere almacenar la salida del modelo (pesos/csv)
         if save_model:
             if os.path.exists(self.MODEL_PATH + final_folder + "checkpoint"):
-                overwrite = input("Model already exists. Do you want to overwrite it? (y/n)")
-                if overwrite == "y":
-                    sure = input("Are you sure? (y/n)")
-                    if sure != "y":
-                        return
-                else:
-                    return
+                print_g("Model already trained. Loading weights...")
+                self.MODEL.load_weights(self.MODEL_PATH + final_folder + "weights")
+                return
 
             # Crear la carpeta
             os.makedirs(self.MODEL_PATH + final_folder, exist_ok=True)
@@ -131,12 +127,12 @@ class KerasModelClass(ModelClass):
         if save_model:
             done_epochs = len(hist.history["loss"])
             plt.figure(figsize=(int((done_epochs*8)/500), 8))  # HAY QUE MEJORAR ESTO
-            hplt = sns.lineplot(range(done_epochs), hist.history[self.CONFIG["model"]["early_st_monitor"].replace("val", "")], label=self.CONFIG["model"]["early_st_monitor"].replace("val", ""))
+            hplt = sns.lineplot(range(done_epochs), hist.history[self.CONFIG["model"]["early_st_monitor"].replace("val_", "")], label=self.CONFIG["model"]["early_st_monitor"].replace("val_", ""))
             if is_dev:
                 hplt = sns.lineplot(range(done_epochs), hist.history[self.CONFIG["model"]["early_st_monitor"]], label=self.CONFIG["model"]["early_st_monitor"])
-            hplt.set_yticks(np.asarray(range(0, 110, 10)) / 100)
-            hplt.set_xticks(range(0, done_epochs, 20))
-            hplt.set_xticklabels(range(0, done_epochs, 20), rotation=45)
+            # hplt.set_yticks(np.asarray(range(0, 110, 10)) / 100)
+            # hplt.set_xticks(range(0, done_epochs, 20))
+            # hplt.set_xticklabels(range(0, done_epochs, 20), rotation=45)
             hplt.set_title("Train history")
             hplt.set_xlabel("Epochs")
             hplt.set_ylabel(self.CONFIG["model"]["early_st_monitor"])
@@ -146,3 +142,7 @@ class KerasModelClass(ModelClass):
             else:
                 plt.savefig(self.MODEL_PATH + final_folder + "history.jpg")
             plt.clf()
+
+        # Cargar el mejor modelo (por defecto está el de la última epoch)
+        print_g("Loading best model...")
+        self.MODEL.load_weights(self.MODEL_PATH + final_folder + "weights")

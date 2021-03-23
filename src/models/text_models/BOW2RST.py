@@ -50,28 +50,41 @@ class BOW2RST(KerasModelClass):
         popularidad_vec = y_out.sum(axis=0) / sum(y_out.sum(axis=0))
         pred_popularidad = np.row_stack([popularidad_vec]*len(dataset))
 
-        print_g("-"*50)
-        m = tf.keras.metrics.Accuracy()
-        m.update_state(y_true=y_out.argmax(axis=1), y_pred=pred_popularidad.argmax(axis=1))
-        print_g("ACCURACY por popularidad: %.4f" % (m.result().numpy()))
-        m.reset_states()
+        with tf.device('/cpu:0'):
 
-        m = tf.keras.metrics.TopKCategoricalAccuracy(k=5)
-        m.update_state(y_true=y_out, y_pred=pred_popularidad)
-        print_g("TOP5ACC por popularidad:  %.4f" % (m.result().numpy()))
-        m.reset_states()
+            m1 = tf.keras.metrics.Accuracy()
+            m1.update_state(y_true=y_out.argmax(axis=1), y_pred=pred_popularidad.argmax(axis=1))
+            # print_g("ACCURACY por popularidad: %.4f" % (m1.result().numpy()))
+            # m1.reset_states()
 
-        m = tf.keras.metrics.TopKCategoricalAccuracy(k=10)
-        m.update_state(y_true=y_out, y_pred=pred_popularidad)
-        print_g("TOP10ACC por popularidad:  %.4f" % (m.result().numpy()))
-        m.reset_states()
-        print_g("-"*50)
+            m2 = tf.keras.metrics.TopKCategoricalAccuracy(k=5)
+            m2.update_state(y_true=y_out, y_pred=pred_popularidad)
+            # print_g("TOP5ACC por popularidad:  %.4f" % (m2.result().numpy()))
+            # m2.reset_states()
+
+            m3 = tf.keras.metrics.TopKCategoricalAccuracy(k=10)
+            m3.update_state(y_true=y_out, y_pred=pred_popularidad)
+            # print_g("TOP10ACC por popularidad:  %.4f" % (m3.result().numpy()))
+            # m3.reset_states()
+
+        return m1.result().numpy(), m2.result().numpy(), m3.result().numpy()
 
     def get_train_dev_sequences(self):
         train = BOW2RSTsequence(self, is_dev=0)
         dev = BOW2RSTsequence(self, is_dev=1)
 
         return train, dev
+
+    def evaluate(self, test=False):
+
+        if test:
+            test_set = BOW2RSTsequence(self, set_name="TEST")
+        else:
+            test_set = BOW2RSTsequence(self, is_dev=1)
+
+        ret = self.MODEL.evaluate(test_set, verbose=0)
+
+        return ret[1:]
 
 
 class BOW2RSTsequence(BaseSequence):
