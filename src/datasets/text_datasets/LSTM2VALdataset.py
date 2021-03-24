@@ -51,12 +51,6 @@ class LSTM2VALdataset(TextDataset):
             text_sequences = tokenizer_txt.texts_to_sequences(all_data["text"])
             all_data["seq"] = text_sequences
 
-            # Truncar el padding?
-            max_len_padding = None
-            if self.CONFIG["truncate_padding"]:
-                seq_lens = all_data.loc[(all_data["dev"] == 0) & (all_data["test"] == 0)]["seq"].apply(lambda x: len(x)).values
-                max_len_padding = int(seq_lens.mean() + seq_lens.std() * 2)
-
             # Train-Dev, Test split
             for_dev_tst = int(len(all_data) * (self.CONFIG["test_dev_split"] * 2)) // 2
             all_data["dev"] = 0
@@ -64,6 +58,18 @@ class LSTM2VALdataset(TextDataset):
             all_data.iloc[-for_dev_tst:, all_data.columns.get_loc("test")] = 1  # Últimas x para test
             all_data.iloc[-for_dev_tst * 2:-for_dev_tst, all_data.columns.get_loc("dev")] = 1  # Penúltimas x para dev
 
+            # Truncar el padding?
+            max_len_padding = None
+            if self.CONFIG["truncate_padding"]:
+                seq_lens = all_data.loc[(all_data["dev"] == 0) & (all_data["test"] == 0)]["seq"].apply(lambda x: len(x)).values
+                max_len_padding = int(seq_lens.mean() + seq_lens.std() * 2)
+
+            # Añadir al set con el padding
+            seq_w_pad = tf.keras.preprocessing.sequence.pad_sequences(all_data["seq"].values, maxlen=max_len_padding)
+            all_data["seq"] = seq_w_pad
+            max_len_padding = seq_w_pad.shape[1]
+
+            # Separar los conjuntos finales
             train_dev = all_data.loc[all_data["test"] == 0].drop(columns=["test"])
             test = all_data.loc[all_data["test"] == 1].drop(columns=["dev", "test"])
 

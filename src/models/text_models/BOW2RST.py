@@ -8,7 +8,7 @@ from sklearn.preprocessing import MultiLabelBinarizer
 
 
 class BOW2RST(KerasModelClass):
-
+    """ Predecir, a partir de una review codificada mendiante BOW, el restaurante de la review """
     def __init__(self, config, dataset):
         KerasModelClass.__init__(self, config=config, dataset=dataset)
 

@@ -8,7 +8,7 @@ from gensim.models import KeyedVectors
 
 
 class W2V(ModelClass):
-
+    """ Aprender embeddigs de palabras mediante W2V de Gensim """
     def __init__(self, config, dataset):
         self.MODEL_FILE_PATH = None
         ModelClass.__init__(self, config=config, dataset=dataset)

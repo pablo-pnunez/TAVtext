@@ -126,7 +126,8 @@ class KerasModelClass(ModelClass):
         # Almacenar gráfico con el entrenamiento
         if save_model:
             done_epochs = len(hist.history["loss"])
-            plt.figure(figsize=(int((done_epochs*8)/500), 8))  # HAY QUE MEJORAR ESTO
+            fg_sz = (max(8, int((done_epochs*8)/500)), 8)
+            plt.figure(figsize=fg_sz)  # HAY QUE MEJORAR ESTO
             hplt = sns.lineplot(range(done_epochs), hist.history[self.CONFIG["model"]["early_st_monitor"].replace("val_", "")], label=self.CONFIG["model"]["early_st_monitor"].replace("val_", ""))
             if is_dev:
                 hplt = sns.lineplot(range(done_epochs), hist.history[self.CONFIG["model"]["early_st_monitor"]], label=self.CONFIG["model"]["early_st_monitor"])

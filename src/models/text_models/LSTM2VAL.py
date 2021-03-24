@@ -10,7 +10,7 @@ from gensim.models import KeyedVectors
 
 
 class LSTM2VAL(KerasModelClass):
-
+    """ Predecir, a partir de una review codificada mendiante una LSTM utilizando las palabras del W2V, la nota de dicha review """
     def __init__(self, config, dataset, w2v_model):
         self.W2V_MODEL = w2v_model
         KerasModelClass.__init__(self, config=config, dataset=dataset)
@@ -32,7 +32,9 @@ class LSTM2VAL(KerasModelClass):
 
         model = tf.keras.models.Sequential()
         model.add(tf.keras.layers.Embedding(self.DATASET.DATA["VOCAB_SIZE"], w2v_emb_size, weights=[embedding_matrix], trainable=False, mask_zero=True))
-        model.add(tf.keras.layers.LSTM(32))
+        model.add(tf.keras.layers.LSTM(128))
+        model.add(tf.keras.layers.Dense(64, activation='relu'))
+        model.add(tf.keras.layers.Dense(32, activation='relu'))
         model.add(tf.keras.layers.Dense(16, activation='relu'))
         model.add(tf.keras.layers.Dense(1))
         model.compile(loss='mean_squared_error', optimizer=tf.keras.optimizers.Adam(lr=self.CONFIG["model"]["learning_rate"]), metrics=['mean_absolute_error'])
@@ -62,7 +64,7 @@ class LSTM2VALsequence(BaseSequence):
         return ret
 
     def preprocess_input(self, batch_data):
-        return tf.keras.preprocessing.sequence.pad_sequences(batch_data.seq.values, maxlen=self.MODEL.DATASET.DATA["MAX_LEN_PADDING"])
+        return np.row_stack(batch_data.seq)
 
     def preprocess_output(self, batch_data):
         return batch_data["rating"].values

@@ -4,16 +4,17 @@ from src.datasets.text_datasets.TextDataset import *
 from src.Common import to_pickle, print_g
 
 import pandas as pd
+import tensorflow as tf
 from sklearn.preprocessing import normalize
 from sklearn.feature_extraction.text import CountVectorizer
 
 
-class BOW2RSTdataset(TextDataset):
+class LSTMBOW2RSTVALdataset(TextDataset):
 
     def __init__(self, config):
         TextDataset.__init__(self, config=config)
 
-    def get_data(self, load=["TRAIN_DEV", "TEST", "FEATURES_NAME", "N_RST"]):
+    def get_data(self, load=["TRAIN_DEV", "TEST", "FEATURES_NAME", "N_RST",  "WORD_INDEX", "VOCAB_SIZE", "MAX_LEN_PADDING"]):
 
         # Cargar los datos
         dict_data = self.get_dict_data(self.DATASET_PATH, load)
@@ -42,8 +43,11 @@ class BOW2RSTdataset(TextDataset):
             all_data = all_data.merge(rst_newid, on="restaurantId")
             all_data = all_data.drop(columns=["restaurantId"])
 
+            # Mezclar las reviews
+            all_data = all_data.sample(frac=1, random_state=self.CONFIG["seed"]).reset_index(drop=True)
+
             # Crear vectores del BOW
-            vectorizer = CountVectorizer(stop_words=self.SPANISH_STOPWORDS, min_df=self.CONFIG["min_df"], max_features=self.CONFIG["num_palabras"], binary=self.CONFIG["presencia"])  # Frecuencia
+            vectorizer = CountVectorizer(stop_words=self.SPANISH_STOPWORDS, min_df=self.CONFIG["min_df"], max_features=self.CONFIG["num_palabras"], binary=self.CONFIG["presencia"])
             bow = vectorizer.fit_transform(all_data[self.CONFIG["text_column"]])
 
             # El vocabulary_ es un diccionario {palabra:idx_columna}. Se ordena para saber a que palabra corresponde cada columna de las <self.CONFIG["num_palabras"]>
@@ -55,8 +59,29 @@ class BOW2RSTdataset(TextDataset):
             # Incroporar BOW en los datos
             all_data["bow"] = normed_bow.tolist()
 
-            # Mezclar las reviews
-            all_data = all_data.sample(frac=1, random_state=self.CONFIG["seed"]).reset_index(drop=True)
+            # Tokenizar las palabras (Asociar cada palabra a un índice [WORD_INDEX])
+            if self.CONFIG["n_max_words"] == 0:
+                tokenizer_txt = tf.keras.preprocessing.text.Tokenizer()
+            else:
+                tokenizer_txt = tf.keras.preprocessing.text.Tokenizer(num_words=self.CONFIG["n_max_words"])
+
+            tokenizer_txt.fit_on_texts(all_data[self.CONFIG["text_column"]])
+            word_index = tokenizer_txt.word_index
+
+            # Si se utilizan todas
+            if self.CONFIG["n_max_words"] == 0:
+                print_g("Intervienen %d palabras y utilizamos todas." % len(word_index))
+            # Quedarse con las "n_max_words" palabras más frecuentes
+            else:
+                word_counts = tokenizer_txt.word_counts
+                word_counts = {k: v for k, v in sorted(word_counts.items(), key=lambda item: item[1], reverse=True)}
+                mas_frecuentes = list(word_counts.keys())[0:self.CONFIG["n_max_words"]]
+                print_g("Intervienen %d palabras, pero nos quedamos con las %d más frecuentes." % (len(word_index), self.CONFIG["n_max_words"]))
+                word_index = {x: word_index[x] for x in mas_frecuentes}
+
+            # Transformar frases a secuencias de números según [WORD_INDEX] y añadir al set
+            text_sequences = tokenizer_txt.texts_to_sequences(all_data[self.CONFIG["text_column"]])
+            all_data["seq"] = text_sequences
 
             # Train Test split asegurandose de que en Train están todos los restaurantes.
             def data_split(rst_rvws):
@@ -69,12 +94,29 @@ class BOW2RSTdataset(TextDataset):
             all_data["dev"] = 0; all_data["test"] = 0
             all_data = all_data.groupby("id_restaurant").apply(data_split)
 
+            # Truncar el padding?
+            max_len_padding = None
+            if self.CONFIG["truncate_padding"]:
+                seq_lens = all_data.loc[(all_data["dev"] == 0) & (all_data["test"] == 0)]["seq"].apply(lambda x: len(x)).values
+                max_len_padding = int(seq_lens.mean() + seq_lens.std() * 2)
+
+            # Añadir al set con el padding
+            seq_w_pad = tf.keras.preprocessing.sequence.pad_sequences(all_data["seq"].values, maxlen=max_len_padding)
+            all_data["seq"] = seq_w_pad.tolist()
+            max_len_padding = seq_w_pad.shape[1]
+
+            # Separar los conjuntos finales
             train_dev = all_data.loc[all_data["test"] == 0].drop(columns=["test"])
             test = all_data.loc[all_data["test"] == 1].drop(columns=["dev", "test"])
 
             # Almacenar pickles
             to_pickle(self.DATASET_PATH, "FEATURES_NAME", features_name)
             to_pickle(self.DATASET_PATH, "N_RST", len(all_data["id_restaurant"].unique()))
+
+            to_pickle(self.DATASET_PATH, "WORD_INDEX", word_index)
+            to_pickle(self.DATASET_PATH, "VOCAB_SIZE", len(word_index) + 1)
+            to_pickle(self.DATASET_PATH, "MAX_LEN_PADDING", max_len_padding)
+
             to_pickle(self.DATASET_PATH, "TRAIN_DEV", train_dev)
             to_pickle(self.DATASET_PATH, "TEST", test)
 
