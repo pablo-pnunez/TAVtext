@@ -96,11 +96,11 @@ lstmbow2rstval_dts = LSTMBOW2RSTVALdataset({"city": city, "seed": seed, "data_pa
 fixed_bow = False
 
 if fixed_bow:
-    lstmfbow2rstval_mdl = LSTMFBOW2RSTVAL({"model": {"learning_rate": l_rate, "final_learning_rate": l_rate/100, "epochs": 500, "batch_size": b_size, "seed": seed,
+    lstmbow2rstval_mdl = LSTMFBOW2RSTVAL({"model": {"learning_rate": l_rate, "final_learning_rate": l_rate/100, "epochs": 500, "batch_size": b_size, "seed": seed,
                                           "early_st_first_epoch": 0, "early_st_monitor": "val_loss", "early_st_monitor_mode": "min", "early_st_patience": 50},
                                           "session": {"gpu": gpu, "in_md5": False}}, lstmbow2rstval_dts, w2v_mdl, bow2rst_mdl)
 
-    lstmfbow2rstval_mdl.train(dev=True, save_model=True)
+    lstmbow2rstval_mdl.train(dev=True, save_model=True)
 
 else:
 
@@ -109,3 +109,8 @@ else:
                                          "session": {"gpu": gpu, "in_md5": False}}, lstmbow2rstval_dts, w2v_mdl)
 
     lstmbow2rstval_mdl.train(dev=True, save_model=True)
+
+
+# lstmbow2rstval_mdl.evaluate()
+
+# ToDo: Adaptar el modelo fijo
