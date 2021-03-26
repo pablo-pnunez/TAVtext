@@ -13,7 +13,7 @@ class BOW2RSTdataset(TextDataset):
     def __init__(self, config):
         TextDataset.__init__(self, config=config)
 
-    def get_data(self, load=["TRAIN_DEV", "TEST", "FEATURES_NAME", "N_RST"]):
+    def get_data(self, load=["TRAIN_DEV", "TEST",  "VECTORIZER", "FEATURES_NAME", "N_RST"]):
 
         # Cargar los datos
         dict_data = self.get_dict_data(self.DATASET_PATH, load)
@@ -73,6 +73,7 @@ class BOW2RSTdataset(TextDataset):
             test = all_data.loc[all_data["test"] == 1].drop(columns=["dev", "test"])
 
             # Almacenar pickles
+            to_pickle(self.DATASET_PATH, "VECTORIZER", vectorizer)
             to_pickle(self.DATASET_PATH, "FEATURES_NAME", features_name)
             to_pickle(self.DATASET_PATH, "N_RST", len(all_data["id_restaurant"].unique()))
             to_pickle(self.DATASET_PATH, "TRAIN_DEV", train_dev)

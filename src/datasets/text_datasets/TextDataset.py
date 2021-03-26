@@ -78,41 +78,42 @@ class TextDataset(DatasetClass):
         # nltk.download('stopwords')
 
         spanish_stopwords = stopwords.words('spanish')
-        spanish_stopwords += ['además', 'allí', 'aquí', 'asturias', 'así', 'aunque', 'años', 'cada', 'casa', 'casi',
-                              'comido', 'comimos', 'cosas', 'creo', 'decir', 'después', 'dos', 'día', 'fin', 'gijon',
-                              'gijón', 'hace', 'hacer', 'hora', 'ido', 'igual', 'ir', 'lado', 'luego', 'mas', 'merece',
+        spanish_stopwords += ['ademas', 'alli', 'aqui', 'asturias', 'asi', 'aunque', 'anos', 'cada', 'casa', 'casi',
+                              'comido', 'comimos', 'cosas', 'creo', 'decir', 'despues', 'dos', 'dia', 'fin', 'gijon',
+                              'gijon', 'hace', 'hacer', 'hora', 'ido', 'igual', 'ir', 'lado', 'luego', 'mas', 'merece',
                               'mismo', 'momento', 'mucha', 'muchas', 'parece', 'parte', 'pedimos', 'pedir', 'probar',
-                              'puede', 'puedes', 'pues', 'punto', 'relación', 'reservar', 'seguro', 'semana', 'ser',
+                              'puede', 'puedes', 'pues', 'punto', 'relacion', 'reservar', 'seguro', 'semana', 'ser',
                               'si',
-                              'sido', 'siempre', 'sitio', 'sitios', 'solo', 'sí', 'tan', 'tener', 'toda', 'tomar',
+                              'sido', 'siempre', 'sitio', 'sitios', 'solo', 'si', 'tan', 'tener', 'toda', 'tomar',
                               'tres',
                               'unas', 'varias', 'veces', 'ver', 'verdad', 'vez', 'visita', 'bastante', 'duda', 'gran',
-                              'menos', 'no', 'nunca', 'opinión', 'primera', 'primero', 'segundo', '10', 'mejor',
+                              'menos', 'no', 'nunca', 'opinion', 'primera', 'primero', 'segundo', '10', 'mejor',
                               'mejores']
         spanish_stopwords += ['100', '15', '20', '30', 'alguna', 'asturiana', 'caso', 'centro', 'cierto', 'comentario',
                               'cosa',
                               'cualquier', 'cuanto', 'cuenta', 'da', 'decidimos', 'demasiado', 'dentro', 'destacar',
                               'detalle',
-                              'dia', 'días', 'esperamos', 'esperar', 'general', 'gracias', 'haber', 'hacen', 'hecho',
+                              'dia', 'dias', 'esperamos', 'esperar', 'general', 'gracias', 'haber', 'hacen', 'hecho',
                               'lleno',
                               'media', 'minutos', 'noche', 'nota', 'poder', 'ponen', 'probado', 'puedo', 'reserva',
                               'resto',
-                              'sabor', 'sólo', 'tiempo', 'todas', 'tomamos', 'totalmente', 'vamos', 'varios', 'vida',
-                              'único']
-        spanish_stopwords += ['50', 'ahora', 'aún', 'cerca', 'ciudad', 'cuatro', 'elegir', 'encima', 'falta', 'final',
+                              'sabor', 'solo', 'tiempo', 'todas', 'tomamos', 'totalmente', 'vamos', 'varios', 'vida',
+                              'unico']
+        spanish_stopwords += ['50', 'ahora', 'aun', 'cerca', 'ciudad', 'cuatro', 'elegir', 'encima', 'falta', 'final',
                               'ganas',
-                              'hoy', 'llegamos', 'medio', 'mundo', 'nuevo', 'ocasiones', 'opción', 'pareció', 'pasar',
+                              'hoy', 'llegamos', 'medio', 'mundo', 'nuevo', 'ocasiones', 'opcion', 'parecio', 'pasar',
                               'pedido',
                               'pesar', 'poner', 'probamos', 'pronto', 'realmente', 'salimos', 'sirven', 'situado',
                               'tampoco',
                               'tarde', 'tipo', 'va', 'vas', 'voy']
-        spanish_stopwords += ['12', 'come', 'demás', 'ello', 'etc', 'incluso', 'llegar', 'pasado', 'primer', 'pusieron',
+        spanish_stopwords += ['12', 'come', 'demas', 'ello', 'etc', 'incluso', 'llegar', 'pasado', 'primer', 'pusieron',
                               'quedamos', 'quieres', 'saludo', 'tambien', 'trabajo', 'tras', 'verano']
-        spanish_stopwords += ['algún', 'cenamos', 'comentarios', 'comiendo', 'dan', 'dice', 'domingo', 'ofrecen',
+        spanish_stopwords += ['algun', 'cenamos', 'comentarios', 'comiendo', 'dan', 'dice', 'domingo', 'ofrecen',
                               'razonable',
-                              'tamaño']
-        spanish_stopwords += ['nadie', 'ningún', 'opiniones', 'quizás', 'san', 'sino']
-        spanish_stopwords += ['atendió', 'pega', 'sábado']
+                              'tamano']
+        spanish_stopwords += ['nadie', 'ningun', 'opiniones', 'quizas', 'san', 'sino']
+        spanish_stopwords += ['atendio', 'pega', 'sabado']
         spanish_stopwords += ['dicho', 'par', 'total']
+
 
         return spanish_stopwords

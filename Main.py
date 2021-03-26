@@ -29,6 +29,8 @@ l_rate = 5e-4 if args.lr is None else args.lr
 n_epochs = 5000 if args.ep is None else args.ep
 b_size = 1024 if args.bs is None else args.bs
 
+bow_n_words = 200
+
 base_path = "/media/nas/pperez/data/TripAdvisor/"
 
 # W2V ##################################################################################################################
@@ -46,7 +48,7 @@ w2v_mdl.train()
 bow2rst_dts = BOW2RSTdataset({"city": city, "seed": seed, "data_path": base_path, "save_path": base_path + "Datasets/",
                               "remove_accents": True, "remove_numbers": True,
                               "min_reviews_rst": 100, "min_reviews_usr": 1,
-                              "min_df": 5, "num_palabras": 200, "presencia": False, "text_column": "text",
+                              "min_df": 5, "num_palabras": bow_n_words, "presencia": False, "text_column": "text",
                               "test_dev_split": .1})
 
 bow2rst_mdl = BOW2RST({"model": {"learning_rate": l_rate, "final_learning_rate": l_rate/100, "epochs": n_epochs, "batch_size": b_size, "seed": seed,
@@ -55,7 +57,10 @@ bow2rst_mdl = BOW2RST({"model": {"learning_rate": l_rate, "final_learning_rate":
 
 bow2rst_mdl.train(dev=True, save_model=True)
 
+exit()
+
 '''
+
 if stage == 0:
     bow2rst_mdl.train(dev=True, save_model=True)
     blr = bow2rst_mdl.baseline(test=False)
@@ -67,9 +72,9 @@ elif stage == 1:
     blr = bow2rst_mdl.baseline(test=True)
     mlr = bow2rst_mdl.evaluate(test=True)
     print("\t".join(list(map(lambda x: "%f\t%f" % (x[0], x[1]), list(zip(blr, mlr))))))
-'''
+
 # LSTM2VAL ###########################################################################################################
-'''
+
 lstm2val_dts = LSTM2VALdataset({"cities": [city], "city": city, "seed": seed, "data_path": base_path, "save_path": base_path + "Datasets/",
                                 "remove_accents": True, "remove_numbers": True,
                                 "n_max_words": 0, "test_dev_split": .1, "truncate_padding": True})
@@ -83,21 +88,23 @@ if stage == 0:
 
 elif stage == 1:
     lstm2val_mdl.train(dev=False, save_model=True)
+
 '''
+
 # LSTM&FBOW2RST&VAL ##################################################################################################
 
 lstmbow2rstval_dts = LSTMBOW2RSTVALdataset({"city": city, "seed": seed, "data_path": base_path, "save_path": base_path + "Datasets/",
                                             "remove_accents": True, "remove_numbers": True,
                                             "min_reviews_rst": 100, "min_reviews_usr": 1,
-                                            "min_df": 5, "num_palabras": 200, "presencia": False, "text_column": "text",
+                                            "min_df": 5, "num_palabras": bow_n_words, "presencia": False, "text_column": "text",
                                             "n_max_words": 0, "truncate_padding": True,
                                             "test_dev_split": .1})
 
-fixed_bow = False
+fixed_bow = True
 
 if fixed_bow:
     lstmbow2rstval_mdl = LSTMFBOW2RSTVAL({"model": {"learning_rate": l_rate, "final_learning_rate": l_rate/100, "epochs": 500, "batch_size": b_size, "seed": seed,
-                                          "early_st_first_epoch": 0, "early_st_monitor": "val_loss", "early_st_monitor_mode": "min", "early_st_patience": 50},
+                                          "early_st_first_epoch": 0, "early_st_monitor": "val_loss", "early_st_monitor_mode": "min", "early_st_patience": 20},
                                           "session": {"gpu": gpu, "in_md5": False}}, lstmbow2rstval_dts, w2v_mdl, bow2rst_mdl)
 
     lstmbow2rstval_mdl.train(dev=True, save_model=True)
@@ -105,12 +112,15 @@ if fixed_bow:
 else:
 
     lstmbow2rstval_mdl = LSTMBOW2RSTVAL({"model": {"learning_rate": l_rate, "final_learning_rate": l_rate/100, "epochs": 500, "batch_size": b_size, "seed": seed,
-                                         "early_st_first_epoch": 0, "early_st_monitor": "val_loss", "early_st_monitor_mode": "min", "early_st_patience": 50},
+                                         "early_st_first_epoch": 0, "early_st_monitor": "val_loss", "early_st_monitor_mode": "min", "early_st_patience": 20},
                                          "session": {"gpu": gpu, "in_md5": False}}, lstmbow2rstval_dts, w2v_mdl)
 
     lstmbow2rstval_mdl.train(dev=True, save_model=True)
 
 
-# lstmbow2rstval_mdl.evaluate()
+lstmbow2rstval_mdl.evaluate(verbose=1)
+# lstmbow2rstval_mdl.eval_custom_text("Quiero comer un cachopo como una casa de grande")
 
-# ToDo: Adaptar el modelo fijo
+
+# ToDo: Obtener la media de la interseccíon de cada experiencia.
+# ToDo: Obtener ese número prediciendo los 5 rst más probables, los 5 siguientes etc...

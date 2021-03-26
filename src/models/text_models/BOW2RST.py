@@ -15,9 +15,9 @@ class BOW2RST(KerasModelClass):
     def get_model(self):
 
         input_bow = tf.keras.layers.Input(shape=(self.DATASET.CONFIG["num_palabras"],), name="input_bow")
-        x = tf.keras.layers.Dense(self.DATASET.DATA["N_RST"], name="output_layer")(input_bow)
+        x = tf.keras.layers.Dense(self.DATASET.DATA["N_RST"], name="bow_2_rst", kernel_initializer=tf.keras.initializers.Ones())(input_bow)
         x = tf.keras.layers.Dropout(.2)(x)
-        x = tf.keras.layers.BatchNormalization()(x)
+        x = tf.keras.layers.BatchNormalization(name="bow_2_rst_bn")(x)
         output_rst = tf.keras.layers.Activation("softmax", name="output_rst")(x)
         model = tf.keras.models.Model(inputs=[input_bow], outputs=[output_rst])
 

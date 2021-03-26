@@ -5,9 +5,9 @@ from src.sequences.BaseSequence import BaseSequence
 
 import numpy as np
 import pandas as pd
+from tqdm import tqdm
 import tensorflow as tf
 from sklearn.preprocessing import MultiLabelBinarizer
-
 
 class LSTMBOW2RSTVAL(KerasModelClass):
     """Predecir, a partir de una review codificada mendiante una LSTM utilizando las palabras del W2V y la review BOW, la nota de dicha review y el restaurante """
@@ -32,16 +32,14 @@ class LSTMBOW2RSTVAL(KerasModelClass):
         del word_vectors
 
         input_bow = tf.keras.layers.Input(shape=(self.DATASET.CONFIG["num_palabras"],), name="input_bow")
-        x = tf.keras.layers.Dense(self.DATASET.DATA["N_RST"], name="output_layer")(input_bow)
+        x = tf.keras.layers.Dense(self.DATASET.DATA["N_RST"], name="bow_2_rst", kernel_initializer=tf.keras.initializers.Ones())(input_bow)
         x = tf.keras.layers.Dropout(.2)(x)
-        x = tf.keras.layers.BatchNormalization()(x)
+        x = tf.keras.layers.BatchNormalization(name="bow_2_rst_bn")(x)
         output_rst = tf.keras.layers.Activation("softmax", name="output_rst")(x)
-        model_one = tf.keras.models.Model(inputs=[input_bow], outputs=[output_rst])
 
         input_w2v = tf.keras.layers.Input(shape=(self.DATASET.DATA["MAX_LEN_PADDING"],), name="input_w2v")
         h = tf.keras.layers.Embedding(self.DATASET.DATA["VOCAB_SIZE"], w2v_emb_size, weights=[embedding_matrix], trainable=False, mask_zero=True)(input_w2v)
         output_lstm = tf.keras.layers.LSTM(128, name="output_lstm")(h)
-        model_two = tf.keras.models.Model(inputs=[input_w2v], outputs=[output_lstm])
 
         input_rst = tf.keras.layers.Input(shape=(self.DATASET.DATA["N_RST"],), name="input_rst")
         input_lstm = tf.keras.layers.Input(shape=(128,), name="input_lstm")
@@ -49,18 +47,18 @@ class LSTMBOW2RSTVAL(KerasModelClass):
         h = tf.keras.layers.Dense(128, activation='relu')(h)
         h = tf.keras.layers.Dense(32, activation='relu')(h)
         output_val = tf.keras.layers.Dense(1, name="output_val")(h)
-        model_three = tf.keras.models.Model(inputs=[input_rst, input_lstm], outputs=[output_val])
+        val_model = tf.keras.models.Model(inputs=[input_rst, input_lstm], outputs=[output_val], name="val_model")
 
-        model = tf.keras.models.Model(inputs=[input_bow, input_w2v], outputs=[output_rst, model_three([output_rst, output_lstm])])
+        model = tf.keras.models.Model(inputs=[input_bow, input_w2v], outputs=[output_rst, val_model([output_rst, output_lstm])])
 
         losses = {
             "output_rst": "categorical_crossentropy",
-            "model_3": "mean_squared_error",
+            "val_model": "mean_squared_error",
         }
 
         metrics = {
             "output_rst": ['accuracy', tf.keras.metrics.TopKCategoricalAccuracy(k=5, name='top_5'), tf.keras.metrics.TopKCategoricalAccuracy(k=10, name='top_10')],
-            "model_3": ["mean_absolute_error"]
+            "val_model": ["mean_absolute_error"]
         }
 
         model.compile(loss=losses, optimizer=tf.keras.optimizers.Adam(lr=self.CONFIG["model"]["learning_rate"]), metrics=metrics)
@@ -73,39 +71,60 @@ class LSTMBOW2RSTVAL(KerasModelClass):
 
         return train, dev
 
-    def evaluate(self):
-        test_data = self.DATASET.DATA["TEST"]
+    def evaluate(self, verbose=0):
+        test_data = self.DATASET.DATA["TEST"].copy()
 
+        # Obtener el modelo que predice restaurantes, junto con la matriz de pesos relevante
         rst_model = tf.keras.models.Model(inputs=[self.MODEL.get_layer("input_bow").input], outputs=[self.MODEL.get_layer("output_rst").output])
-        lstm_model = tf.keras.models.Model(inputs=[self.MODEL.get_layer("input_w2v").input], outputs=[self.MODEL.get_layer("output_lstm").output])
-        val_model = self.MODEL.get_layer("model_3")
+        rst_model_weights = rst_model.get_layer("bow_2_rst").get_weights()[0]
 
-        rst_model_weights = rst_model.get_layer("output_layer").get_weights()[0]
+        # Predecir, para cada elemeneto de test, la nota que se le daría
+        test_data["experience_rating"] = self.MODEL.predict([np.row_stack(test_data.bow.values), np.row_stack(test_data.seq.values)])
 
-        for _, rev in test_data.iterrows():
-            # Predecir 5 restaurantes con la parte correspondiente del modelo
-            rev_rst_pred = rst_model.predict(np.expand_dims(rev.bow, 0)).flatten()
-            rev_rst_pred = (-rev_rst_pred).argsort()[:5]
+        # Predecir 5 restaurantes con la parte correspondiente del modelo
+        rev_rst_pred = rst_model.predict(np.row_stack(test_data.bow.values))
+        rev_rst_pred = np.apply_along_axis(lambda x: (-x).argsort()[:5], 1, rev_rst_pred)
+        test_data["recommended_rests"] = rev_rst_pred.tolist()
 
-            # Obtener el de mayor valoración de todos ellos
-            all_vals = []
-            rev_lst_pred = lstm_model.predict(np.expand_dims(rev.seq, 0))
-            for rst in rev_rst_pred:
-                rst_vec = np.zeros((1, self.DATASET.DATA["N_RST"]))
-                rst_vec[0][rst] = 1
-                val_pred = val_model.predict([rst_vec, rev_lst_pred]).flatten()
-                all_vals.append((rst, test_data.loc[test_data.id_restaurant == rst]["name"].values[0], val_pred[0]))
+        eval_data = []
+        for _, rev in tqdm(test_data.iterrows(), total=len(test_data)):
 
-            all_vals = pd.DataFrame(all_vals, columns=["id_restaurant", "name", "pred_val"])
-            selected_restaurant = all_vals.pred_val.argmax()
-            selected_restaurant = all_vals.iloc[selected_restaurant]
-            print("%s => %s" % (rev["name"], selected_restaurant["name"]))
+            usr_bow_words = np.asarray(self.DATASET.DATA["FEATURES_NAME"])[np.argwhere(np.asarray(rev.bow) > 0).flatten()]
 
-            # X Palabras relevantes del restaurante seleccionado
-            word_weights = rst_model_weights[:, selected_restaurant.id_restaurant]
-            word_ids = np.argsort(-word_weights)[:5]
+            for rst in rev["recommended_rests"]:
 
-            print("%s => %s" % (rev["name"], selected_restaurant["name"]))
+                # X Palabras más relevantes para predecir el restaurante seleccionado
+                word_weights = rst_model_weights[:, rst]  # + rst_model_weights_bias
+                word_ids = np.argsort(-word_weights)[:5]
+                most_relevant_w = np.asarray(self.DATASET.DATA["FEATURES_NAME"])[word_ids]
+
+                # Intersección entre palabras del usuario y del restaurante
+                usr_rst_intr = list(set(np.where(word_weights > 0)[0]).intersection(set(np.argwhere(np.asarray(rev.bow) > 0).flatten())))
+                usr_rst_intr = np.asarray(self.DATASET.DATA["FEATURES_NAME"])[usr_rst_intr]
+
+                eval_data.append((rev.reviewId, rev["id_restaurant"], rev["name"], rst, test_data.loc[test_data.id_restaurant == rst]["name"].values[0], rev["experience_rating"],
+                                  most_relevant_w, usr_rst_intr, usr_bow_words, len(usr_bow_words), len(usr_rst_intr)))
+
+        eval_data = pd.DataFrame(eval_data, columns=["reviewId", "id_restaurant", "restaurant_name", "id_restaurant_rec", "restaurant_name_rec", "experience_rating",
+                                                     "most_relevant_words", "intersection", "bow_words", "bow_words_len", "intersection_len"])
+
+        final_val = []
+        for rv, rv_dt in eval_data.groupby("reviewId"):
+            intrs = np.average(rv_dt["intersection_len"] / rv_dt["bow_words_len"])
+            final_val.append((rv, intrs))
+
+            if verbose == 1:
+                print("\n%s [%.2f]" % (rv_dt["restaurant_name"].values[0], rv_dt["experience_rating"].values[0]))
+                print("\tBOW: %s" % (",".join(rv_dt["bow_words"].values[0])))
+                for _, rst in rv_dt.iterrows():
+                    print("\t- %s" % (rst["restaurant_name_rec"]))
+                    print("\t\t▲ %s" % (",".join(rst["most_relevant_words"])))
+                    print("\t\t∩ %s" % (",".join(rst["intersection"])))
+
+                input("Press Enter to continue...")
+
+        final_val = pd.DataFrame(final_val, columns=["reviewId", "intersection"])
+        print("Test average intersection pctg: %f" % final_val["intersection"].mean())
 
 class LSTMFBOW2RSTVAL(LSTMBOW2RSTVAL):
     """FIJANDO MODELO BOW: Predecir, a partir de una review codificada mendiante una LSTM utilizando las palabras del W2V y la review BOW, la nota de dicha review y el restaurante """
@@ -132,17 +151,22 @@ class LSTMFBOW2RSTVAL(LSTMBOW2RSTVAL):
         print_g("Loading bow...")
         bow_model = self.BOW_MODEL.MODEL
         # Fijar pesos aprendidos previamente
-        for l in bow_model.layers: l.trainable = False
+        for lyr in bow_model.layers:
+            lyr.trainable = False
 
-        input_val = tf.keras.layers.Input(shape=(self.DATASET.DATA["MAX_LEN_PADDING"],), name="input_val")
-        h = tf.keras.layers.Embedding(self.DATASET.DATA["VOCAB_SIZE"], w2v_emb_size, weights=[embedding_matrix], trainable=False, mask_zero=True)(input_val)
-        h = tf.keras.layers.LSTM(128)(h)
-        h = tf.keras.layers.Concatenate(axis=1)([bow_model.output, h])
+        input_w2v = tf.keras.layers.Input(shape=(self.DATASET.DATA["MAX_LEN_PADDING"],), name="input_w2v")
+        h = tf.keras.layers.Embedding(self.DATASET.DATA["VOCAB_SIZE"], w2v_emb_size, weights=[embedding_matrix], trainable=False, mask_zero=True)(input_w2v)
+        output_lstm = tf.keras.layers.LSTM(128, name="output_lstm")(h)
+
+        input_rst = tf.keras.layers.Input(shape=(self.DATASET.DATA["N_RST"],), name="input_rst")
+        input_lstm = tf.keras.layers.Input(shape=(128,), name="input_lstm")
+        h = tf.keras.layers.Concatenate(axis=1)([input_rst, input_lstm])
         h = tf.keras.layers.Dense(128, activation='relu')(h)
         h = tf.keras.layers.Dense(32, activation='relu')(h)
         output_val = tf.keras.layers.Dense(1, name="output_val")(h)
+        val_model = tf.keras.models.Model(inputs=[input_rst, input_lstm], outputs=[output_val], name="val_model")
 
-        model = tf.keras.models.Model(inputs=[bow_model.input, input_val], outputs=[output_val])
+        model = tf.keras.models.Model(inputs=[bow_model.input, input_w2v], outputs=[val_model([bow_model.output, output_lstm])])
         model.compile(loss='mean_squared_error', optimizer=tf.keras.optimizers.Adam(lr=self.CONFIG["model"]["learning_rate"]), metrics=['mean_absolute_error'])
 
         return model
