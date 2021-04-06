@@ -1,0 +1,30 @@
+{
+    "dataset_config": {
+        "city": "gijon",
+        "seed": 100,
+        "data_path": "/media/nas/pperez/data/TripAdvisor/",
+        "save_path": "/media/nas/pperez/data/TripAdvisor/Datasets/",
+        "remove_plurals": true,
+        "stemming": false,
+        "remove_accents": true,
+        "remove_numbers": true,
+        "min_reviews_rst": 100,
+        "min_reviews_usr": 1,
+        "min_df": 5,
+        "num_palabras": 200,
+        "presencia": false,
+        "text_column": "text",
+        "test_dev_split": 0.1
+    },
+    "model": {
+        "learning_rate": 0.0005,
+        "final_learning_rate": 5e-06,
+        "epochs": 5000,
+        "batch_size": 1024,
+        "seed": 100,
+        "early_st_first_epoch": 0,
+        "early_st_monitor": "val_loss",
+        "early_st_monitor_mode": "min",
+        "early_st_patience": 50
+    }
+}
