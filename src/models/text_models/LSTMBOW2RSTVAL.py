@@ -7,6 +7,7 @@ import numpy as np
 import pandas as pd
 from tqdm import tqdm
 import tensorflow as tf
+from sklearn.preprocessing import normalize
 from sklearn.preprocessing import MultiLabelBinarizer
 
 class LSTMBOW2RSTVAL(KerasModelClass):
@@ -33,7 +34,7 @@ class LSTMBOW2RSTVAL(KerasModelClass):
 
         input_bow = tf.keras.layers.Input(shape=(self.DATASET.CONFIG["num_palabras"],), name="input_bow")
         x = tf.keras.layers.Dense(self.DATASET.DATA["N_RST"], name="bow_2_rst", kernel_initializer=tf.keras.initializers.Ones())(input_bow)
-        x = tf.keras.layers.Dropout(.2)(x)
+        x = tf.keras.layers.Dropout(.1)(x)
         x = tf.keras.layers.BatchNormalization(name="bow_2_rst_bn")(x)
         output_rst = tf.keras.layers.Activation("softmax", name="output_rst")(x)
 
@@ -125,6 +126,41 @@ class LSTMBOW2RSTVAL(KerasModelClass):
 
         final_val = pd.DataFrame(final_val, columns=["reviewId", "intersection"])
         print("Test average intersection pctg: %f" % final_val["intersection"].mean())
+
+    def eval_custom_text(self, text_src):
+
+        text = self.DATASET.prerpocess_text(text_src)
+        bow = self.DATASET.DATA["VECTORIZER"].transform([text])
+        normed_bow = normalize(bow.todense(), axis=1, norm='l1')
+        bow_words = np.asarray(self.DATASET.DATA["FEATURES_NAME"])[np.argwhere(normed_bow[0] > 0)[:, 0]]
+
+        # Obtener el modelo que predice restaurantes, junto con la matriz de pesos relevante
+        rst_model = tf.keras.models.Model(inputs=[self.MODEL.get_layer("input_bow").input], outputs=[self.MODEL.get_layer("output_rst").output])
+        rst_model_weights = rst_model.get_layer("bow_2_rst").get_weights()[0]
+
+        # Predecir 5 restaurantes con la parte correspondiente del modelo
+        rev_rst_pred = rst_model.predict(normed_bow)
+        rev_rst_pred = np.apply_along_axis(lambda x: (-x).argsort()[:5], 1, rev_rst_pred)
+        recommended_rests = rev_rst_pred.flatten()
+
+        print("\n")
+        print_g("\'%s\'" % text_src)
+        print("\tBOW: %s" % (",".join(bow_words)))
+
+        for rst in recommended_rests:
+            print("\t- %s" % (self.DATASET.DATA["TEST"].loc[self.DATASET.DATA["TEST"].id_restaurant == rst]["name"].values[0]))
+
+            # X Palabras más relevantes para predecir el restaurante seleccionado
+            word_weights = rst_model_weights[:, rst]  # + rst_model_weights_bias
+            word_ids = np.argsort(-word_weights)[:5]
+            most_relevant_w = np.asarray(self.DATASET.DATA["FEATURES_NAME"])[word_ids]
+
+            # Intersección entre palabras del usuario y del restaurante
+            usr_rst_intr = list(set(np.where(word_weights > 0)[0]).intersection(set(np.argwhere(normed_bow[0] > 0)[:, 0])))
+            usr_rst_intr = np.asarray(self.DATASET.DATA["FEATURES_NAME"])[usr_rst_intr]
+
+            print("\t\t▲ %s" % (",".join(most_relevant_w)))
+            print("\t\t∩ %s" % (",".join(usr_rst_intr)))
 
 class LSTMFBOW2RSTVAL(LSTMBOW2RSTVAL):
     """FIJANDO MODELO BOW: Predecir, a partir de una review codificada mendiante una LSTM utilizando las palabras del W2V y la review BOW, la nota de dicha review y el restaurante """

@@ -4,8 +4,9 @@ from src.datasets.DatasetClass import *
 import re
 import nltk
 import pandas as pd
-from nltk.corpus import stopwords
 from unicodedata import normalize
+from nltk.corpus import stopwords
+from nltk.stem import SnowballStemmer, PorterStemmer
 
 
 class TextDataset(DatasetClass):
@@ -13,6 +14,43 @@ class TextDataset(DatasetClass):
     def __init__(self, config):
         self.SPANISH_STOPWORDS = self.__get_es_stopwords__()
         DatasetClass.__init__(self, config=config)
+
+    def prerpocess_text(self, text):
+
+        # A minusculas
+        text = text.lower()
+
+        # Eliminar formatos (/n /t ...)
+        rgx_b = r'(\\.)+'
+        text = re.sub(rgx_b, ' ', text).strip()
+
+        # Cambiar signos de puntuación por espacios
+        rgx_a = r'\s*[^\w\s]+\s*'
+        text = re.sub(rgx_a, ' ', text).strip()
+
+        # Eliminar accentos?
+        if self.CONFIG["remove_accents"]:
+            rgx_c = r"([^n\u0300-\u036f]|n(?!\u0303(?![\u0300-\u036f])))[\u0300-\u036f]+"
+            text = normalize('NFC', re.sub(rgx_c, r"\1", normalize("NFD", text), 0, re.I))
+
+        # Eliminar números?
+        if self.CONFIG["remove_numbers"]:
+            rgx_d = r"\s*\d+\s*"
+            text = re.sub(rgx_d, ' ', text).strip()
+
+        # Eliminar plurales?
+        if self.CONFIG["remove_plurals"]:
+            stemmer = PorterStemmer()
+            text = " ".join([stemmer.stem(w) for w in text.split(" ")])
+            self.SPANISH_STOPWORDS = [stemmer.stem(w) for w in self.SPANISH_STOPWORDS]
+
+        # Stemming?
+        if self.CONFIG["stemming"]:
+            stemmer = SnowballStemmer('spanish')
+            text = " ".join([stemmer.stem(w) for w in text.split(" ")])
+            self.SPANISH_STOPWORDS = [stemmer.stem(w) for w in self.SPANISH_STOPWORDS]
+
+        return text
 
     def load_city(self, city):
         """Carga los datos de una ciudad, quedandose con las columnas relevantes"""
@@ -35,31 +73,9 @@ class TextDataset(DatasetClass):
         # Casting a int de algunas columnas
         rev = rev.astype({'reviewId': 'int64', 'restaurantId': 'int64', 'rating': 'int64'})
 
-        # A minusculas
-        rev['text'] = rev['text'].apply(lambda x: '%r' % x.lower())
-        rev['title'] = rev['title'].apply(lambda x: '%r' % x.lower())
-
-        # Eliminar formatos (/n /t ...)
-        rgx_b = r'(\\.)+'
-        rev['text'] = rev['text'].apply(lambda x: re.sub(rgx_b, ' ', x).strip())
-        rev['title'] = rev['title'].apply(lambda x: re.sub(rgx_b, ' ', x).strip())
-
-        # Cambiar signos de puntuación por espacios
-        rgx_a = r'\s*[^\w\s]+\s*'
-        rev['text'] = rev['text'].apply(lambda x: re.sub(rgx_a, ' ', x).strip())
-        rev['title'] = rev['title'].apply(lambda x: re.sub(rgx_a, ' ', x).strip())
-
-        # Eliminar accentos?
-        if self.CONFIG["remove_accents"]:
-            rgx_c = r"([^n\u0300-\u036f]|n(?!\u0303(?![\u0300-\u036f])))[\u0300-\u036f]+"
-            rev['text'] = rev['text'].apply(lambda x: normalize('NFC', re.sub(rgx_c, r"\1", normalize("NFD", x), 0, re.I)))
-            rev['title'] = rev['title'].apply(lambda x: normalize('NFC', re.sub(rgx_c, r"\1", normalize("NFD", x), 0, re.I)))
-
-        # Eliminar números?
-        if self.CONFIG["remove_numbers"]:
-            rgx_d = r"\s*\d+\s*"
-            rev['text'] = rev['text'].apply(lambda x: re.sub(rgx_d, ' ', x).strip())
-            rev['title'] = rev['title'].apply(lambda x: re.sub(rgx_d, ' ', x).strip())
+        # Preprocesar los textos
+        rev["text"] = rev["text"].apply(self.prerpocess_text)
+        rev["title"] = rev["title"].apply(self.prerpocess_text)
 
         # Obtener número de palabras de las reviews y del título
         rev["n_words_text"] = rev["text"].apply(lambda x: 0 if len(x) == 0 else len(x.split(" ")))
@@ -78,7 +94,7 @@ class TextDataset(DatasetClass):
         # nltk.download('stopwords')
 
         spanish_stopwords = stopwords.words('spanish')
-        spanish_stopwords += ['ademas', 'alli', 'aqui', 'asturias', 'asi', 'aunque', 'anos', 'cada', 'casa', 'casi',
+        spanish_stopwords += ['ademas', 'alli', 'aqui', 'asturias', 'asi', 'aunque', 'cada', 'casa', 'casi',
                               'comido', 'comimos', 'cosas', 'creo', 'decir', 'despues', 'dos', 'dia', 'fin', 'gijon',
                               'gijon', 'hace', 'hacer', 'hora', 'ido', 'igual', 'ir', 'lado', 'luego', 'mas', 'merece',
                               'mismo', 'momento', 'mucha', 'muchas', 'parece', 'parte', 'pedimos', 'pedir', 'probar',
@@ -87,9 +103,9 @@ class TextDataset(DatasetClass):
                               'sido', 'siempre', 'sitio', 'sitios', 'solo', 'si', 'tan', 'tener', 'toda', 'tomar',
                               'tres',
                               'unas', 'varias', 'veces', 'ver', 'verdad', 'vez', 'visita', 'bastante', 'duda', 'gran',
-                              'menos', 'no', 'nunca', 'opinion', 'primera', 'primero', 'segundo', '10', 'mejor',
+                              'menos', 'no', 'nunca', 'opinion', 'primera', 'primero', 'segundo', 'mejor',
                               'mejores']
-        spanish_stopwords += ['100', '15', '20', '30', 'alguna', 'asturiana', 'caso', 'centro', 'cierto', 'comentario',
+        spanish_stopwords += ['alguna', 'asturiana', 'caso', 'centro', 'cierto', 'comentario',
                               'cosa',
                               'cualquier', 'cuanto', 'cuenta', 'da', 'decidimos', 'demasiado', 'dentro', 'destacar',
                               'detalle',
@@ -99,14 +115,14 @@ class TextDataset(DatasetClass):
                               'resto',
                               'sabor', 'solo', 'tiempo', 'todas', 'tomamos', 'totalmente', 'vamos', 'varios', 'vida',
                               'unico']
-        spanish_stopwords += ['50', 'ahora', 'aun', 'cerca', 'ciudad', 'cuatro', 'elegir', 'encima', 'falta', 'final',
+        spanish_stopwords += ['ahora', 'aun', 'cerca', 'ciudad', 'cuatro', 'elegir', 'encima', 'falta', 'final',
                               'ganas',
                               'hoy', 'llegamos', 'medio', 'mundo', 'nuevo', 'ocasiones', 'opcion', 'parecio', 'pasar',
                               'pedido',
                               'pesar', 'poner', 'probamos', 'pronto', 'realmente', 'salimos', 'sirven', 'situado',
                               'tampoco',
                               'tarde', 'tipo', 'va', 'vas', 'voy']
-        spanish_stopwords += ['12', 'come', 'demas', 'ello', 'etc', 'incluso', 'llegar', 'pasado', 'primer', 'pusieron',
+        spanish_stopwords += ['come', 'demas', 'ello', 'etc', 'incluso', 'llegar', 'pasado', 'primer', 'pusieron',
                               'quedamos', 'quieres', 'saludo', 'tambien', 'trabajo', 'tras', 'verano']
         spanish_stopwords += ['algun', 'cenamos', 'comentarios', 'comiendo', 'dan', 'dice', 'domingo', 'ofrecen',
                               'razonable',
@@ -114,6 +130,7 @@ class TextDataset(DatasetClass):
         spanish_stopwords += ['nadie', 'ningun', 'opiniones', 'quizas', 'san', 'sino']
         spanish_stopwords += ['atendio', 'pega', 'sabado']
         spanish_stopwords += ['dicho', 'par', 'total']
+        spanish_stopwords += ['años', 'año', 'ultima', 'comer']
 
 
         return spanish_stopwords
