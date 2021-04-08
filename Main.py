@@ -27,7 +27,7 @@ stage = 0 if args.stg is None else args.stg
 
 gpu = int(np.argmin(list(map(lambda x: x["mem_used_percent"], nvgpu.gpu_info()))))
 seed = 100 if args.sd is None else args.sd
-l_rate = 5e-4 if args.lr is None else args.lr
+l_rate = 1e-4 if args.lr is None else args.lr
 n_epochs = 5000 if args.ep is None else args.ep
 b_size = 1024 if args.bs is None else args.bs
 
@@ -64,9 +64,10 @@ bow2val_dts = BOW2RSTdataset({"city": city, "seed": seed, "data_path": base_path
                               "test_dev_split": .1})
 
 bow2val_mdl = BOW2VAL({"model": {"learning_rate": l_rate, "final_learning_rate": l_rate/100, "epochs": n_epochs, "batch_size": b_size, "seed": seed,
-                                 "early_st_first_epoch": 0, "early_st_monitor": "val_loss", "early_st_monitor_mode": "min", "early_st_patience": 50},
+                                 "early_st_first_epoch": 0, "early_st_monitor": "val_loss", "early_st_monitor_mode": "min", "early_st_patience": 20},
                        "session": {"gpu": gpu, "in_md5": False}}, bow2val_dts)
 
+bow2val_mdl.baseline()
 bow2val_mdl.train(dev=True, save_model=False)
 
 exit()
@@ -150,3 +151,4 @@ else:
 lstmbow2rstval_mdl.eval_custom_text("Quiero comer grande, barato y abundante")
 
 # ToDo: Obtener ese número prediciendo los 5 rst más probables, los 5 siguientes etc...
+# ToDo: Baseline para valoración

@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from Common import print_g
 from src.models.KerasModelClass import KerasModelClass
 from src.sequences.BaseSequence import BaseSequence
 
@@ -8,7 +9,7 @@ from sklearn.preprocessing import MultiLabelBinarizer
 
 
 class BOW2VAL(KerasModelClass):
-    """ Predecir, a partir de una review codificada mendiante BOW, el restaurante de la review """
+    """ Predecir, a partir de una review codificada mendiante BOW, la nota de la review """
     def __init__(self, config, dataset):
         KerasModelClass.__init__(self, config=config, dataset=dataset)
 
@@ -30,6 +31,20 @@ class BOW2VAL(KerasModelClass):
         dev = BOW2VALsequence(self, is_dev=1)
 
         return train, dev
+
+    def baseline(self, test=False):
+        """ Predecir la media """
+
+        if not test:
+            the_mean = self.DATASET.DATA["TRAIN_DEV"].loc[self.DATASET.DATA["TRAIN_DEV"].dev==0].rating.mean()
+            mae = np.abs(the_mean - self.DATASET.DATA["TRAIN_DEV"].loc[self.DATASET.DATA["TRAIN_DEV"].dev==1].rating.values).mean()
+        else:
+            the_mean = self.DATASET.DATA["TRAIN_DEV"].rating.mean()
+            mae = np.abs(the_mean - self.DATASET.DATA["TEST"].rating.values).mean()
+        
+        ttl = "TEST" if test else "DEV" 
+
+        print_g("%s baseline MAE: %.4f" % (ttl, mae))
 
     def evaluate(self, test=False):
 
