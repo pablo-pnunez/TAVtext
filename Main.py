@@ -23,7 +23,7 @@ import numpy as np
 args = parse_cmd_args()
 
 city = "gijon".lower().replace(" ", "") if args.ct is None else args.ct
-stage = 0 if args.stg is None else args.stg
+stage = -1 if args.stg is None else args.stg
 
 gpu = int(np.argmin(list(map(lambda x: x["mem_used_percent"], nvgpu.gpu_info()))))
 seed = 100 if args.sd is None else args.sd
@@ -33,7 +33,7 @@ b_size = 1024 if args.bs is None else args.bs
 
 min_reviews_rst = 100
 min_reviews_usr = 1
-bow_n_words = 1024
+bow_n_words = 200
 
 stemming = False
 remove_plurals = True
@@ -43,7 +43,7 @@ remove_numbers = True
 base_path = "/media/nas/pperez/data/TripAdvisor/"
 
 # W2V ##################################################################################################################
-'''
+
 w2v_dts = W2Vdataset({"cities": ["gijon", "barcelona", "madrid"], "city": "multi", "seed": seed, "data_path": base_path, "save_path": base_path + "Datasets/",
                       "remove_plurals": remove_plurals, "stemming": stemming, "remove_accents": remove_accents, "remove_numbers": remove_numbers})
 
@@ -54,9 +54,10 @@ w2v_mdl = W2V({"model": {"train_set": "ALL_TEXTS", "min_count": 100, "window": 5
                "session": {"gpu": gpu, "in_md5": False}}, w2v_dts)
 
 w2v_mdl.train()
-'''
+
 # BOW2VAL ##############################################################################################################
 
+'''
 bow2val_dts = BOW2RSTdataset({"city": city, "seed": seed, "data_path": base_path, "save_path": base_path + "Datasets/",
                               "remove_plurals": remove_plurals, "stemming": stemming, "remove_accents": remove_accents, "remove_numbers": remove_numbers,
                               "min_reviews_rst": min_reviews_rst, "min_reviews_usr": min_reviews_usr,
@@ -73,6 +74,7 @@ bow2val_mdl.train(dev=True, save_model=False)
 exit()
 
 '''
+
 # BOW2RST ##############################################################################################################
 
 bow2rst_dts = BOW2RSTdataset({"city": city, "seed": seed, "data_path": base_path, "save_path": base_path + "Datasets/",
@@ -87,8 +89,6 @@ bow2rst_mdl = BOW2RST({"model": {"learning_rate": l_rate, "final_learning_rate":
 
 bow2rst_mdl.train(dev=True, save_model=True)
 
-
-
 if stage == 0:
     bow2rst_mdl.train(dev=True, save_model=True)
     blr = bow2rst_mdl.baseline(test=False)
@@ -101,8 +101,22 @@ elif stage == 1:
     mlr = bow2rst_mdl.evaluate(test=True)
     print("\t".join(list(map(lambda x: "%f\t%f" % (x[0], x[1]), list(zip(blr, mlr))))))
 
+# Obtener, para cada palabra, los restaurantes más afines ###########################################################
+
+
+for wrd_idx, wrd in enumerate(bow2rst_dts.DATA["FEATURES_NAME"]):
+    bow_word = np.zeros(bow_n_words)
+    bow_word[wrd_idx]=1
+    pred = bow2rst_mdl.MODEL.predict(np.expand_dims(bow_word, 0))
+    rst_ids = np.argsort(-pred)[0][:3]
+    rst_names = bow2rst_dts.DATA["TRAIN_DEV"].loc[bow2rst_dts.DATA["TRAIN_DEV"].id_restaurant.isin(rst_ids)].name.unique()
+
+    print(wrd, " => ", ", ".join(rst_names))
+
+
 # LSTM2VAL ###########################################################################################################
 
+'''
 lstm2val_dts = LSTM2VALdataset({"cities": [city], "city": city, "seed": seed, "data_path": base_path, "save_path": base_path + "Datasets/",
                                 "remove_plurals": remove_plurals, "stemming": stemming, "remove_accents": remove_accents, "remove_numbers": remove_numbers,
                                 "n_max_words": 0, "test_dev_split": .1, "truncate_padding": True})
@@ -151,4 +165,5 @@ else:
 lstmbow2rstval_mdl.eval_custom_text("Quiero comer grande, barato y abundante")
 
 # ToDo: Obtener ese número prediciendo los 5 rst más probables, los 5 siguientes etc...
-# ToDo: Baseline para valoración
+
+# ToDo: Obtener palabras relevantes con lstm? si LSTM2RST y luego evalúas todas las palabras de set, obtienes nota para cada rest.
