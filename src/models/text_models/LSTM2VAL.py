@@ -30,16 +30,51 @@ class LSTM2VAL(KerasModelClass):
         # Borrar modelo para ahorrar memoria
         del word_vectors
 
+        model = self.get_sub_model(w2v_emb_size,embedding_matrix)
+
+        return model
+
+    def get_sub_model(self, w2v_emb_size, embedding_matrix):
+        mv = self.CONFIG["model"]["model_version"]
         model = tf.keras.models.Sequential()
         model.add(tf.keras.layers.Embedding(self.DATASET.DATA["VOCAB_SIZE"], w2v_emb_size, weights=[embedding_matrix], trainable=False, mask_zero=True))
-        model.add(tf.keras.layers.LSTM(128))
-        model.add(tf.keras.layers.Dense(64, activation='relu'))
-        model.add(tf.keras.layers.Dense(32, activation='relu'))
-        model.add(tf.keras.layers.Dense(16, activation='relu'))
-        model.add(tf.keras.layers.Dense(1))
+
+        if mv=="0":
+            model.add(tf.keras.layers.LSTM(128))
+            model.add(tf.keras.layers.Dense(64, activation='relu'))
+            model.add(tf.keras.layers.Dense(32, activation='relu'))
+            model.add(tf.keras.layers.Dense(16, activation='relu'))
+            model.add(tf.keras.layers.Dense(1))
+        
+        if mv=="1":
+            model.add(tf.keras.layers.LSTM(128))
+            model.add(tf.keras.layers.Dropout(.4))
+            model.add(tf.keras.layers.Dense(64, activation='relu'))
+            model.add(tf.keras.layers.Dropout(.3))
+            model.add(tf.keras.layers.Dense(32, activation='relu'))
+            model.add(tf.keras.layers.Dropout(.2))
+            model.add(tf.keras.layers.Dense(16, activation='relu'))
+            model.add(tf.keras.layers.Dropout(.1))
+            model.add(tf.keras.layers.Dense(1))
+
+        if mv=="2":
+            model.add(tf.keras.layers.LSTM(64))
+            model.add(tf.keras.layers.Dense(32, activation='relu'))
+            model.add(tf.keras.layers.Dense(16, activation='relu'))
+            model.add(tf.keras.layers.Dense(1))
+
+        if mv=="3":
+            model.add(tf.keras.layers.LSTM(256))
+            model.add(tf.keras.layers.Dense(128, activation='relu'))
+            model.add(tf.keras.layers.Dense(64, activation='relu'))
+            model.add(tf.keras.layers.Dense(32, activation='relu'))
+            model.add(tf.keras.layers.Dense(16, activation='relu'))
+            model.add(tf.keras.layers.Dense(1))
+
         model.compile(loss='mean_squared_error', optimizer=tf.keras.optimizers.Adam(lr=self.CONFIG["model"]["learning_rate"]), metrics=['mean_absolute_error'])
 
         return model
+
 
     def baseline(self, test=False):
         """ Predecir la media """

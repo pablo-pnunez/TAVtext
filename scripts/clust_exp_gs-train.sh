@@ -5,8 +5,8 @@ MAXTSTS=4
 STAGE=1 # GRIDSEARCH o TRAIN
 i=0
 
-declare -a CITIES=( "london" )
-declare -a MODELS=( "hl5" )
+declare -a CITIES=( "gijon" )
+declare -a MODELS=( "0" )
 declare -a PCTGS=( .25 )
 declare -a LRATES=( 5e-4 )
 

@@ -54,6 +54,8 @@ def parse_cmd_args():
     parser.add_argument('-lr', type=float, help="Learning rate")
     parser.add_argument('-bs', type=int, help="Batch size")
     parser.add_argument('-stg', type=int, help="stage")
+    parser.add_argument('-mv', type=str, help="Model version")
+
     args = parser.parse_args()
     return args
 

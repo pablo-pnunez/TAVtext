@@ -66,7 +66,7 @@ class LSTM2VALdataset(TextDataset):
 
             # Añadir al set con el padding
             seq_w_pad = tf.keras.preprocessing.sequence.pad_sequences(all_data["seq"].values, maxlen=max_len_padding)
-            all_data["seq"] = seq_w_pad
+            all_data["seq"] = seq_w_pad.tolist()
             max_len_padding = seq_w_pad.shape[1]
 
             # Separar los conjuntos finales
