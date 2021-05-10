@@ -24,9 +24,11 @@ for f in os.listdir(path):
     res = config_data["model"]
     res[column]=method[0](log_data[column])
     res["best_epoch_number"]=method[1](log_data[column])+1
-
+    res["model_md5"]=f
+    
     ret.append(list(res.values()))
 
 ret = pd.DataFrame(ret, columns=list(res.keys()))
 ret = ret.loc[:,ret.apply(pd.Series.nunique) != 1] # Eliminar columnas que no varían.
+ret.to_csv(model+"_GS.csv")
 print(ret)

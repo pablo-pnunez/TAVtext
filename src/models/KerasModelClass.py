@@ -46,7 +46,7 @@ class KerasModelClass(ModelClass):
 
         is_dev = dev_sequence is not None
 
-        train_cfg = {"verbose": 2, "workers": 1, "max_queue_size": 40, "stop_monitor": "loss", "stop_mode": "min"}
+        train_cfg = {"verbose": 2, "workers": 1, "max_queue_size": 40}
 
         callbacks = []
 
@@ -65,7 +65,15 @@ class KerasModelClass(ModelClass):
             dev_log_path = self.MODEL_PATH+"dev/log.csv"
             if os.path.exists(dev_log_path):
                 dev_log_data = pd.read_csv(dev_log_path)
-                final_epoch_number = dev_log_data.val_f1.argmax()
+
+                if self.CONFIG["model"]["early_st_monitor_mode"] =="min":
+                    final_epoch_number = dev_log_data[self.CONFIG["model"]["early_st_monitor"]].argmin()+1
+                else:
+                    final_epoch_number = dev_log_data[self.CONFIG["model"]["early_st_monitor"]].argmax()+1
+                                
+                print_g("Best epoch number: %d" % final_epoch_number)
+
+
             else:
                 print_e("Unknown DEV epoch number...")
                 exit()

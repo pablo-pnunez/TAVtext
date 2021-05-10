@@ -76,19 +76,33 @@ class LSTM2VAL(KerasModelClass):
         return model
 
 
+    def evaluate(self, test=False):
+
+        if test:
+            test_set = LSTM2VALsequence(self, set_name="TEST")
+        else:
+            test_set = LSTM2VALsequence(self, is_dev=1)
+
+        ret = self.MODEL.evaluate(test_set, verbose=0)
+
+        print(dict(zip(self.MODEL.metrics_names,ret)))
+
+
     def baseline(self, test=False):
         """ Predecir la media """
 
         if not test:
             the_mean = self.DATASET.DATA["TRAIN_DEV"].loc[self.DATASET.DATA["TRAIN_DEV"].dev==0].rating.mean()
             mae = np.abs(the_mean - self.DATASET.DATA["TRAIN_DEV"].loc[self.DATASET.DATA["TRAIN_DEV"].dev==1].rating.values).mean()
+            mse = np.power(the_mean - self.DATASET.DATA["TRAIN_DEV"].loc[self.DATASET.DATA["TRAIN_DEV"].dev==1].rating.values,2).mean()
         else:
             the_mean = self.DATASET.DATA["TRAIN_DEV"].rating.mean()
             mae = np.abs(the_mean - self.DATASET.DATA["TEST"].rating.values).mean()
-        
+            mse = np.power(the_mean - self.DATASET.DATA["TEST"].rating.values,2).mean()
+
         ttl = "TEST" if test else "DEV" 
 
-        print_g("%s baseline MAE: %.4f" % (ttl, mae))
+        print_g("%s baseline MSE: %.4f  MAE: %.4f" % (ttl, mse, mae))
 
     def get_train_dev_sequences(self):
         train = LSTM2VALsequence(self, is_dev=0)
