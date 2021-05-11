@@ -44,7 +44,7 @@ for CITY in "${CITIES[@]}" ;do
         fi
 
         #Esperar X segundos entre pruebas para que le de tiempo a ocupar memoria en GPU
-        sleep 10
+        sleep 30
 
       done
 

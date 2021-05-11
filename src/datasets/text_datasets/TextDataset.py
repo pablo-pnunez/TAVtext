@@ -1,11 +1,14 @@
 # -*- coding: utf-8 -*-
-from src.datasets.DatasetClass import *
+from src.datasets.DatasetClass import DatasetClass
 
 import re
 import nltk
 import pandas as pd
+from tqdm import tqdm
+import numpy as np
 from unicodedata import normalize
 from nltk.corpus import stopwords
+import mapply
 from nltk.stem import SnowballStemmer, PorterStemmer
 
 
@@ -52,6 +55,7 @@ class TextDataset(DatasetClass):
 
         return text
 
+
     def load_city(self, city):
         """Carga los datos de una ciudad, quedandose con las columnas relevantes"""
 
@@ -72,10 +76,17 @@ class TextDataset(DatasetClass):
 
         # Casting a int de algunas columnas
         rev = rev.astype({'reviewId': 'int64', 'restaurantId': 'int64', 'rating': 'int64'})
-
+        
         # Preprocesar los textos
-        rev["text"] = rev["text"].apply(self.prerpocess_text)
-        rev["title"] = rev["title"].apply(self.prerpocess_text)
+        mapply.init(
+            n_workers=-1,
+            chunk_size=100,
+            max_chunks_per_worker=8,
+            progressbar=True
+        )   
+
+        rev["text"] = rev["text"].mapply(self.prerpocess_text)
+        rev["title"] = rev["title"].mapply(self.prerpocess_text)
 
         # Obtener número de palabras de las reviews y del título
         rev["n_words_text"] = rev["text"].apply(lambda x: 0 if len(x) == 0 else len(x.split(" ")))

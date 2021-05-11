@@ -9,7 +9,7 @@ declare -a CITIES=( "gijon" )
 declare -a MODELS=( "0" "1" "2" "3" )
 declare -a LRATES=( 5e-5 1e-4 5e-4 1e-3 )
 declare -a BATCHES=( 256 512 1024 )
-declare -a BOWNWORDS=( 200 300 )
+declare -a BOWNWORDS=( 300 )
 
 for CITY in "${CITIES[@]}" ;do
   echo "$CITY"
