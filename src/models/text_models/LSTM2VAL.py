@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from src.Common import print_g
-from src.models.KerasModelClass import KerasModelClass
+from src.models.text_models.VALModel import VALModel
 from src.sequences.BaseSequence import BaseSequence
 
 import numpy as np
@@ -9,11 +9,11 @@ from sklearn.preprocessing import MultiLabelBinarizer
 from gensim.models import KeyedVectors
 
 
-class LSTM2VAL(KerasModelClass):
+class LSTM2VAL(VALModel):
     """ Predecir, a partir de una review codificada mendiante una LSTM utilizando las palabras del W2V, la nota de dicha review """
     def __init__(self, config, dataset, w2v_model):
         self.W2V_MODEL = w2v_model
-        KerasModelClass.__init__(self, config=config, dataset=dataset)
+        VALModel.__init__(self, config=config, dataset=dataset)
 
     def get_model(self):
         print_g("Loading w2v...")
@@ -85,24 +85,7 @@ class LSTM2VAL(KerasModelClass):
 
         ret = self.MODEL.evaluate(test_set, verbose=0)
 
-        print(dict(zip(self.MODEL.metrics_names,ret)))
-
-
-    def baseline(self, test=False):
-        """ Predecir la media """
-
-        if not test:
-            the_mean = self.DATASET.DATA["TRAIN_DEV"].loc[self.DATASET.DATA["TRAIN_DEV"].dev==0].rating.mean()
-            mae = np.abs(the_mean - self.DATASET.DATA["TRAIN_DEV"].loc[self.DATASET.DATA["TRAIN_DEV"].dev==1].rating.values).mean()
-            mse = np.power(the_mean - self.DATASET.DATA["TRAIN_DEV"].loc[self.DATASET.DATA["TRAIN_DEV"].dev==1].rating.values,2).mean()
-        else:
-            the_mean = self.DATASET.DATA["TRAIN_DEV"].rating.mean()
-            mae = np.abs(the_mean - self.DATASET.DATA["TEST"].rating.values).mean()
-            mse = np.power(the_mean - self.DATASET.DATA["TEST"].rating.values,2).mean()
-
-        ttl = "TEST" if test else "DEV" 
-
-        print_g("%s baseline MSE: %.4f  MAE: %.4f" % (ttl, mse, mae))
+        print_g(dict(zip(self.MODEL.metrics_names,ret)))
 
     def get_train_dev_sequences(self):
         train = LSTM2VALsequence(self, is_dev=0)

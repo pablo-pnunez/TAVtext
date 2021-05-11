@@ -47,6 +47,7 @@ def print_b(text, bold=False):
 
 def parse_cmd_args():
     """Obtener argumentos por linea de comandos"""
+    
     parser = argparse.ArgumentParser()
     parser.add_argument('-ct', type=str, help="City")
     parser.add_argument('-sd', type=int, help="Seed")
@@ -55,6 +56,7 @@ def parse_cmd_args():
     parser.add_argument('-bs', type=int, help="Batch size")
     parser.add_argument('-stg', type=int, help="stage")
     parser.add_argument('-mv', type=str, help="Model version")
+    parser.add_argument('-bownws', type=int, help="BOW n words")
 
     args = parser.parse_args()
     return args

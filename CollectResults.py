@@ -5,7 +5,7 @@ import numpy as np
 
 
 city="gijon"
-model="LSTM2VAL"
+model="BOW2VAL"
 dev=True
 
 column="val_mean_absolute_error"
@@ -21,7 +21,7 @@ for f in os.listdir(path):
 
     with open(config_file) as json_file: config_data = json.load(json_file)
 
-    res = config_data["model"]
+    res = {**config_data["model"],**config_data["dataset_config"]}
     res[column]=method[0](log_data[column])
     res["best_epoch_number"]=method[1](log_data[column])+1
     res["model_md5"]=f

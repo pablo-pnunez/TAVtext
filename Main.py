@@ -4,8 +4,10 @@ from src.Common import parse_cmd_args
 
 from src.datasets.text_datasets.TextDataset import TextDataset
 from src.datasets.text_datasets.W2Vdataset import W2Vdataset
-from src.datasets.text_datasets.BOW2RSTdataset import BOW2RSTdataset
 from src.datasets.text_datasets.LSTM2VALdataset import LSTM2VALdataset
+from src.datasets.text_datasets.BOW2VALdataset import BOW2VALdataset
+
+from src.datasets.text_datasets.BOW2RSTdataset import BOW2RSTdataset
 from src.datasets.text_datasets.LSTMBOW2RSTVALdataset import LSTMBOW2RSTVALdataset
 
 from src.models.text_models.W2V import W2V
@@ -36,8 +38,8 @@ b_size = 1024 if args.bs is None else args.bs
 
 min_reviews_rst = 100
 min_reviews_usr = 1
-bow_n_words = 200
-w2v_dimen = 300
+bow_n_words = 300 if args.bownws is None else args.bownws
+w2v_dimen = 300 
 
 stemming = False
 remove_plurals = True
@@ -46,8 +48,9 @@ remove_numbers = True
 
 base_path = "/media/nas/pperez/data/TripAdvisor/"
 
-# W2V ##################################################################################################################
 '''
+# W2V ##################################################################################################################
+
 w2v_dts = W2Vdataset({"cities": ["gijon", "barcelona", "madrid"], "city": "multi", "seed": seed, "data_path": base_path, "save_path": base_path + "Datasets/",
                       "remove_plurals": remove_plurals, "stemming": stemming, "remove_accents": remove_accents, "remove_numbers": remove_numbers})
 
@@ -88,28 +91,32 @@ elif stage == 1:
 
 # MODELO 2: BOW2VAL  #################################################################################################
 
-bow2val_dts_cfg = {"cities": [city], "city": city, "seed": seed, "data_path": base_path, "save_path": base_path + "Datasets/", 
-                            "remove_plurals": remove_plurals, "stemming": stemming, "remove_accents": remove_accents, "remove_numbers": remove_numbers,
-                            "n_max_words": 0, "test_dev_split": .1, "truncate_padding": True}
+bow2val_dts_cfg = {"city": city, "seed": seed, "data_path": base_path, "save_path": base_path + "Datasets/", "remove_plurals": remove_plurals,
+                    "stemming": stemming, "remove_accents": remove_accents, "remove_numbers": remove_numbers,
+                    "min_df": 5, "num_palabras": bow_n_words, "presencia": False, "text_column": "text", "test_dev_split": .1}
+
+bow2val_mdl_cfg = {"model": {"model_version":model_v, "learning_rate": l_rate, "final_learning_rate": l_rate/100, "epochs": n_epochs, "batch_size": b_size, "seed": seed,
+                            "early_st_first_epoch": 0, "early_st_monitor": "val_mean_absolute_error", "early_st_monitor_mode": "min", "early_st_patience": 20},
+                    "session": {"gpu": gpu, "in_md5": False}}
+
+if stage == 1:
+    # Sobreescribir la configuración por la mejor conocida: a27f96f262e08e3752764439302ef878
+    with open('models/BOW2VAL/gijon/a27f96f262e08e3752764439302ef878/cfg.json') as f: best_cfg_data = json.load(f)
+    bow2val_dts_cfg = best_cfg_data["dataset_config"]
+    bow2val_mdl_cfg["model"] = best_cfg_data["model"]
 
 bow2val_dts = BOW2VALdataset(bow2val_dts_cfg)
+bow2val_mdl = BOW2VAL(bow2val_mdl_cfg, bow2val_dts)
 
+if stage == 0:
+    bow2val_mdl.train(dev=True, save_model=True)
+    bow2val_mdl.baseline()
+    bow2val_mdl.evaluate(test=False)
 
-'''
-bow2val_dts = BOW2RSTdataset({"city": city, "seed": seed, "data_path": base_path, "save_path": base_path + "Datasets/",
-                              "remove_plurals": remove_plurals, "stemming": stemming, "remove_accents": remove_accents, "remove_numbers": remove_numbers,
-                              "min_reviews_rst": min_reviews_rst, "min_reviews_usr": min_reviews_usr,
-                              "min_df": 5, "num_palabras": bow_n_words, "presencia": False, "text_column": "text",
-                              "test_dev_split": .1})
-
-
-bow2val_mdl = BOW2VAL({"model": {"learning_rate": l_rate, "final_learning_rate": l_rate/100, "epochs": n_epochs, "batch_size": b_size, "seed": seed,
-                                 "early_st_first_epoch": 0, "early_st_monitor": "val_loss", "early_st_monitor_mode": "min", "early_st_patience": 20},
-                       "session": {"gpu": gpu, "in_md5": False}}, bow2val_dts)
-bow2val_mdl.baseline()
-bow2val_mdl.train(dev=True, save_model=False)
-
-'''
+elif stage == 1:
+    bow2val_mdl.train(dev=False, save_model=True)
+    bow2val_mdl.baseline(test=True)
+    bow2val_mdl.evaluate(test=True)
 
 exit()
 

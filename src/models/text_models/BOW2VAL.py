@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from src.Common import print_g
-from src.models.KerasModelClass import KerasModelClass
+from src.models.text_models.VALModel import VALModel
 from src.sequences.BaseSequence import BaseSequence
 
 import numpy as np
@@ -8,19 +8,42 @@ import tensorflow as tf
 from sklearn.preprocessing import MultiLabelBinarizer
 
 
-class BOW2VAL(KerasModelClass):
+class BOW2VAL(VALModel):
     """ Predecir, a partir de una review codificada mendiante BOW, la nota de la review """
     def __init__(self, config, dataset):
-        KerasModelClass.__init__(self, config=config, dataset=dataset)
+        VALModel.__init__(self, config=config, dataset=dataset)
 
     def get_model(self):
 
+        mv = self.CONFIG["model"]["model_version"]
         model = tf.keras.models.Sequential()
         model.add(tf.keras.layers.Input(shape=(self.DATASET.CONFIG["num_palabras"],), name="input_bow"))
-        model.add(tf.keras.layers.Dense(512, activation='relu'))
-        model.add(tf.keras.layers.Dense(256, activation='relu'))
-        model.add(tf.keras.layers.Dense(128, activation='relu'))
-        model.add(tf.keras.layers.Dense(32, activation='relu'))
+        
+        if mv=="0":
+            model.add(tf.keras.layers.Dense(128, activation='relu'))
+            model.add(tf.keras.layers.Dense(64, activation='relu'))  
+            model.add(tf.keras.layers.Dense(32, activation='relu'))
+        if mv=="1":
+            model.add(tf.keras.layers.Dropout(.4))
+            model.add(tf.keras.layers.Dense(128, activation='relu'))
+            model.add(tf.keras.layers.Dropout(.3))
+            model.add(tf.keras.layers.Dense(64, activation='relu'))  
+            model.add(tf.keras.layers.Dropout(.2))
+            model.add(tf.keras.layers.Dense(32, activation='relu'))
+        if mv=="2":
+            model.add(tf.keras.layers.Dense(128, activation='relu'))
+            model.add(tf.keras.layers.BatchNormalization())
+            model.add(tf.keras.layers.Dense(64, activation='relu'))
+            model.add(tf.keras.layers.BatchNormalization())
+            model.add(tf.keras.layers.Dense(32, activation='relu'))
+        if mv=="3":
+            model.add(tf.keras.layers.Dense(512, activation='relu'))
+            model.add(tf.keras.layers.Dense(256, activation='relu'))
+            model.add(tf.keras.layers.Dense(128, activation='relu'))  
+            model.add(tf.keras.layers.Dense(64, activation='relu'))  
+            model.add(tf.keras.layers.Dense(32, activation='relu'))
+
+
         model.add(tf.keras.layers.Dense(1))
         model.compile(loss='mean_squared_error', optimizer=tf.keras.optimizers.Adam(lr=self.CONFIG["model"]["learning_rate"]), metrics=['mean_absolute_error'])
 
@@ -32,20 +55,6 @@ class BOW2VAL(KerasModelClass):
 
         return train, dev
 
-    def baseline(self, test=False):
-        """ Predecir la media """
-
-        if not test:
-            the_mean = self.DATASET.DATA["TRAIN_DEV"].loc[self.DATASET.DATA["TRAIN_DEV"].dev==0].rating.mean()
-            mae = np.abs(the_mean - self.DATASET.DATA["TRAIN_DEV"].loc[self.DATASET.DATA["TRAIN_DEV"].dev==1].rating.values).mean()
-        else:
-            the_mean = self.DATASET.DATA["TRAIN_DEV"].rating.mean()
-            mae = np.abs(the_mean - self.DATASET.DATA["TEST"].rating.values).mean()
-        
-        ttl = "TEST" if test else "DEV" 
-
-        print_g("%s baseline MAE: %.4f" % (ttl, mae))
-
     def evaluate(self, test=False):
 
         if test:
@@ -54,8 +63,8 @@ class BOW2VAL(KerasModelClass):
             test_set = BOW2VALsequence(self, is_dev=1)
 
         ret = self.MODEL.evaluate(test_set, verbose=0)
-
-        return ret[1:]
+        
+        print_g(dict(zip(self.MODEL.metrics_names,ret)))
 
 
 class BOW2VALsequence(BaseSequence):
