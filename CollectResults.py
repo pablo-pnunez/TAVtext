@@ -5,11 +5,14 @@ import numpy as np
 
 
 city="gijon"
-model="BOW2VAL"
+model="LSTM2RST"
 dev=True
 
-column="val_mean_absolute_error"
-method=(np.min,np.argmin)
+#columns=["val_mean_absolute_error"]
+#method=(np.min,np.argmin)
+
+columns=["val_accuracy", "val_top_5", "val_top_10"]
+method=(np.max,np.argmax)
 
 path="models/%s/%s/" % (model, city)
 
@@ -22,8 +25,10 @@ for f in os.listdir(path):
     with open(config_file) as json_file: config_data = json.load(json_file)
 
     res = {**config_data["model"],**config_data["dataset_config"]}
-    res[column]=method[0](log_data[column])
-    res["best_epoch_number"]=method[1](log_data[column])+1
+
+    for column in columns:
+        res[column]=method[0](log_data[column])
+        res["best_"+column+"_epoch"]=method[1](log_data[column])+1
     res["model_md5"]=f
     
     ret.append(list(res.values()))

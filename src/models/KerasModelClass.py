@@ -46,7 +46,7 @@ class KerasModelClass(ModelClass):
 
         is_dev = dev_sequence is not None
 
-        train_cfg = {"verbose": 2, "workers": 1, "max_queue_size": 40}
+        train_cfg = {"verbose": 2, "workers": 1, "max_queue_size": 40, "multiprocessing":False}
 
         callbacks = []
 
@@ -114,6 +114,7 @@ class KerasModelClass(ModelClass):
                                   epochs=final_epoch_number,
                                   verbose=train_cfg["verbose"],
                                   workers=train_cfg["workers"],
+                                  use_multiprocessing=train_cfg["multiprocessing"],
                                   callbacks=callbacks,
                                   max_queue_size=train_cfg["max_queue_size"])
 
@@ -128,6 +129,7 @@ class KerasModelClass(ModelClass):
                                   validation_data=dev_sequence,
                                   validation_steps=dev_sequence.__len__(),
                                   workers=train_cfg["workers"],
+                                  use_multiprocessing=train_cfg["multiprocessing"],
                                   callbacks=callbacks,
                                   max_queue_size=train_cfg["max_queue_size"])
 

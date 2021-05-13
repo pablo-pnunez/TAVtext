@@ -10,9 +10,10 @@ from src.datasets.text_datasets.BOW2RSTdataset import BOW2RSTdataset
 from src.datasets.text_datasets.LSTMBOW2RSTVALdataset import LSTMBOW2RSTVALdataset
 
 from src.models.text_models.W2V import W2V
-from src.models.text_models.BOW2RST import BOW2RST
 from src.models.text_models.BOW2VAL import BOW2VAL
 from src.models.text_models.LSTM2VAL import LSTM2VAL
+
+from src.models.text_models.LSTM2RST import LSTM2RST
 from src.models.text_models.LSTMBOW2RSTVAL import LSTMFBOW2RSTVAL
 from src.models.text_models.LSTMBOW2RSTVAL import LSTMBOW2RSTVAL
 
@@ -27,7 +28,7 @@ args = parse_cmd_args()
 city = "gijon".lower().replace(" ", "") if args.ct is None else args.ct
 
 stage = 1 if args.stg is None else args.stg
-model_v = "0" if args.mv is None else args.mv
+model_v = "1" if args.mv is None else args.mv
 
 gpu = int(np.argmin(list(map(lambda x: x["mem_used_percent"], nvgpu.gpu_info()))))
 seed = 100 if args.sd is None else args.sd
@@ -94,7 +95,7 @@ if stage == 1:
 
 '''
 # MODELO 2: BOW2VAL  #################################################################################################
-
+'''
 bow2val_mdl_cfg = {"model": {"model_version":model_v, "learning_rate": l_rate, "final_learning_rate": l_rate/100, "epochs": n_epochs, "batch_size": b_size, "seed": seed,
                             "early_st_first_epoch": 0, "early_st_monitor": "val_mean_absolute_error", "early_st_monitor_mode": "min", "early_st_patience": 20},
                     "session": {"gpu": gpu, "in_md5": False}}
@@ -115,12 +116,28 @@ if stage == 1:
     bow2val_mdl.train(dev=False, save_model=True)
     bow2val_mdl.baseline(test=True)
     bow2val_mdl.evaluate(test=True)
-
-exit()
-
+'''
 # MODELO 3: LSTM2RST ###################################################################################################
+lstm2rst_mdl_cfg = {"model": {"model_version":model_v, "learning_rate": l_rate, "final_learning_rate": l_rate/100, "epochs": n_epochs, "batch_size": b_size, "seed": seed,
+                            "early_st_first_epoch": 0, "early_st_monitor": "val_accuracy", "early_st_monitor_mode": "max", "early_st_patience": 20},
+                    "session": {"gpu": gpu, "in_md5": False}}
 
-#ToDo
+if stage == 0:
+    lstm2rst_mdl = LSTM2RST(lstm2rst_mdl_cfg, rstval, w2v_mdl)
+    lstm2rst_mdl.train(dev=True, save_model=True)
+    lstm2rst_mdl.baseline()
+    lstm2rst_mdl.evaluate(test=False)
+
+if stage == 1:
+    # Sobreescribir la configuración por la mejor conocida: 
+    with open('models/LSTM2RST/gijon/42e900956c0a8cb09d72c383a143b3d2/cfg.json') as f: best_cfg_data = json.load(f)
+    rstval = RSTVALdataset(dts_cfg)
+    lstm2rst_mdl_cfg["model"] = best_cfg_data["model"]
+    lstm2rst_mdl = LSTM2RST(lstm2rst_mdl_cfg, rstval, w2v_mdl)
+
+    lstm2rst_mdl.train(dev=False, save_model=True)
+    lstm2rst_mdl.baseline(test=True)
+    lstm2rst_mdl.evaluate(test=True)
 
 # MODELO 4: BOW2RST  ###################################################################################################
 '''
