@@ -5,7 +5,7 @@ import numpy as np
 
 
 city="gijon"
-model="LSTM2RST"
+model="BOW2RST"
 dev=True
 
 #columns=["val_mean_absolute_error"]

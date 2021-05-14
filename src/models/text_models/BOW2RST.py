@@ -1,69 +1,50 @@
 # -*- coding: utf-8 -*-
-from src.models.KerasModelClass import KerasModelClass
+from src.models.text_models.RSTModel import RSTModel
 from src.sequences.BaseSequence import BaseSequence
+from src.Common import print_g
 
 import numpy as np
 import tensorflow as tf
 from sklearn.preprocessing import MultiLabelBinarizer
 
 
-class BOW2RST(KerasModelClass):
+class BOW2RST(RSTModel):
     """ Predecir, a partir de una review codificada mendiante BOW, el restaurante de la review """
     def __init__(self, config, dataset):
-        KerasModelClass.__init__(self, config=config, dataset=dataset)
+        RSTModel.__init__(self, config=config, dataset=dataset)
 
     def get_model(self):
 
-        input_bow = tf.keras.layers.Input(shape=(self.DATASET.CONFIG["num_palabras"],), name="input_bow")
-        x = tf.keras.layers.Dense(self.DATASET.DATA["N_RST"], name="bow_2_rst", kernel_initializer=tf.keras.initializers.Ones())(input_bow)
-        x = tf.keras.layers.Dropout(.1)(x)
-        x = tf.keras.layers.BatchNormalization(name="bow_2_rst_bn")(x)
-        output_rst = tf.keras.layers.Activation("softmax", name="output_rst")(x)
-        model = tf.keras.models.Model(inputs=[input_bow], outputs=[output_rst])
+        mv = self.CONFIG["model"]["model_version"]
+        model = tf.keras.models.Sequential()
+        model.add(tf.keras.layers.Input(shape=(self.DATASET.CONFIG["num_palabras"],), name="input_bow"))
 
-        metrics = [
-            # tf.keras.metrics.Accuracy(name='accuracy'),
-            'accuracy',
-            tf.keras.metrics.TopKCategoricalAccuracy(k=5, name='top_5'),
-            tf.keras.metrics.TopKCategoricalAccuracy(k=10, name='top_10'),
-        ]
-        # si utilizo este 'metrics' con tf.keras.metrics.Accuracy(name='accuracy'), no me calcula bien la accuracy ¿?
+        if mv=="0":
+            model.add(tf.keras.layers.Dense(self.DATASET.DATA["N_RST"], name="bow_2_rst", kernel_initializer=tf.keras.initializers.Ones()))
 
-        model.compile(optimizer=tf.keras.optimizers.Adam(self.CONFIG["model"]["learning_rate"]), loss=tf.keras.losses.CategoricalCrossentropy(), metrics=metrics,)
+        if mv=="1":
+            model.add(tf.keras.layers.Dense(self.DATASET.DATA["N_RST"], name="bow_2_rst", kernel_initializer=tf.keras.initializers.Ones()))
+            model.add(tf.keras.layers.Dropout(.1))
+
+        if mv=="2":
+            model.add(tf.keras.layers.Dense(self.DATASET.DATA["N_RST"], name="bow_2_rst", kernel_initializer=tf.keras.initializers.Ones()))
+            model.add(tf.keras.layers.Dropout(.5))
+
+        if mv=="3":
+            model.add(tf.keras.layers.Dense(self.DATASET.DATA["N_RST"], name="bow_2_rst", kernel_initializer=tf.keras.initializers.Ones()))
+            model.add(tf.keras.layers.Dropout(.1))
+            model.add(tf.keras.layers.BatchNormalization(name="bow_2_rst_bn"))
+
+        if mv=="4":
+            model.add(tf.keras.layers.Dense(self.DATASET.DATA["N_RST"], name="bow_2_rst", kernel_initializer=tf.keras.initializers.Ones()))
+            model.add(tf.keras.layers.Dropout(.5))
+            model.add(tf.keras.layers.BatchNormalization(name="bow_2_rst_bn"))
+
+        model.add(tf.keras.layers.Activation("softmax", name="output_rst"))
+        metrics = [ 'accuracy', tf.keras.metrics.TopKCategoricalAccuracy(k=5, name='top_5'), tf.keras.metrics.TopKCategoricalAccuracy(k=10, name='top_10') ]
+        model.compile(optimizer=tf.keras.optimizers.Adam(self.CONFIG["model"]["learning_rate"]), loss=tf.keras.losses.CategoricalCrossentropy(), metrics=metrics)
 
         return model
-
-    def baseline(self, test=False):
-        """ Se calcula la popularidad para que actúe como baseline y se convierte a probabilidad """
-        if test:
-            dataset = self.DATASET.DATA["TRAIN_DEV"]
-        else:
-            dataset = self.DATASET.DATA["TRAIN_DEV"].loc[self.DATASET.DATA["TRAIN_DEV"]["dev"] == 0]
-
-        y_out = np.zeros((len(dataset), self.DATASET.DATA["N_RST"]))
-        y_out[np.expand_dims(list(range(len(y_out))), -1), np.expand_dims(dataset.id_restaurant, -1)] = 1
-
-        popularidad_vec = y_out.sum(axis=0) / sum(y_out.sum(axis=0))
-        pred_popularidad = np.row_stack([popularidad_vec]*len(dataset))
-
-        with tf.device('/cpu:0'):
-
-            m1 = tf.keras.metrics.Accuracy()
-            m1.update_state(y_true=y_out.argmax(axis=1), y_pred=pred_popularidad.argmax(axis=1))
-            # print_g("ACCURACY por popularidad: %.4f" % (m1.result().numpy()))
-            # m1.reset_states()
-
-            m2 = tf.keras.metrics.TopKCategoricalAccuracy(k=5)
-            m2.update_state(y_true=y_out, y_pred=pred_popularidad)
-            # print_g("TOP5ACC por popularidad:  %.4f" % (m2.result().numpy()))
-            # m2.reset_states()
-
-            m3 = tf.keras.metrics.TopKCategoricalAccuracy(k=10)
-            m3.update_state(y_true=y_out, y_pred=pred_popularidad)
-            # print_g("TOP10ACC por popularidad:  %.4f" % (m3.result().numpy()))
-            # m3.reset_states()
-
-        return m1.result().numpy(), m2.result().numpy(), m3.result().numpy()
 
     def get_train_dev_sequences(self):
         train = BOW2RSTsequence(self, is_dev=0)
@@ -80,7 +61,10 @@ class BOW2RST(KerasModelClass):
 
         ret = self.MODEL.evaluate(test_set, verbose=0)
 
-        return ret[1:]
+        ret = dict(zip(self.MODEL.metrics_names,ret))
+        print_g(ret)
+        
+        return ret
 
 
 class BOW2RSTsequence(BaseSequence):

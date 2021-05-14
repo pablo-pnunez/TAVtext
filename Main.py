@@ -14,6 +14,8 @@ from src.models.text_models.BOW2VAL import BOW2VAL
 from src.models.text_models.LSTM2VAL import LSTM2VAL
 
 from src.models.text_models.LSTM2RST import LSTM2RST
+from src.models.text_models.BOW2RST import BOW2RST
+
 from src.models.text_models.LSTMBOW2RSTVAL import LSTMFBOW2RSTVAL
 from src.models.text_models.LSTMBOW2RSTVAL import LSTMBOW2RSTVAL
 
@@ -28,7 +30,7 @@ args = parse_cmd_args()
 city = "gijon".lower().replace(" ", "") if args.ct is None else args.ct
 
 stage = 1 if args.stg is None else args.stg
-model_v = "1" if args.mv is None else args.mv
+model_v = "2" if args.mv is None else args.mv
 
 gpu = int(np.argmin(list(map(lambda x: x["mem_used_percent"], nvgpu.gpu_info()))))
 seed = 100 if args.sd is None else args.sd
@@ -50,7 +52,7 @@ base_path = "/media/nas/pperez/data/TripAdvisor/"
 
 
 # W2V ##################################################################################################################
-
+'''
 w2v_dts = W2Vdataset({"cities": ["gijon", "barcelona", "madrid"], "city": "multi", "seed": seed, "data_path": base_path, "save_path": base_path + "Datasets/",
                       "remove_plurals": remove_plurals, "stemming": stemming, "remove_accents": remove_accents, "remove_numbers": remove_numbers})
 
@@ -58,7 +60,7 @@ w2v_mdl = W2V({"model": {"train_set": "ALL_TEXTS", "min_count": 100, "window": 5
                "session": {"gpu": gpu, "in_md5": False}}, w2v_dts)
 
 w2v_mdl.train()
-
+'''
 # DATASET CONFIG #######################################################################################################
 
 dts_cfg = {"city": city, "seed": seed, "data_path": base_path, "save_path": base_path + "Datasets/", 
@@ -118,6 +120,7 @@ if stage == 1:
     bow2val_mdl.evaluate(test=True)
 '''
 # MODELO 3: LSTM2RST ###################################################################################################
+'''
 lstm2rst_mdl_cfg = {"model": {"model_version":model_v, "learning_rate": l_rate, "final_learning_rate": l_rate/100, "epochs": n_epochs, "batch_size": b_size, "seed": seed,
                             "early_st_first_epoch": 0, "early_st_monitor": "val_accuracy", "early_st_monitor_mode": "max", "early_st_patience": 20},
                     "session": {"gpu": gpu, "in_md5": False}}
@@ -138,33 +141,33 @@ if stage == 1:
     lstm2rst_mdl.train(dev=False, save_model=True)
     lstm2rst_mdl.baseline(test=True)
     lstm2rst_mdl.evaluate(test=True)
-
-# MODELO 4: BOW2RST  ###################################################################################################
 '''
-bow2rst_dts = BOW2RSTdataset({"city": city, "seed": seed, "data_path": base_path, "save_path": base_path + "Datasets/",
-                              "remove_plurals": remove_plurals, "stemming": stemming, "remove_accents": remove_accents, "remove_numbers": remove_numbers,
-                              "min_reviews_rst": min_reviews_rst, "min_reviews_usr": min_reviews_usr,
-                              "min_df": 5, "num_palabras": bow_n_words, "presencia": False, "text_column": "text",
-                              "test_dev_split": .1})
+# MODELO 4: BOW2RST  ###################################################################################################
 
-bow2rst_mdl = BOW2RST({"model": {"learning_rate": l_rate, "final_learning_rate": l_rate/100, "epochs": n_epochs, "batch_size": b_size, "seed": seed,
-                                 "early_st_first_epoch": 0, "early_st_monitor": "val_loss", "early_st_monitor_mode": "min", "early_st_patience": 20},
-                       "session": {"gpu": gpu, "in_md5": False}}, bow2rst_dts)
-
-bow2rst_mdl.train(dev=True, save_model=True)
+bow2rst_mdl_cfg = {"model": {"model_version":model_v, "learning_rate": l_rate, "final_learning_rate": l_rate/100, "epochs": n_epochs, "batch_size": b_size, "seed": seed,
+                            "early_st_first_epoch": 20, "early_st_monitor": "val_accuracy", "early_st_monitor_mode": "max", "early_st_patience": 20},
+                    "session": {"gpu": gpu, "in_md5": False}}
 
 if stage == 0:
+    bow2rst_mdl = BOW2RST(bow2rst_mdl_cfg, rstval)
     bow2rst_mdl.train(dev=True, save_model=True)
-    blr = bow2rst_mdl.baseline(test=False)
-    mlr = bow2rst_mdl.evaluate(test=False)
-    print("\t".join(list(map(lambda x: "%f\t%f" % (x[0], x[1]), list(zip(blr, mlr))))))
+    bow2rst_mdl.baseline()
+    bow2rst_mdl.evaluate(test=False)
 
-elif stage == 1:
+if stage == 1:
+    # Sobreescribir la configuración por la mejor conocida: 
+    with open('models/BOW2RST/gijon/f08d283c548647bf5a43d56865af291e/cfg.json') as f: best_cfg_data = json.load(f)
+    rstval = RSTVALdataset(dts_cfg)
+    bow2rst_mdl_cfg["model"] = best_cfg_data["model"]
+    bow2rst_mdl = BOW2RST(bow2rst_mdl_cfg, rstval)
+
     bow2rst_mdl.train(dev=False, save_model=True)
-    blr = bow2rst_mdl.baseline(test=True)
-    mlr = bow2rst_mdl.evaluate(test=True)
-    print("\t".join(list(map(lambda x: "%f\t%f" % (x[0], x[1]), list(zip(blr, mlr))))))
+    bow2rst_mdl.baseline(test=True)
+    bow2rst_mdl.evaluate(test=True)
 
+exit()
+
+'''
 # Obtener, para cada palabra, los restaurantes más afines
 
 
@@ -199,6 +202,5 @@ lstmbow2rstval_mdl.train(dev=True, save_model=True)
 # lstmbow2rstval_mdl.evaluate(verbose=1)
 # lstmbow2rstval_mdl.eval_custom_text("Quiero comer un cachopo de cecina como una casa de grande")
 # lstmbow2rstval_mdl.eval_custom_text("Quiero comer grande, barato y abundante")
-
 
 '''
