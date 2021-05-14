@@ -8,11 +8,12 @@ city="gijon"
 model="BOW2RST"
 dev=True
 
-#columns=["val_mean_absolute_error"]
-#method=(np.min,np.argmin)
-
-columns=["val_accuracy", "val_top_5", "val_top_10"]
-method=(np.max,np.argmax)
+if "BOW" in model:
+    columns=["val_accuracy", "val_top_5", "val_top_10"]
+    method=(np.max,np.argmax)
+else:
+    columns=["val_mean_absolute_error"]
+    method=(np.min,np.argmin)
 
 path="models/%s/%s/" % (model, city)
 

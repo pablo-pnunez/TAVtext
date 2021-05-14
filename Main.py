@@ -4,10 +4,6 @@ from src.Common import parse_cmd_args
 
 from src.datasets.text_datasets.W2Vdataset import W2Vdataset
 from src.datasets.text_datasets.RSTVALdataset import RSTVALdataset
-from src.datasets.text_datasets.LSTM2VALdataset import LSTM2VALdataset
-from src.datasets.text_datasets.BOW2VALdataset import BOW2VALdataset
-from src.datasets.text_datasets.BOW2RSTdataset import BOW2RSTdataset
-from src.datasets.text_datasets.LSTMBOW2RSTVALdataset import LSTMBOW2RSTVALdataset
 
 from src.models.text_models.W2V import W2V
 from src.models.text_models.BOW2VAL import BOW2VAL
@@ -143,7 +139,7 @@ if stage == 1:
     lstm2rst_mdl.evaluate(test=True)
 '''
 # MODELO 4: BOW2RST  ###################################################################################################
-
+'''
 bow2rst_mdl_cfg = {"model": {"model_version":model_v, "learning_rate": l_rate, "final_learning_rate": l_rate/100, "epochs": n_epochs, "batch_size": b_size, "seed": seed,
                             "early_st_first_epoch": 20, "early_st_monitor": "val_accuracy", "early_st_monitor_mode": "max", "early_st_patience": 20},
                     "session": {"gpu": gpu, "in_md5": False}}
@@ -165,8 +161,7 @@ if stage == 1:
     bow2rst_mdl.baseline(test=True)
     bow2rst_mdl.evaluate(test=True)
 
-exit()
-
+'''
 '''
 # Obtener, para cada palabra, los restaurantes más afines
 
@@ -179,17 +174,9 @@ for wrd_idx, wrd in enumerate(bow2rst_dts.DATA["FEATURES_NAME"]):
     rst_names = bow2rst_dts.DATA["TRAIN_DEV"].loc[bow2rst_dts.DATA["TRAIN_DEV"].id_restaurant.isin(rst_ids)].name.unique()
 
     print(wrd, " => ", ", ".join(rst_names))
-
-
+'''
 # MODELO 5: LSTM&BOW2RST&VAL ###########################################################################################
 
-
-lstmbow2rstval_dts = LSTMBOW2RSTVALdataset({"city": city, "seed": seed, "data_path": base_path, "save_path": base_path + "Datasets/",
-                                            "remove_plurals": remove_plurals, "stemming": stemming, "remove_accents": remove_accents, "remove_numbers": remove_numbers,
-                                            "min_reviews_rst": min_reviews_rst, "min_reviews_usr": min_reviews_usr,
-                                            "min_df": 5, "num_palabras": bow_n_words, "presencia": False, "text_column": "text",
-                                            "n_max_words": 0, "truncate_padding": True,
-                                            "test_dev_split": .1})
 
 
 lstmbow2rstval_mdl = LSTMBOW2RSTVAL({"model": {"learning_rate": l_rate, "final_learning_rate": l_rate/100, "epochs": n_epochs, "batch_size": b_size, "seed": seed,
