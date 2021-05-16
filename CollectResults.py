@@ -5,16 +5,16 @@ import numpy as np
 
 
 city="gijon"
-model="BOW2RST"
+model="LSTMBOW2RSTVAL"
 dev=True
 
-if "BOW" in model:
-    columns=["val_accuracy", "val_top_5", "val_top_10"]
-    method=(np.max,np.argmax)
-else:
-    columns=["val_mean_absolute_error"]
-    method=(np.min,np.argmin)
-
+if "RSTVAL" in model:
+    columns = {"val_loss":"min", "val_valor_model_mean_absolute_error":"min",  "val_output_rst_top_5": "max", "val_output_rst_top_10":"max"}
+elif "RST" in model:
+    columns = {"val_accuracy":"max", "val_top_5": "max", "val_top_10":"max"}
+elif "VAL" in model:
+    columns = {"val_mean_absolute_error":"min"}
+   
 path="models/%s/%s/" % (model, city)
 
 ret = []
@@ -28,8 +28,9 @@ for f in os.listdir(path):
     res = {**config_data["model"],**config_data["dataset_config"]}
 
     for column in columns:
-        res[column]=method[0](log_data[column])
-        res["best_"+column+"_epoch"]=method[1](log_data[column])+1
+        method = (np.min, np.argmin) if columns[column] == "min" else (np.max, np.argmax)
+        res[columns[column]+"_"+column]=method[0](log_data[column])
+        res[columns[column]+"_"+column+"_epoch"]=method[1](log_data[column])+1
     res["model_md5"]=f
     
     ret.append(list(res.values()))

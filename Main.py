@@ -26,7 +26,7 @@ args = parse_cmd_args()
 city = "gijon".lower().replace(" ", "") if args.ct is None else args.ct
 
 stage = 1 if args.stg is None else args.stg
-model_v = "2" if args.mv is None else args.mv
+model_v = "0" if args.mv is None else args.mv
 
 gpu = int(np.argmin(list(map(lambda x: x["mem_used_percent"], nvgpu.gpu_info()))))
 seed = 100 if args.sd is None else args.sd
@@ -48,7 +48,7 @@ base_path = "/media/nas/pperez/data/TripAdvisor/"
 
 
 # W2V ##################################################################################################################
-'''
+
 w2v_dts = W2Vdataset({"cities": ["gijon", "barcelona", "madrid"], "city": "multi", "seed": seed, "data_path": base_path, "save_path": base_path + "Datasets/",
                       "remove_plurals": remove_plurals, "stemming": stemming, "remove_accents": remove_accents, "remove_numbers": remove_numbers})
 
@@ -56,7 +56,7 @@ w2v_mdl = W2V({"model": {"train_set": "ALL_TEXTS", "min_count": 100, "window": 5
                "session": {"gpu": gpu, "in_md5": False}}, w2v_dts)
 
 w2v_mdl.train()
-'''
+
 # DATASET CONFIG #######################################################################################################
 
 dts_cfg = {"city": city, "seed": seed, "data_path": base_path, "save_path": base_path + "Datasets/", 
@@ -162,6 +162,32 @@ if stage == 1:
     bow2rst_mdl.evaluate(test=True)
 
 '''
+# MODELO 5: LSTM&BOW2RST&VAL ###########################################################################################
+
+lstmbow2rstval_mdl_cfg = {"model": {"model_version":model_v, "learning_rate": l_rate, "final_learning_rate": l_rate/100, "epochs": n_epochs, "batch_size": b_size, "seed": seed,
+                                    "early_st_first_epoch": 0, "early_st_monitor": "val_loss", "early_st_monitor_mode": "min", "early_st_patience": 20},
+                                    "session": {"gpu": gpu, "in_md5": False}}
+
+if stage == 0:
+    lstmbow2rstval_mdl = LSTMBOW2RSTVAL(lstmbow2rstval_mdl_cfg, rstval, w2v_mdl)
+    lstmbow2rstval_mdl.train(dev=True, save_model=True)
+    # lstmbow2rstval_mdl.baseline()
+    # lstmbow2rstval_mdl.evaluate(test=False)
+
+if stage == 1:
+    # Sobreescribir la configuración por la mejor conocida: 
+    with open('models/LSTMBOW2RSTVAL/gijon/1ad6768c985435a57e9767b76c5d1ee9/cfg.json') as f: best_cfg_data = json.load(f)
+    rstval = RSTVALdataset(dts_cfg)
+    lstmbow2rstval_mdl_cfg["model"] = best_cfg_data["model"]
+    lstmbow2rstval_mdl = LSTMBOW2RSTVAL(lstmbow2rstval_mdl_cfg, rstval, w2v_mdl)
+
+    lstmbow2rstval_mdl.train(dev=False, save_model=True)
+    # lstmbow2rstval_mdl.baseline(test=True)
+    # lstmbow2rstval_mdl.evaluate(test=True)
+    
+    # lstmbow2rstval_mdl.eval_custom_text("Quiero comer un cachopo de cecina como una casa de grande")
+    # lstmbow2rstval_mdl.eval_custom_text("Quiero comer grande, barato y abundante")
+
 '''
 # Obtener, para cada palabra, los restaurantes más afines
 
@@ -174,20 +200,4 @@ for wrd_idx, wrd in enumerate(bow2rst_dts.DATA["FEATURES_NAME"]):
     rst_names = bow2rst_dts.DATA["TRAIN_DEV"].loc[bow2rst_dts.DATA["TRAIN_DEV"].id_restaurant.isin(rst_ids)].name.unique()
 
     print(wrd, " => ", ", ".join(rst_names))
-'''
-# MODELO 5: LSTM&BOW2RST&VAL ###########################################################################################
-
-
-
-lstmbow2rstval_mdl = LSTMBOW2RSTVAL({"model": {"learning_rate": l_rate, "final_learning_rate": l_rate/100, "epochs": n_epochs, "batch_size": b_size, "seed": seed,
-                                        "early_st_first_epoch": 0, "early_st_monitor": "val_loss", "early_st_monitor_mode": "min", "early_st_patience": 20},
-                                        "session": {"gpu": gpu, "in_md5": False}}, lstmbow2rstval_dts, w2v_mdl)
-
-lstmbow2rstval_mdl.train(dev=True, save_model=True)
-
-
-# lstmbow2rstval_mdl.evaluate(verbose=1)
-# lstmbow2rstval_mdl.eval_custom_text("Quiero comer un cachopo de cecina como una casa de grande")
-# lstmbow2rstval_mdl.eval_custom_text("Quiero comer grande, barato y abundante")
-
 '''

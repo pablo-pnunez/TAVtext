@@ -1,6 +1,11 @@
 # -*- coding: utf-8 -*-
 from src.Common import print_g
 from src.models.KerasModelClass import KerasModelClass
+from src.models.KerasModelClass import KerasModelClass
+from src.models.text_models.VALModel import VALModel
+from src.models.text_models.RSTModel import RSTModel
+
+
 from src.sequences.BaseSequence import BaseSequence
 
 import numpy as np
@@ -31,37 +36,76 @@ class LSTMBOW2RSTVAL(KerasModelClass):
 
         # Borrar modelo para ahorrar memoria
         del word_vectors
+    
+        model = self.get_sub_model(w2v_emb_size,embedding_matrix)
 
-        input_bow = tf.keras.layers.Input(shape=(self.DATASET.CONFIG["num_palabras"],), name="input_bow")
-        x = tf.keras.layers.Dense(self.DATASET.DATA["N_RST"], name="bow_2_rst", kernel_initializer=tf.keras.initializers.Ones())(input_bow)
-        x = tf.keras.layers.Dropout(.1)(x)
-        x = tf.keras.layers.BatchNormalization(name="bow_2_rst_bn")(x)
-        output_rst = tf.keras.layers.Activation("softmax", name="output_rst")(x)
+        return model
 
-        input_w2v = tf.keras.layers.Input(shape=(self.DATASET.DATA["MAX_LEN_PADDING"],), name="input_w2v")
-        h = tf.keras.layers.Embedding(self.DATASET.DATA["VOCAB_SIZE"], w2v_emb_size, weights=[embedding_matrix], trainable=False, mask_zero=True)(input_w2v)
-        output_lstm = tf.keras.layers.LSTM(128, name="output_lstm")(h)
+    def get_sub_model(self, w2v_emb_size, embedding_matrix):
+        mv = self.CONFIG["model"]["model_version"]
 
-        input_rst = tf.keras.layers.Input(shape=(self.DATASET.DATA["N_RST"],), name="input_rst")
-        input_lstm = tf.keras.layers.Input(shape=(128,), name="input_lstm")
-        h = tf.keras.layers.Concatenate(axis=1)([input_rst, input_lstm])
-        h = tf.keras.layers.Dense(128, activation='relu')(h)
-        h = tf.keras.layers.Dense(32, activation='relu')(h)
-        output_val = tf.keras.layers.Dense(1, name="output_val")(h)
-        val_model = tf.keras.models.Model(inputs=[input_rst, input_lstm], outputs=[output_val], name="val_model")
+        if mv=="0":
+            input_bow = tf.keras.layers.Input(shape=(self.DATASET.CONFIG["num_palabras"],), name="input_bow")
+            x = tf.keras.layers.Dense(self.DATASET.DATA["N_RST"], name="bow_2_rst", kernel_initializer=tf.keras.initializers.Ones())(input_bow)
+            x = tf.keras.layers.Dropout(.1)(x)
+            x = tf.keras.layers.BatchNormalization(name="bow_2_rst_bn")(x)
+            output_rst = tf.keras.layers.Activation("softmax", name="output_rst")(x)
+
+            input_w2v = tf.keras.layers.Input(shape=(self.DATASET.DATA["MAX_LEN_PADDING"],), name="input_w2v")
+            h = tf.keras.layers.Embedding(self.DATASET.DATA["VOCAB_SIZE"], w2v_emb_size, weights=[embedding_matrix], trainable=False, mask_zero=True)(input_w2v)
+            output_lstm = tf.keras.layers.LSTM(256, name="output_lstm")(h)
+
+            input_rst = tf.keras.layers.Input(shape=(self.DATASET.DATA["N_RST"],), name="input_rst")
+            input_lstm = tf.keras.layers.Input(shape=(256,), name="input_lstm")
+            h = tf.keras.layers.Concatenate(axis=1)([input_rst, input_lstm])
+            h = tf.keras.layers.Dense(128, activation='relu')(h)
+            h = tf.keras.layers.Dense(64, activation='relu')(h)
+            h = tf.keras.layers.Dense(32, activation='relu')(h)
+            h = tf.keras.layers.Dense(16, activation='relu')(h)
+            output_val = tf.keras.layers.Dense(1, name="output_valor")(h)
+            val_model = tf.keras.models.Model(inputs=[input_rst, input_lstm], outputs=[output_val], name="valor_model")
+
+        if mv=="1":
+            input_bow = tf.keras.layers.Input(shape=(self.DATASET.CONFIG["num_palabras"],), name="input_bow")
+            x = tf.keras.layers.Dense(self.DATASET.DATA["N_RST"], name="bow_2_rst", kernel_initializer=tf.keras.initializers.Ones())(input_bow)
+            x = tf.keras.layers.Dropout(.1)(x)
+            x = tf.keras.layers.BatchNormalization(name="bow_2_rst_bn")(x)
+            output_rst = tf.keras.layers.Activation("softmax", name="output_rst")(x)
+
+            input_w2v = tf.keras.layers.Input(shape=(self.DATASET.DATA["MAX_LEN_PADDING"],), name="input_w2v")
+            h = tf.keras.layers.Embedding(self.DATASET.DATA["VOCAB_SIZE"], w2v_emb_size, weights=[embedding_matrix], trainable=False, mask_zero=True)(input_w2v)
+            output_lstm = tf.keras.layers.LSTM(128, name="output_lstm")(h)
+
+            input_rst = tf.keras.layers.Input(shape=(self.DATASET.DATA["N_RST"],), name="input_rst")
+            input_lstm = tf.keras.layers.Input(shape=(128,), name="input_lstm")
+            h = tf.keras.layers.Concatenate(axis=1)([input_rst, input_lstm])
+            h = tf.keras.layers.Dense(128, activation='relu')(h)
+            h = tf.keras.layers.Dense(32, activation='relu')(h)
+            output_val = tf.keras.layers.Dense(1, name="output_valor")(h)
+            val_model = tf.keras.models.Model(inputs=[input_rst, input_lstm], outputs=[output_val], name="valor_model")
+
+        if mv=="2":
+            input_bow = tf.keras.layers.Input(shape=(self.DATASET.CONFIG["num_palabras"],), name="input_bow")
+            x = tf.keras.layers.Dense(self.DATASET.DATA["N_RST"], name="bow_2_rst", kernel_initializer=tf.keras.initializers.Ones())(input_bow)
+            x = tf.keras.layers.Dropout(.3)(x)
+            x = tf.keras.layers.BatchNormalization(name="bow_2_rst_bn")(x)
+            output_rst = tf.keras.layers.Activation("softmax", name="output_rst")(x)
+
+            input_w2v = tf.keras.layers.Input(shape=(self.DATASET.DATA["MAX_LEN_PADDING"],), name="input_w2v")
+            h = tf.keras.layers.Embedding(self.DATASET.DATA["VOCAB_SIZE"], w2v_emb_size, weights=[embedding_matrix], trainable=False, mask_zero=True)(input_w2v)
+            output_lstm = tf.keras.layers.LSTM(128, name="output_lstm")(h)
+
+            input_rst = tf.keras.layers.Input(shape=(self.DATASET.DATA["N_RST"],), name="input_rst")
+            input_lstm = tf.keras.layers.Input(shape=(128,), name="input_lstm")
+            h = tf.keras.layers.Concatenate(axis=1)([input_rst, input_lstm])
+            h = tf.keras.layers.Dense(128, activation='relu')(h)
+            output_val = tf.keras.layers.Dense(1, name="output_valor")(h)
+            val_model = tf.keras.models.Model(inputs=[input_rst, input_lstm], outputs=[output_val], name="valor_model")
 
         model = tf.keras.models.Model(inputs=[input_bow, input_w2v], outputs=[output_rst, val_model([output_rst, output_lstm])])
 
-        losses = {
-            "output_rst": "categorical_crossentropy",
-            "val_model": "mean_squared_error",
-        }
-
-        metrics = {
-            "output_rst": ['accuracy', tf.keras.metrics.TopKCategoricalAccuracy(k=5, name='top_5'), tf.keras.metrics.TopKCategoricalAccuracy(k=10, name='top_10')],
-            "val_model": ["mean_absolute_error"]
-        }
-
+        losses = { "output_rst": "categorical_crossentropy", "valor_model": "mean_squared_error", }
+        metrics = { "output_rst": ['accuracy', tf.keras.metrics.TopKCategoricalAccuracy(k=5, name='top_5'), tf.keras.metrics.TopKCategoricalAccuracy(k=10, name='top_10')], "valor_model": ["mean_absolute_error"] }
         model.compile(loss=losses, optimizer=tf.keras.optimizers.Adam(lr=self.CONFIG["model"]["learning_rate"]), metrics=metrics)
 
         return model
@@ -72,7 +116,68 @@ class LSTMBOW2RSTVAL(KerasModelClass):
 
         return train, dev
 
-    def evaluate(self, verbose=0):
+    def evaluate(self, test=False):
+
+        if test:
+            test_set = LSTMBOW2RSTVALsequence(self, set_name="TEST")
+        else:
+            test_set = LSTMBOW2RSTVALsequence(self, is_dev=1)
+
+        ret = self.MODEL.evaluate(test_set, verbose=0)
+
+        print_g(dict(zip(self.MODEL.metrics_names,ret)))
+
+    def baseline(self, test=False):
+        
+        """ Se calcula la popularidad para que actúe como baseline y se convierte a probabilidad """
+        if test:
+            dataset = self.DATASET.DATA["TRAIN_DEV"]
+        else:
+            dataset = self.DATASET.DATA["TRAIN_DEV"].loc[self.DATASET.DATA["TRAIN_DEV"]["dev"] == 0]
+
+        y_out = np.zeros((len(dataset), self.DATASET.DATA["N_RST"]))
+        y_out[np.expand_dims(list(range(len(y_out))), -1), np.expand_dims(dataset.id_restaurant, -1)] = 1
+
+        popularidad_vec = y_out.sum(axis=0) / sum(y_out.sum(axis=0))
+        pred_popularidad = np.row_stack([popularidad_vec]*len(dataset))
+
+        with tf.device('/cpu:0'):
+
+            m1 = tf.keras.metrics.Accuracy()
+            m1.update_state(y_true=y_out.argmax(axis=1), y_pred=pred_popularidad.argmax(axis=1))
+            # print_g("ACCURACY por popularidad: %.4f" % (m1.result().numpy()))
+            # m1.reset_states()
+
+            m2 = tf.keras.metrics.TopKCategoricalAccuracy(k=5)
+            m2.update_state(y_true=y_out, y_pred=pred_popularidad)
+            # print_g("TOP5ACC por popularidad:  %.4f" % (m2.result().numpy()))
+            # m2.reset_states()
+
+            m3 = tf.keras.metrics.TopKCategoricalAccuracy(k=10)
+            m3.update_state(y_true=y_out, y_pred=pred_popularidad)
+            # print_g("TOP10ACC por popularidad:  %.4f" % (m3.result().numpy()))
+            # m3.reset_states()
+
+        res = dict(zip(["ACCURACY","TOP5ACC","TOP10ACC"],[m1.result().numpy(), m2.result().numpy(), m3.result().numpy()]))
+        print_g(res)
+
+        """ Predecir la media """
+
+        if not test:
+            the_mean = self.DATASET.DATA["TRAIN_DEV"].loc[self.DATASET.DATA["TRAIN_DEV"].dev==0].rating.mean()
+            mae = np.abs(the_mean - self.DATASET.DATA["TRAIN_DEV"].loc[self.DATASET.DATA["TRAIN_DEV"].dev==1].rating.values).mean()
+            mse = np.power(the_mean - self.DATASET.DATA["TRAIN_DEV"].loc[self.DATASET.DATA["TRAIN_DEV"].dev==1].rating.values,2).mean()
+        else:
+            the_mean = self.DATASET.DATA["TRAIN_DEV"].rating.mean()
+            mae = np.abs(the_mean - self.DATASET.DATA["TEST"].rating.values).mean()
+            mse = np.power(the_mean - self.DATASET.DATA["TEST"].rating.values,2).mean()
+
+        ttl = "TEST" if test else "DEV" 
+
+        print_g("%s baseline MSE: %.4f  MAE: %.4f" % (ttl, mse, mae))
+
+
+    def old_evaluate(self, verbose=0):
         test_data = self.DATASET.DATA["TEST"].copy()
 
         # Obtener el modelo que predice restaurantes, junto con la matriz de pesos relevante
@@ -247,5 +352,5 @@ class LSTMBOW2RSTVALsequence(LSTMFBOW2RSTVALsequence):
 
     def preprocess_output(self, batch_data):
         y1 = self.KHOT.fit_transform(np.expand_dims(batch_data.id_restaurant.values, -1))
-        y2 = batch_data["rating"].values
+        y2 = batch_data["rating"].values/10 # Para que las losses se muevan entre los mismos valores
         return [y1, y2]
