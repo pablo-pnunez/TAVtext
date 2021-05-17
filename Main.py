@@ -138,6 +138,21 @@ if stage == 1:
     lstm2rst_mdl.baseline(test=True)
     lstm2rst_mdl.evaluate(test=True)
 '''
+
+'''
+# Obtener, para cada palabra, los restaurantes más afines
+
+
+for wrd_idx, wrd in enumerate(bow2rst_dts.DATA["FEATURES_NAME"]):
+    bow_word = np.zeros(bow_n_words)
+    bow_word[wrd_idx]=1
+    pred = bow2rst_mdl.MODEL.predict(np.expand_dims(bow_word, 0))
+    rst_ids = np.argsort(-pred)[0][:3]
+    rst_names = bow2rst_dts.DATA["TRAIN_DEV"].loc[bow2rst_dts.DATA["TRAIN_DEV"].id_restaurant.isin(rst_ids)].name.unique()
+
+    print(wrd, " => ", ", ".join(rst_names))
+'''
+
 # MODELO 4: BOW2RST  ###################################################################################################
 '''
 bow2rst_mdl_cfg = {"model": {"model_version":model_v, "learning_rate": l_rate, "final_learning_rate": l_rate/100, "epochs": n_epochs, "batch_size": b_size, "seed": seed,
@@ -184,19 +199,6 @@ if stage == 1:
     lstmbow2rstval_mdl.train(dev=False, save_model=True)
     # lstmbow2rstval_mdl.baseline(test=True)
     # lstmbow2rstval_mdl.evaluate(test=True)
-    lstmbow2rstval_mdl.eval_custom_text("Quiero comer algo tradicional, barato y abundante")
+    lstmbow2rstval_mdl.eval_custom_text("Busco un sitio elegante y moderno")
     lstmbow2rstval_mdl.eval_custom_text("¿Dónde puedo comer fabada o cachopo?")
 
-'''
-# Obtener, para cada palabra, los restaurantes más afines
-
-
-for wrd_idx, wrd in enumerate(bow2rst_dts.DATA["FEATURES_NAME"]):
-    bow_word = np.zeros(bow_n_words)
-    bow_word[wrd_idx]=1
-    pred = bow2rst_mdl.MODEL.predict(np.expand_dims(bow_word, 0))
-    rst_ids = np.argsort(-pred)[0][:3]
-    rst_names = bow2rst_dts.DATA["TRAIN_DEV"].loc[bow2rst_dts.DATA["TRAIN_DEV"].id_restaurant.isin(rst_ids)].name.unique()
-
-    print(wrd, " => ", ", ".join(rst_names))
-'''
