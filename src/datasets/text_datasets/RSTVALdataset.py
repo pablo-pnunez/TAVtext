@@ -14,7 +14,7 @@ class RSTVALdataset(TextDataset):
     def __init__(self, config):
         TextDataset.__init__(self, config=config)
 
-    def get_data(self, load=["TRAIN_DEV", "TEST",  "WORD_INDEX", "VOCAB_SIZE", "MAX_LEN_PADDING", "VECTORIZER", "FEATURES_NAME", "N_RST"]):
+    def get_data(self, load=["TRAIN_DEV", "TEST",  "WORD_INDEX", "VOCAB_SIZE", "MAX_LEN_PADDING", "TEXT_TOKENIZER", "VECTORIZER", "FEATURES_NAME", "N_RST"]):
 
         # Cargar los datos
         dict_data = self.get_dict_data(self.DATASET_PATH, load)
@@ -122,6 +122,7 @@ class RSTVALdataset(TextDataset):
             to_pickle(self.DATASET_PATH, "WORD_INDEX", word_index)
             to_pickle(self.DATASET_PATH, "VOCAB_SIZE", len(word_index) + 1)
             to_pickle(self.DATASET_PATH, "MAX_LEN_PADDING", max_len_padding)
+            to_pickle(self.DATASET_PATH, "TEXT_TOKENIZER", tokenizer_txt)
 
             to_pickle(self.DATASET_PATH, "TRAIN_DEV", train_dev)
             to_pickle(self.DATASET_PATH, "TEST", test)

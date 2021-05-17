@@ -233,11 +233,23 @@ class LSTMBOW2RSTVAL(KerasModelClass):
         print("Test average intersection pctg: %f" % final_val["intersection"].mean())
 
     def eval_custom_text(self, text_src):
+        '''
+        ¿Cómo recomendar?
+        · Utilizando modelo LSTMBOW , obtener el top 5 de restaurantes. 
+        · Dar una valoración para toda la experiencia.
+        · ¿10 términos más relevantes del restaurante?
+        · ¿Mapa de palabras positivas de cada uno de los 5 rst?
+        '''
 
         text = self.DATASET.prerpocess_text(text_src)
         bow = self.DATASET.DATA["VECTORIZER"].transform([text])
+        lstm =  self.DATASET.DATA["TEXT_TOKENIZER"].texts_to_sequences([text])
+        lstm = tf.keras.preprocessing.sequence.pad_sequences(lstm, maxlen=self.DATASET.DATA["MAX_LEN_PADDING"])
         normed_bow = normalize(bow.todense(), axis=1, norm='l1')
         bow_words = np.asarray(self.DATASET.DATA["FEATURES_NAME"])[np.argwhere(normed_bow[0] > 0)[:, 0]]
+
+        # Predecir la nota de la experiencia
+        exp_nota = self.MODEL.predict([np.asarray(bow.todense()), lstm ])[1].flatten()[0]
 
         # Obtener el modelo que predice restaurantes, junto con la matriz de pesos relevante
         rst_model = tf.keras.models.Model(inputs=[self.MODEL.get_layer("input_bow").input], outputs=[self.MODEL.get_layer("output_rst").output])
@@ -245,11 +257,12 @@ class LSTMBOW2RSTVAL(KerasModelClass):
 
         # Predecir 5 restaurantes con la parte correspondiente del modelo
         rev_rst_pred = rst_model.predict(normed_bow)
-        rev_rst_pred = np.apply_along_axis(lambda x: (-x).argsort()[:5], 1, rev_rst_pred)
+        rev_rst_pred = np.apply_along_axis(lambda x: (-x).argsort()[:3], 1, rev_rst_pred)
         recommended_rests = rev_rst_pred.flatten()
 
         print("\n")
         print_g("\'%s\'" % text_src)
+        print("NOTA EXPERIENCIA: %f" % exp_nota)
         print("\tBOW: %s" % (",".join(bow_words)))
 
         for rst in recommended_rests:
@@ -257,7 +270,7 @@ class LSTMBOW2RSTVAL(KerasModelClass):
 
             # X Palabras más relevantes para predecir el restaurante seleccionado
             word_weights = rst_model_weights[:, rst]  # + rst_model_weights_bias
-            word_ids = np.argsort(-word_weights)[:5]
+            word_ids = np.argsort(-word_weights)[:10]
             most_relevant_w = np.asarray(self.DATASET.DATA["FEATURES_NAME"])[word_ids]
 
             # Intersección entre palabras del usuario y del restaurante

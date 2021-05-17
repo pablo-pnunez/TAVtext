@@ -184,9 +184,8 @@ if stage == 1:
     lstmbow2rstval_mdl.train(dev=False, save_model=True)
     # lstmbow2rstval_mdl.baseline(test=True)
     # lstmbow2rstval_mdl.evaluate(test=True)
-    
-    # lstmbow2rstval_mdl.eval_custom_text("Quiero comer un cachopo de cecina como una casa de grande")
-    # lstmbow2rstval_mdl.eval_custom_text("Quiero comer grande, barato y abundante")
+    lstmbow2rstval_mdl.eval_custom_text("Quiero comer algo tradicional, barato y abundante")
+    lstmbow2rstval_mdl.eval_custom_text("¿Dónde puedo comer fabada o cachopo?")
 
 '''
 # Obtener, para cada palabra, los restaurantes más afines

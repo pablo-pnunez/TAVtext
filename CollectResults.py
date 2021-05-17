@@ -5,7 +5,7 @@ import numpy as np
 
 
 city="gijon"
-model="LSTMBOW2RSTVAL"
+model="LSTM2RST"
 dev=True
 
 if "RSTVAL" in model:
