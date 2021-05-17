@@ -37,7 +37,7 @@ b_size = 1024 if args.bs is None else args.bs
 min_reviews_rst = 100
 min_reviews_usr = 1
 bow_n_words = 300 if args.bownws is None else args.bownws
-w2v_dimen = 300 
+w2v_dimen = 300
 
 stemming = False
 remove_plurals = True
@@ -59,11 +59,11 @@ w2v_mdl.train()
 
 # DATASET CONFIG #######################################################################################################
 
-dts_cfg = {"city": city, "seed": seed, "data_path": base_path, "save_path": base_path + "Datasets/", 
-                    "remove_plurals": remove_plurals, "stemming": stemming, "remove_accents": remove_accents, "remove_numbers": remove_numbers,
-                    "min_reviews_rst": min_reviews_rst, "min_reviews_usr": min_reviews_usr,
-                    "min_df": 5, "num_palabras": bow_n_words, "presencia": False, "text_column": "text",  # BOW
-                    "n_max_words": 0, "test_dev_split": .1, "truncate_padding": True}  # LSTM
+dts_cfg = {"city": city, "seed": seed, "data_path": base_path, "save_path": base_path + "Datasets/",
+           "remove_plurals": remove_plurals, "stemming": stemming, "remove_accents": remove_accents, "remove_numbers": remove_numbers,
+           "min_reviews_rst": min_reviews_rst, "min_reviews_usr": min_reviews_usr,
+           "min_df": 5, "num_palabras": bow_n_words, "presencia": False, "text_column": "text",  # BOW
+           "n_max_words": 0, "test_dev_split": .1, "truncate_padding": True}  # LSTM
 
 rstval = RSTVALdataset(dts_cfg)
 
@@ -80,7 +80,7 @@ if stage == 0:
     lstm2val_mdl.evaluate(test=False)
 
 if stage == 1:
-    # Sobreescribir la configuración por la mejor conocida: 
+    # Sobreescribir la configuración por la mejor conocida:
     with open('models/LSTM2VAL/gijon/648042d8166ce7a02b24f9991b2778ce/cfg.json') as f: best_cfg_data = json.load(f)
     dts_cfg = best_cfg_data["dataset_config"]
     rstval = RSTVALdataset(dts_cfg)
@@ -105,7 +105,7 @@ if stage == 0:
     bow2val_mdl.evaluate(test=False)
 
 if stage == 1:
-    # Sobreescribir la configuración por la mejor conocida: 
+    # Sobreescribir la configuración por la mejor conocida:
     with open('models/BOW2VAL/gijon/35f62204f54af44c43df8f1de1829abf/cfg.json') as f: best_cfg_data = json.load(f)
     rstval = RSTVALdataset(dts_cfg)
     bow2val_mdl_cfg["model"] = best_cfg_data["model"]
@@ -128,7 +128,7 @@ if stage == 0:
     lstm2rst_mdl.evaluate(test=False)
 
 if stage == 1:
-    # Sobreescribir la configuración por la mejor conocida: 
+    # Sobreescribir la configuración por la mejor conocida:
     with open('models/LSTM2RST/gijon/42e900956c0a8cb09d72c383a143b3d2/cfg.json') as f: best_cfg_data = json.load(f)
     rstval = RSTVALdataset(dts_cfg)
     lstm2rst_mdl_cfg["model"] = best_cfg_data["model"]
@@ -166,7 +166,7 @@ if stage == 0:
     bow2rst_mdl.evaluate(test=False)
 
 if stage == 1:
-    # Sobreescribir la configuración por la mejor conocida: 
+    # Sobreescribir la configuración por la mejor conocida:
     with open('models/BOW2RST/gijon/f08d283c548647bf5a43d56865af291e/cfg.json') as f: best_cfg_data = json.load(f)
     rstval = RSTVALdataset(dts_cfg)
     bow2rst_mdl_cfg["model"] = best_cfg_data["model"]
@@ -179,9 +179,9 @@ if stage == 1:
 '''
 # MODELO 5: LSTM&BOW2RST&VAL ###########################################################################################
 
-lstmbow2rstval_mdl_cfg = {"model": {"model_version":model_v, "learning_rate": l_rate, "final_learning_rate": l_rate/100, "epochs": n_epochs, "batch_size": b_size, "seed": seed,
+lstmbow2rstval_mdl_cfg = {"model": {"model_version": model_v, "learning_rate": l_rate, "final_learning_rate": l_rate/100, "epochs": n_epochs, "batch_size": b_size, "seed": seed,
                                     "early_st_first_epoch": 0, "early_st_monitor": "val_loss", "early_st_monitor_mode": "min", "early_st_patience": 20},
-                                    "session": {"gpu": gpu, "in_md5": False}}
+                          "session": {"gpu": gpu, "in_md5": False}}
 
 if stage == 0:
     lstmbow2rstval_mdl = LSTMBOW2RSTVAL(lstmbow2rstval_mdl_cfg, rstval, w2v_mdl)
@@ -190,15 +190,15 @@ if stage == 0:
     # lstmbow2rstval_mdl.evaluate(test=False)
 
 if stage == 1:
-    # Sobreescribir la configuración por la mejor conocida: 
+    # Sobreescribir la configuración por la mejor conocida:
     with open('models/LSTMBOW2RSTVAL/gijon/1ad6768c985435a57e9767b76c5d1ee9/cfg.json') as f: best_cfg_data = json.load(f)
     rstval = RSTVALdataset(dts_cfg)
     lstmbow2rstval_mdl_cfg["model"] = best_cfg_data["model"]
     lstmbow2rstval_mdl = LSTMBOW2RSTVAL(lstmbow2rstval_mdl_cfg, rstval, w2v_mdl)
 
     lstmbow2rstval_mdl.train(dev=False, save_model=True)
-    # lstmbow2rstval_mdl.baseline(test=True)
-    # lstmbow2rstval_mdl.evaluate(test=True)
-    lstmbow2rstval_mdl.eval_custom_text("Busco un sitio elegante y moderno")
-    lstmbow2rstval_mdl.eval_custom_text("¿Dónde puedo comer fabada o cachopo?")
-
+    lstmbow2rstval_mdl.baseline(test=True)
+    lstmbow2rstval_mdl.evaluate(test=True)
+    # lstmbow2rstval_mdl.eval_custom_text("Busco un restaurante con menú degustación")
+    # lstmbow2rstval_mdl.eval_custom_text("¿Dónde puedo comer fabada o cachopo?")
+    # lstmbow2rstval_mdl.predict(test=True)

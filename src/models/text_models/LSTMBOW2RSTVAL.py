@@ -15,6 +15,7 @@ import tensorflow as tf
 from sklearn.preprocessing import normalize
 from sklearn.preprocessing import MultiLabelBinarizer
 
+
 class LSTMBOW2RSTVAL(KerasModelClass):
     """Predecir, a partir de una review codificada mendiante una LSTM utilizando las palabras del W2V y la review BOW, la nota de dicha review y el restaurante """
 
@@ -127,8 +128,18 @@ class LSTMBOW2RSTVAL(KerasModelClass):
 
         print_g(dict(zip(self.MODEL.metrics_names,ret)))
 
+    def predict(self, test=False):
+        if test:
+            test_set = LSTMBOW2RSTVALsequence(self, set_name="TEST")
+        else:
+            test_set = LSTMBOW2RSTVALsequence(self, is_dev=1)
+
+        ret = self.MODEL.predict(test_set, verbose=0)
+        ret = pd.DataFrame(zip(test_set.MODEL_DATA.rating.values/10, ret[1].flatten()), columns=["y", "y_hat"])
+
+        return 0
+
     def baseline(self, test=False):
-        
         """ Se calcula la popularidad para que actúe como baseline y se convierte a probabilidad """
         if test:
             dataset = self.DATASET.DATA["TRAIN_DEV"]
@@ -158,24 +169,23 @@ class LSTMBOW2RSTVAL(KerasModelClass):
             # print_g("TOP10ACC por popularidad:  %.4f" % (m3.result().numpy()))
             # m3.reset_states()
 
-        res = dict(zip(["ACCURACY","TOP5ACC","TOP10ACC"],[m1.result().numpy(), m2.result().numpy(), m3.result().numpy()]))
+        res = dict(zip(["ACCURACY", "TOP5ACC", "TOP10ACC"], [m1.result().numpy(), m2.result().numpy(), m3.result().numpy()]))
         print_g(res)
 
         """ Predecir la media """
 
         if not test:
-            the_mean = self.DATASET.DATA["TRAIN_DEV"].loc[self.DATASET.DATA["TRAIN_DEV"].dev==0].rating.mean()
-            mae = np.abs(the_mean - self.DATASET.DATA["TRAIN_DEV"].loc[self.DATASET.DATA["TRAIN_DEV"].dev==1].rating.values).mean()
-            mse = np.power(the_mean - self.DATASET.DATA["TRAIN_DEV"].loc[self.DATASET.DATA["TRAIN_DEV"].dev==1].rating.values,2).mean()
+            the_mean = self.DATASET.DATA["TRAIN_DEV"].loc[self.DATASET.DATA["TRAIN_DEV"].dev == 0].rating.mean()
+            mae = np.abs(the_mean - self.DATASET.DATA["TRAIN_DEV"].loc[self.DATASET.DATA["TRAIN_DEV"].dev == 1].rating.values).mean()
+            mse = np.power(the_mean - self.DATASET.DATA["TRAIN_DEV"].loc[self.DATASET.DATA["TRAIN_DEV"].dev == 1].rating.values, 2).mean()
         else:
             the_mean = self.DATASET.DATA["TRAIN_DEV"].rating.mean()
             mae = np.abs(the_mean - self.DATASET.DATA["TEST"].rating.values).mean()
-            mse = np.power(the_mean - self.DATASET.DATA["TEST"].rating.values,2).mean()
+            mse = np.power(the_mean - self.DATASET.DATA["TEST"].rating.values, 2).mean()
 
-        ttl = "TEST" if test else "DEV" 
+        ttl = "TEST" if test else "DEV"
 
         print_g("%s baseline MSE: %.4f  MAE: %.4f" % (ttl, mse, mae))
-
 
     def old_evaluate(self, verbose=0):
         test_data = self.DATASET.DATA["TEST"].copy()
@@ -235,7 +245,7 @@ class LSTMBOW2RSTVAL(KerasModelClass):
     def eval_custom_text(self, text_src):
         '''
         ¿Cómo recomendar?
-        · Utilizando modelo LSTMBOW , obtener el top 5 de restaurantes. 
+        · Utilizando modelo LSTMBOW , obtener el top 5 de restaurantes.
         · Dar una valoración para toda la experiencia.
         · ¿10 términos más relevantes del restaurante?
         · ¿Mapa de palabras positivas de cada uno de los 5 rst?
@@ -243,13 +253,13 @@ class LSTMBOW2RSTVAL(KerasModelClass):
 
         text = self.DATASET.prerpocess_text(text_src)
         bow = self.DATASET.DATA["VECTORIZER"].transform([text])
-        lstm =  self.DATASET.DATA["TEXT_TOKENIZER"].texts_to_sequences([text])
+        lstm = self.DATASET.DATA["TEXT_TOKENIZER"].texts_to_sequences([text])
         lstm = tf.keras.preprocessing.sequence.pad_sequences(lstm, maxlen=self.DATASET.DATA["MAX_LEN_PADDING"])
         normed_bow = normalize(bow.todense(), axis=1, norm='l1')
         bow_words = np.asarray(self.DATASET.DATA["FEATURES_NAME"])[np.argwhere(normed_bow[0] > 0)[:, 0]]
 
         # Predecir la nota de la experiencia
-        exp_nota = self.MODEL.predict([np.asarray(bow.todense()), lstm ])[1].flatten()[0]
+        exp_nota = self.MODEL.predict([np.asarray(bow.todense()), lstm])[1].flatten()[0]
 
         # Obtener el modelo que predice restaurantes, junto con la matriz de pesos relevante
         rst_model = tf.keras.models.Model(inputs=[self.MODEL.get_layer("input_bow").input], outputs=[self.MODEL.get_layer("output_rst").output])
@@ -279,6 +289,7 @@ class LSTMBOW2RSTVAL(KerasModelClass):
 
             print("\t\t▲ %s" % (",".join(most_relevant_w)))
             print("\t\t∩ %s" % (",".join(usr_rst_intr)))
+
 
 class LSTMFBOW2RSTVAL(LSTMBOW2RSTVAL):
     """FIJANDO MODELO BOW: Predecir, a partir de una review codificada mendiante una LSTM utilizando las palabras del W2V y la review BOW, la nota de dicha review y el restaurante """
@@ -365,5 +376,5 @@ class LSTMBOW2RSTVALsequence(LSTMFBOW2RSTVALsequence):
 
     def preprocess_output(self, batch_data):
         y1 = self.KHOT.fit_transform(np.expand_dims(batch_data.id_restaurant.values, -1))
-        y2 = batch_data["rating"].values/10 # Para que las losses se muevan entre los mismos valores
+        y2 = batch_data["rating"].values/10  # Para que las losses se muevan entre los mismos valores
         return [y1, y2]
