@@ -18,16 +18,14 @@ class VALModel(KerasModelClass):
         """ Predecir la media """
 
         if not test:
-            the_mean = self.DATASET.DATA["TRAIN_DEV"].loc[self.DATASET.DATA["TRAIN_DEV"].dev==0].rating.mean()
-            mae = np.abs(the_mean - self.DATASET.DATA["TRAIN_DEV"].loc[self.DATASET.DATA["TRAIN_DEV"].dev==1].rating.values).mean()
-            mse = np.power(the_mean - self.DATASET.DATA["TRAIN_DEV"].loc[self.DATASET.DATA["TRAIN_DEV"].dev==1].rating.values,2).mean()
+            the_mean = self.DATASET.DATA["TRAIN_DEV"].loc[self.DATASET.DATA["TRAIN_DEV"].dev == 0].rating.mean()
+            mae = np.abs(the_mean - self.DATASET.DATA["TRAIN_DEV"].loc[self.DATASET.DATA["TRAIN_DEV"].dev == 1].rating.values).mean()
+            mse = np.power(the_mean - self.DATASET.DATA["TRAIN_DEV"].loc[self.DATASET.DATA["TRAIN_DEV"].dev == 1].rating.values, 2).mean()
         else:
             the_mean = self.DATASET.DATA["TRAIN_DEV"].rating.mean()
             mae = np.abs(the_mean - self.DATASET.DATA["TEST"].rating.values).mean()
-            mse = np.power(the_mean - self.DATASET.DATA["TEST"].rating.values,2).mean()
+            mse = np.power(the_mean - self.DATASET.DATA["TEST"].rating.values, 2).mean()
 
         ttl = "TEST" if test else "DEV" 
 
         print_g("%s baseline MSE: %.4f  MAE: %.4f" % (ttl, mse, mae))
-
-  

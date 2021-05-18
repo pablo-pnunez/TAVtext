@@ -201,4 +201,3 @@ if stage == 1:
     lstmbow2rstval_mdl.evaluate(test=True)
     # lstmbow2rstval_mdl.eval_custom_text("Busco un restaurante con menú degustación")
     # lstmbow2rstval_mdl.eval_custom_text("¿Dónde puedo comer fabada o cachopo?")
-    # lstmbow2rstval_mdl.predict(test=True)

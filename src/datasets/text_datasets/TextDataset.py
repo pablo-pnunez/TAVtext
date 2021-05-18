@@ -55,7 +55,6 @@ class TextDataset(DatasetClass):
 
         return text
 
-
     def load_city(self, city):
         """Carga los datos de una ciudad, quedandose con las columnas relevantes"""
 
@@ -76,14 +75,14 @@ class TextDataset(DatasetClass):
 
         # Casting a int de algunas columnas
         rev = rev.astype({'reviewId': 'int64', 'restaurantId': 'int64', 'rating': 'int64'})
-        
+
         # Preprocesar los textos
         mapply.init(
             n_workers=-1,
             chunk_size=100,
             max_chunks_per_worker=8,
             progressbar=True
-        )   
+        )
 
         rev["text"] = rev["text"].mapply(self.prerpocess_text)
         rev["title"] = rev["title"].mapply(self.prerpocess_text)
@@ -142,6 +141,5 @@ class TextDataset(DatasetClass):
         spanish_stopwords += ['atendio', 'pega', 'sabado']
         spanish_stopwords += ['dicho', 'par', 'total']
         spanish_stopwords += ['años', 'año', 'ultima', 'comer']
-
 
         return spanish_stopwords

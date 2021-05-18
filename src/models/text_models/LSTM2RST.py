@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from src.Common import print_g
-from src.models.text_models.RSTModel import RSTModel 
+from src.models.text_models.RSTModel import RSTModel
 from src.sequences.BaseSequence import BaseSequence
 
 import numpy as np
@@ -10,11 +10,10 @@ from sklearn.preprocessing import MultiLabelBinarizer
 
 class LSTM2RST(RSTModel):
     """ Predecir, a partir de una review codificada mendiante LSTM, el restaurante de la review """
-    
+
     def __init__(self, config, dataset, w2v_model):
         self.W2V_MODEL = w2v_model
         RSTModel.__init__(self, config=config, dataset=dataset)
-
 
     def get_model(self):
         print_g("Loading w2v...")
@@ -31,7 +30,7 @@ class LSTM2RST(RSTModel):
         # Borrar modelo para ahorrar memoria
         del word_vectors
 
-        model = self.get_sub_model(w2v_emb_size,embedding_matrix)
+        model = self.get_sub_model(w2v_emb_size, embedding_matrix)
 
         return model
 
@@ -40,29 +39,28 @@ class LSTM2RST(RSTModel):
         model = tf.keras.models.Sequential()
         model.add(tf.keras.layers.Embedding(self.DATASET.DATA["VOCAB_SIZE"], w2v_emb_size, weights=[embedding_matrix], trainable=False, mask_zero=True))
 
-        if mv=="0":
+        if mv == "0":
             model.add(tf.keras.layers.LSTM(128))
             model.add(tf.keras.layers.Dropout(.8))
-        
-        if mv=="1":
+
+        if mv == "1":
             model.add(tf.keras.layers.LSTM(128))
             model.add(tf.keras.layers.Dropout(.8))
             model.add(tf.keras.layers.Dense(64, activation='relu'))
             model.add(tf.keras.layers.Dropout(.5))
 
-        if mv=="2":
+        if mv == "2":
             model.add(tf.keras.layers.LSTM(256))
             model.add(tf.keras.layers.Dropout(.8))
-        
-        if mv=="3":
+
+        if mv == "3":
             model.add(tf.keras.layers.LSTM(256))
             model.add(tf.keras.layers.Dropout(.8))
             model.add(tf.keras.layers.Dense(128, activation='relu'))
             model.add(tf.keras.layers.Dropout(.5))
 
-        
         model.add(tf.keras.layers.Dense(self.DATASET.DATA["N_RST"], activation='softmax'))
-        metrics = [ 'accuracy', tf.keras.metrics.TopKCategoricalAccuracy(k=5, name='top_5'), tf.keras.metrics.TopKCategoricalAccuracy(k=10, name='top_10') ]
+        metrics = ['accuracy', tf.keras.metrics.TopKCategoricalAccuracy(k=5, name='top_5'), tf.keras.metrics.TopKCategoricalAccuracy(k=10, name='top_10')]
         model.compile(optimizer=tf.keras.optimizers.Adam(self.CONFIG["model"]["learning_rate"]), loss=tf.keras.losses.CategoricalCrossentropy(), metrics=metrics,)
 
         print(model.summary())
@@ -84,7 +82,7 @@ class LSTM2RST(RSTModel):
 
         ret = self.MODEL.evaluate(test_set, verbose=0)
 
-        print_g(dict(zip(self.MODEL.metrics_names,ret)))
+        print_g(dict(zip(self.MODEL.metrics_names, ret)))
 
 
 class MySequence(BaseSequence):

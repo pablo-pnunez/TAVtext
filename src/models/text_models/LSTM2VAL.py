@@ -30,7 +30,7 @@ class LSTM2VAL(VALModel):
         # Borrar modelo para ahorrar memoria
         del word_vectors
 
-        model = self.get_sub_model(w2v_emb_size,embedding_matrix)
+        model = self.get_sub_model(w2v_emb_size, embedding_matrix)
 
         return model
 
@@ -39,14 +39,14 @@ class LSTM2VAL(VALModel):
         model = tf.keras.models.Sequential()
         model.add(tf.keras.layers.Embedding(self.DATASET.DATA["VOCAB_SIZE"], w2v_emb_size, weights=[embedding_matrix], trainable=False, mask_zero=True))
 
-        if mv=="0":
+        if mv == "0":
             model.add(tf.keras.layers.LSTM(128))
             model.add(tf.keras.layers.Dense(64, activation='relu'))
             model.add(tf.keras.layers.Dense(32, activation='relu'))
             model.add(tf.keras.layers.Dense(16, activation='relu'))
             model.add(tf.keras.layers.Dense(1))
-        
-        if mv=="1":
+
+        if mv == "1":
             model.add(tf.keras.layers.LSTM(128))
             model.add(tf.keras.layers.Dropout(.4))
             model.add(tf.keras.layers.Dense(64, activation='relu'))
@@ -57,13 +57,13 @@ class LSTM2VAL(VALModel):
             model.add(tf.keras.layers.Dropout(.1))
             model.add(tf.keras.layers.Dense(1))
 
-        if mv=="2":
+        if mv == "2":
             model.add(tf.keras.layers.LSTM(64))
             model.add(tf.keras.layers.Dense(32, activation='relu'))
             model.add(tf.keras.layers.Dense(16, activation='relu'))
             model.add(tf.keras.layers.Dense(1))
 
-        if mv=="3":
+        if mv == "3":
             model.add(tf.keras.layers.LSTM(256))
             model.add(tf.keras.layers.Dense(128, activation='relu'))
             model.add(tf.keras.layers.Dense(64, activation='relu'))
@@ -75,7 +75,6 @@ class LSTM2VAL(VALModel):
 
         return model
 
-
     def evaluate(self, test=False):
 
         if test:
@@ -85,7 +84,7 @@ class LSTM2VAL(VALModel):
 
         ret = self.MODEL.evaluate(test_set, verbose=0)
 
-        print_g(dict(zip(self.MODEL.metrics_names,ret)))
+        print_g(dict(zip(self.MODEL.metrics_names, ret)))
 
     def get_train_dev_sequences(self):
         train = LSTM2VALsequence(self, is_dev=0)

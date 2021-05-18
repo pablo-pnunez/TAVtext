@@ -32,5 +32,3 @@ class W2Vdataset(TextDataset):
             to_pickle(self.DATASET_PATH, "ALL_TITLES", all_data["title"].str.split())
 
             return self.get_dict_data(self.DATASET_PATH, load)
-
-

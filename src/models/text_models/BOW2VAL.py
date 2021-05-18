@@ -18,31 +18,30 @@ class BOW2VAL(VALModel):
         mv = self.CONFIG["model"]["model_version"]
         model = tf.keras.models.Sequential()
         model.add(tf.keras.layers.Input(shape=(self.DATASET.CONFIG["num_palabras"],), name="input_bow"))
-        
-        if mv=="0":
+
+        if mv == "0":
             model.add(tf.keras.layers.Dense(128, activation='relu'))
-            model.add(tf.keras.layers.Dense(64, activation='relu'))  
+            model.add(tf.keras.layers.Dense(64, activation='relu'))
             model.add(tf.keras.layers.Dense(32, activation='relu'))
-        if mv=="1":
+        if mv == "1":
             model.add(tf.keras.layers.Dropout(.4))
             model.add(tf.keras.layers.Dense(128, activation='relu'))
             model.add(tf.keras.layers.Dropout(.3))
-            model.add(tf.keras.layers.Dense(64, activation='relu'))  
+            model.add(tf.keras.layers.Dense(64, activation='relu'))
             model.add(tf.keras.layers.Dropout(.2))
             model.add(tf.keras.layers.Dense(32, activation='relu'))
-        if mv=="2":
+        if mv == "2":
             model.add(tf.keras.layers.Dense(128, activation='relu'))
             model.add(tf.keras.layers.BatchNormalization())
             model.add(tf.keras.layers.Dense(64, activation='relu'))
             model.add(tf.keras.layers.BatchNormalization())
             model.add(tf.keras.layers.Dense(32, activation='relu'))
-        if mv=="3":
+        if mv == "3":
             model.add(tf.keras.layers.Dense(512, activation='relu'))
             model.add(tf.keras.layers.Dense(256, activation='relu'))
-            model.add(tf.keras.layers.Dense(128, activation='relu'))  
-            model.add(tf.keras.layers.Dense(64, activation='relu'))  
+            model.add(tf.keras.layers.Dense(128, activation='relu'))
+            model.add(tf.keras.layers.Dense(64, activation='relu'))
             model.add(tf.keras.layers.Dense(32, activation='relu'))
-
 
         model.add(tf.keras.layers.Dense(1))
         model.compile(loss='mean_squared_error', optimizer=tf.keras.optimizers.Adam(lr=self.CONFIG["model"]["learning_rate"]), metrics=['mean_absolute_error'])
@@ -63,8 +62,8 @@ class BOW2VAL(VALModel):
             test_set = BOW2VALsequence(self, is_dev=1)
 
         ret = self.MODEL.evaluate(test_set, verbose=0)
-        
-        print_g(dict(zip(self.MODEL.metrics_names,ret)))
+
+        print_g(dict(zip(self.MODEL.metrics_names, ret)))
 
 
 class BOW2VALsequence(BaseSequence):

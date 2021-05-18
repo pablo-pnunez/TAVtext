@@ -36,5 +36,3 @@ class BaseSequence(Sequence):
         output_data = self.preprocess_output(batch_data)
 
         return input_data, output_data
-
-

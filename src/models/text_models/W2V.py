@@ -41,4 +41,3 @@ class W2V(ModelClass):
 
     def test(self, word):
         print(self.MODEL.wv.most_similar(positive=word))
-

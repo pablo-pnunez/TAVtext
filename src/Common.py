@@ -13,12 +13,12 @@ class BColors:
     UNDERLINE = '\033[4m'
 
 
-def to_pickle( path, name, data):
+def to_pickle(path, name, data):
     with open(path + name, 'wb') as handle:
         pickle.dump(data, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
 
-def get_pickle( path, name):
+def get_pickle(path, name):
     with open(path + name, 'rb') as handle:
         data = pickle.load(handle)
     return data
@@ -47,7 +47,7 @@ def print_b(text, bold=False):
 
 def parse_cmd_args():
     """Obtener argumentos por linea de comandos"""
-    
+
     parser = argparse.ArgumentParser()
     parser.add_argument('-ct', type=str, help="City")
     parser.add_argument('-sd', type=int, help="Seed")
@@ -60,4 +60,3 @@ def parse_cmd_args():
 
     args = parser.parse_args()
     return args
-

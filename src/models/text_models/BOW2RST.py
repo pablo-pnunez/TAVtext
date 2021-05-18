@@ -19,29 +19,29 @@ class BOW2RST(RSTModel):
         model = tf.keras.models.Sequential()
         model.add(tf.keras.layers.Input(shape=(self.DATASET.CONFIG["num_palabras"],), name="input_bow"))
 
-        if mv=="0":
+        if mv == "0":
             model.add(tf.keras.layers.Dense(self.DATASET.DATA["N_RST"], name="bow_2_rst", kernel_initializer=tf.keras.initializers.Ones()))
 
-        if mv=="1":
+        if mv == "1":
             model.add(tf.keras.layers.Dense(self.DATASET.DATA["N_RST"], name="bow_2_rst", kernel_initializer=tf.keras.initializers.Ones()))
             model.add(tf.keras.layers.Dropout(.1))
 
-        if mv=="2":
+        if mv == "2":
             model.add(tf.keras.layers.Dense(self.DATASET.DATA["N_RST"], name="bow_2_rst", kernel_initializer=tf.keras.initializers.Ones()))
             model.add(tf.keras.layers.Dropout(.5))
 
-        if mv=="3":
+        if mv == "3":
             model.add(tf.keras.layers.Dense(self.DATASET.DATA["N_RST"], name="bow_2_rst", kernel_initializer=tf.keras.initializers.Ones()))
             model.add(tf.keras.layers.Dropout(.1))
             model.add(tf.keras.layers.BatchNormalization(name="bow_2_rst_bn"))
 
-        if mv=="4":
+        if mv == "4":
             model.add(tf.keras.layers.Dense(self.DATASET.DATA["N_RST"], name="bow_2_rst", kernel_initializer=tf.keras.initializers.Ones()))
             model.add(tf.keras.layers.Dropout(.5))
             model.add(tf.keras.layers.BatchNormalization(name="bow_2_rst_bn"))
 
         model.add(tf.keras.layers.Activation("softmax", name="output_rst"))
-        metrics = [ 'accuracy', tf.keras.metrics.TopKCategoricalAccuracy(k=5, name='top_5'), tf.keras.metrics.TopKCategoricalAccuracy(k=10, name='top_10') ]
+        metrics = ['accuracy', tf.keras.metrics.TopKCategoricalAccuracy(k=5, name='top_5'), tf.keras.metrics.TopKCategoricalAccuracy(k=10, name='top_10')]
         model.compile(optimizer=tf.keras.optimizers.Adam(self.CONFIG["model"]["learning_rate"]), loss=tf.keras.losses.CategoricalCrossentropy(), metrics=metrics)
 
         return model
@@ -61,9 +61,9 @@ class BOW2RST(RSTModel):
 
         ret = self.MODEL.evaluate(test_set, verbose=0)
 
-        ret = dict(zip(self.MODEL.metrics_names,ret))
+        ret = dict(zip(self.MODEL.metrics_names, ret))
         print_g(ret)
-        
+               
         return ret
 
 

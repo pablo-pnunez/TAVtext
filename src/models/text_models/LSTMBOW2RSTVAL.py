@@ -45,7 +45,7 @@ class LSTMBOW2RSTVAL(KerasModelClass):
     def get_sub_model(self, w2v_emb_size, embedding_matrix):
         mv = self.CONFIG["model"]["model_version"]
 
-        if mv=="0":
+        if mv == "0":
             input_bow = tf.keras.layers.Input(shape=(self.DATASET.CONFIG["num_palabras"],), name="input_bow")
             x = tf.keras.layers.Dense(self.DATASET.DATA["N_RST"], name="bow_2_rst", kernel_initializer=tf.keras.initializers.Ones())(input_bow)
             x = tf.keras.layers.Dropout(.1)(x)
@@ -66,7 +66,7 @@ class LSTMBOW2RSTVAL(KerasModelClass):
             output_val = tf.keras.layers.Dense(1, name="output_valor")(h)
             val_model = tf.keras.models.Model(inputs=[input_rst, input_lstm], outputs=[output_val], name="valor_model")
 
-        if mv=="1":
+        if mv == "1":
             input_bow = tf.keras.layers.Input(shape=(self.DATASET.CONFIG["num_palabras"],), name="input_bow")
             x = tf.keras.layers.Dense(self.DATASET.DATA["N_RST"], name="bow_2_rst", kernel_initializer=tf.keras.initializers.Ones())(input_bow)
             x = tf.keras.layers.Dropout(.1)(x)
@@ -85,7 +85,7 @@ class LSTMBOW2RSTVAL(KerasModelClass):
             output_val = tf.keras.layers.Dense(1, name="output_valor")(h)
             val_model = tf.keras.models.Model(inputs=[input_rst, input_lstm], outputs=[output_val], name="valor_model")
 
-        if mv=="2":
+        if mv == "2":
             input_bow = tf.keras.layers.Input(shape=(self.DATASET.CONFIG["num_palabras"],), name="input_bow")
             x = tf.keras.layers.Dense(self.DATASET.DATA["N_RST"], name="bow_2_rst", kernel_initializer=tf.keras.initializers.Ones())(input_bow)
             x = tf.keras.layers.Dropout(.3)(x)
@@ -105,8 +105,9 @@ class LSTMBOW2RSTVAL(KerasModelClass):
 
         model = tf.keras.models.Model(inputs=[input_bow, input_w2v], outputs=[output_rst, val_model([output_rst, output_lstm])])
 
-        losses = { "output_rst": "categorical_crossentropy", "valor_model": "mean_squared_error", }
-        metrics = { "output_rst": ['accuracy', tf.keras.metrics.TopKCategoricalAccuracy(k=5, name='top_5'), tf.keras.metrics.TopKCategoricalAccuracy(k=10, name='top_10')], "valor_model": ["mean_absolute_error"] }
+        losses = {"output_rst": "categorical_crossentropy", "valor_model": "mean_squared_error"}
+        metrics = {"output_rst": ['accuracy', tf.keras.metrics.TopKCategoricalAccuracy(k=5, name='top_5'), tf.keras.metrics.TopKCategoricalAccuracy(k=10, name='top_10')],
+                   "valor_model": ["mean_absolute_error"]}
         model.compile(loss=losses, optimizer=tf.keras.optimizers.Adam(lr=self.CONFIG["model"]["learning_rate"]), metrics=metrics)
 
         return model

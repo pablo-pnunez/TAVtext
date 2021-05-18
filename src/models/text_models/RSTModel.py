@@ -44,7 +44,6 @@ class RSTModel(KerasModelClass):
             # print_g("TOP10ACC por popularidad:  %.4f" % (m3.result().numpy()))
             # m3.reset_states()
 
-        res = dict(zip(["ACCURACY","TOP5ACC","TOP10ACC"],[m1.result().numpy(), m2.result().numpy(), m3.result().numpy()]))
+        res = dict(zip(["ACCURACY", "TOP5ACC", "TOP10ACC"], [m1.result().numpy(), m2.result().numpy(), m3.result().numpy()]))
         print_g(res)
         return res
-

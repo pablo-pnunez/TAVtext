@@ -96,7 +96,8 @@ class RSTVALdataset(TextDataset):
                     rst_rvws.iloc[-for_dev_tst*2:-for_dev_tst, rst_rvws.columns.get_loc("dev")] = 1  # Penúltimas x para dev
                 return rst_rvws
 
-            all_data["dev"] = 0; all_data["test"] = 0
+            all_data["dev"] = 0
+            all_data["test"] = 0
             all_data = all_data.groupby("id_restaurant").apply(data_split)
 
             # Truncar el padding?
@@ -128,5 +129,3 @@ class RSTVALdataset(TextDataset):
             to_pickle(self.DATASET_PATH, "TEST", test)
 
             return self.get_dict_data(self.DATASET_PATH, load)
-
-
