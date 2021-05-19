@@ -44,9 +44,9 @@ class LSTMBOW2RSTVAL(KerasModelClass):
 
     def get_sub_model(self, w2v_emb_size, embedding_matrix):
         mv = self.CONFIG["model"]["model_version"]
+        input_bow = tf.keras.layers.Input(shape=(self.DATASET.CONFIG["num_palabras"],), name="input_bow")
 
         if mv == "0":
-            input_bow = tf.keras.layers.Input(shape=(self.DATASET.CONFIG["num_palabras"],), name="input_bow")
             x = tf.keras.layers.Dense(self.DATASET.DATA["N_RST"], name="bow_2_rst", kernel_initializer=tf.keras.initializers.Ones())(input_bow)
             x = tf.keras.layers.Dropout(.1)(x)
             x = tf.keras.layers.BatchNormalization(name="bow_2_rst_bn")(x)
@@ -67,7 +67,6 @@ class LSTMBOW2RSTVAL(KerasModelClass):
             val_model = tf.keras.models.Model(inputs=[input_rst, input_lstm], outputs=[output_val], name="valor_model")
 
         if mv == "1":
-            input_bow = tf.keras.layers.Input(shape=(self.DATASET.CONFIG["num_palabras"],), name="input_bow")
             x = tf.keras.layers.Dense(self.DATASET.DATA["N_RST"], name="bow_2_rst", kernel_initializer=tf.keras.initializers.Ones())(input_bow)
             x = tf.keras.layers.Dropout(.1)(x)
             x = tf.keras.layers.BatchNormalization(name="bow_2_rst_bn")(x)
@@ -86,7 +85,6 @@ class LSTMBOW2RSTVAL(KerasModelClass):
             val_model = tf.keras.models.Model(inputs=[input_rst, input_lstm], outputs=[output_val], name="valor_model")
 
         if mv == "2":
-            input_bow = tf.keras.layers.Input(shape=(self.DATASET.CONFIG["num_palabras"],), name="input_bow")
             x = tf.keras.layers.Dense(self.DATASET.DATA["N_RST"], name="bow_2_rst", kernel_initializer=tf.keras.initializers.Ones())(input_bow)
             x = tf.keras.layers.Dropout(.3)(x)
             x = tf.keras.layers.BatchNormalization(name="bow_2_rst_bn")(x)

@@ -45,13 +45,11 @@ class TextDataset(DatasetClass):
         if self.CONFIG["remove_plurals"]:
             stemmer = PorterStemmer()
             text = " ".join([stemmer.stem(w) for w in text.split(" ")])
-            self.SPANISH_STOPWORDS = [stemmer.stem(w) for w in self.SPANISH_STOPWORDS]
 
         # Stemming?
         if self.CONFIG["stemming"]:
             stemmer = SnowballStemmer('spanish')
             text = " ".join([stemmer.stem(w) for w in text.split(" ")])
-            self.SPANISH_STOPWORDS = [stemmer.stem(w) for w in self.SPANISH_STOPWORDS]
 
         return text
 
@@ -75,6 +73,9 @@ class TextDataset(DatasetClass):
 
         # Casting a int de algunas columnas
         rev = rev.astype({'reviewId': 'int64', 'restaurantId': 'int64', 'rating': 'int64'})
+
+        # Preprocesar las StopWords
+        self.SPANISH_STOPWORDS = self.prerpocess_text(" ".join(self.SPANISH_STOPWORDS)).split(" ")
 
         # Preprocesar los textos
         mapply.init(
@@ -104,9 +105,10 @@ class TextDataset(DatasetClass):
         # nltk.download('stopwords')
 
         spanish_stopwords = stopwords.words('spanish')
+        spanish_stopwords += ["gijon", "asturiano", "asturias"]
         spanish_stopwords += ['ademas', 'alli', 'aqui', 'asturias', 'asi', 'aunque', 'cada', 'casa', 'casi',
-                              'comido', 'comimos', 'cosas', 'creo', 'decir', 'despues', 'dos', 'dia', 'fin', 'gijon',
-                              'gijon', 'hace', 'hacer', 'hora', 'ido', 'igual', 'ir', 'lado', 'luego', 'mas', 'merece',
+                              'comido', 'comimos', 'cosas', 'creo', 'decir', 'despues', 'dos', 'dia', 'fin',
+                              'hace', 'hacer', 'hora', 'ido', 'igual', 'ir', 'lado', 'luego', 'mas', 'merece',
                               'mismo', 'momento', 'mucha', 'muchas', 'parece', 'parte', 'pedimos', 'pedir', 'probar',
                               'puede', 'puedes', 'pues', 'punto', 'relacion', 'reservar', 'seguro', 'semana', 'ser',
                               'si',
@@ -115,7 +117,7 @@ class TextDataset(DatasetClass):
                               'unas', 'varias', 'veces', 'ver', 'verdad', 'vez', 'visita', 'bastante', 'duda', 'gran',
                               'menos', 'no', 'nunca', 'opinion', 'primera', 'primero', 'segundo', 'mejor',
                               'mejores']
-        spanish_stopwords += ['alguna', 'asturiana', 'caso', 'centro', 'cierto', 'comentario',
+        spanish_stopwords += ['alguna', 'caso', 'centro', 'cierto', 'comentario',
                               'cosa',
                               'cualquier', 'cuanto', 'cuenta', 'da', 'decidimos', 'demasiado', 'dentro', 'destacar',
                               'detalle',
@@ -135,11 +137,13 @@ class TextDataset(DatasetClass):
         spanish_stopwords += ['come', 'demas', 'ello', 'etc', 'incluso', 'llegar', 'pasado', 'primer', 'pusieron',
                               'quedamos', 'quieres', 'saludo', 'tambien', 'trabajo', 'tras', 'verano']
         spanish_stopwords += ['algun', 'cenamos', 'comentarios', 'comiendo', 'dan', 'dice', 'domingo', 'ofrecen',
-                              'razonable',
-                              'tamano']
+                              'razonable', 'tamaño']
         spanish_stopwords += ['nadie', 'ningun', 'opiniones', 'quizas', 'san', 'sino']
-        spanish_stopwords += ['atendio', 'pega', 'sabado']
-        spanish_stopwords += ['dicho', 'par', 'total']
-        spanish_stopwords += ['años', 'año', 'ultima', 'comer']
+        spanish_stopwords += ['atendio', 'pega', 'sabado', 'dicho', 'par', 'total', 'años', 'año', 'ultima', 'comer']
+        spanish_stopwords += ['ahi', 'restaurante']
+        spanish_stopwords += ["claro", "dar", "dieron", "dijo", "entrar", "equipo", "establecimiento", "forma", "hacia", "ibamos", "local", "mayor", "mientras", "misma", "ninguna", "paso", "pedi", "pudimos", "pueden", "resumen", "seguir", "segunda", "siendo", "suele", "supuesto", "ultimo"]
+        spanish_stopwords += ["pagamos", "tal", "saber", "deja", "toque", "puesto"]
+        spanish_stopwords += ["segun", "iba", "manera", "arriba"]
+        spanish_stopwords += ["queda", "parecia", "imposible", "proxima"]
 
         return spanish_stopwords

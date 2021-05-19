@@ -84,6 +84,25 @@ class LSTM2RST(RSTModel):
 
         print_g(dict(zip(self.MODEL.metrics_names, ret)))
 
+    def evaluate_text(self, text):
+
+        print("\n")
+        print_g("\'%s\'" % text)
+
+        n_rsts = 3
+        lstm_text = self.DATASET.DATA["TEXT_TOKENIZER"].texts_to_sequences([self.DATASET.prerpocess_text(text)])
+        lstm_text_pad = tf.keras.preprocessing.sequence.pad_sequences(lstm_text, maxlen=self.DATASET.DATA["MAX_LEN_PADDING"])
+
+        # Obtener para la review al completo, el top 3 de restaurantes predichos por el modelo
+        preds_rst = self.MODEL.predict(lstm_text_pad)
+        preds_rst = np.argsort(-preds_rst.flatten())[:n_rsts]
+        for rst in preds_rst:
+            print("\t- %s" % (self.DATASET.DATA["TRAIN_DEV"].loc[self.DATASET.DATA["TRAIN_DEV"].id_restaurant == rst]["name"].values[0]))
+
+        # Para cada una de las palabras de la review, obtener el restaurante que más importancia le da
+        for w in lstm_text[0]:
+            preds_wrd = self.MODEL.predict(tf.keras.preprocessing.sequence.pad_sequences([[w]], maxlen=self.DATASET.DATA["MAX_LEN_PADDING"])).flatten()
+
 
 class MySequence(BaseSequence):
 

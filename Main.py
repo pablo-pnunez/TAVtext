@@ -25,14 +25,14 @@ args = parse_cmd_args()
 
 city = "gijon".lower().replace(" ", "") if args.ct is None else args.ct
 
-stage = 1 if args.stg is None else args.stg
+stage = -1 if args.stg is None else args.stg
 model_v = "0" if args.mv is None else args.mv
 
 gpu = int(np.argmin(list(map(lambda x: x["mem_used_percent"], nvgpu.gpu_info()))))
 seed = 100 if args.sd is None else args.sd
 l_rate = 1e-3 if args.lr is None else args.lr
 n_epochs = 1000 if args.ep is None else args.ep
-b_size = 1024 if args.bs is None else args.bs
+b_size = 256 if args.bs is None else args.bs
 
 min_reviews_rst = 100
 min_reviews_usr = 1
@@ -40,7 +40,7 @@ bow_n_words = 300 if args.bownws is None else args.bownws
 w2v_dimen = 300
 
 stemming = False
-remove_plurals = True
+remove_plurals = False
 remove_accents = True
 remove_numbers = True
 
@@ -49,7 +49,7 @@ base_path = "/media/nas/pperez/data/TripAdvisor/"
 
 # W2V ##################################################################################################################
 
-w2v_dts = W2Vdataset({"cities": ["gijon", "barcelona", "madrid"], "city": "multi", "seed": seed, "data_path": base_path, "save_path": base_path + "Datasets/",
+w2v_dts = W2Vdataset({"cities": ["gijon", "barcelona", "madrid"], "city": "multi", "seed": seed, "data_path": base_path, "save_path": "data/",  # base_path + "Datasets/",
                       "remove_plurals": remove_plurals, "stemming": stemming, "remove_accents": remove_accents, "remove_numbers": remove_numbers})
 
 w2v_mdl = W2V({"model": {"train_set": "ALL_TEXTS", "min_count": 100, "window": 5, "n_dimensions": w2v_dimen, "seed": seed},
@@ -59,7 +59,7 @@ w2v_mdl.train()
 
 # DATASET CONFIG #######################################################################################################
 
-dts_cfg = {"city": city, "seed": seed, "data_path": base_path, "save_path": base_path + "Datasets/",
+dts_cfg = {"city": city, "seed": seed, "data_path": base_path, "save_path": "data/",  # base_path + "Datasets/",
            "remove_plurals": remove_plurals, "stemming": stemming, "remove_accents": remove_accents, "remove_numbers": remove_numbers,
            "min_reviews_rst": min_reviews_rst, "min_reviews_usr": min_reviews_usr,
            "min_df": 5, "num_palabras": bow_n_words, "presencia": False, "text_column": "text",  # BOW
@@ -68,10 +68,13 @@ dts_cfg = {"city": city, "seed": seed, "data_path": base_path, "save_path": base
 rstval = RSTVALdataset(dts_cfg)
 
 # MODELO 1: LSTM2VAL ###################################################################################################
-'''
-lstm2val_mdl_cfg = {"model": {"model_version":model_v, "learning_rate": l_rate, "final_learning_rate": l_rate/100, "epochs": n_epochs, "batch_size": b_size, "seed": seed,
-                            "early_st_first_epoch": 0, "early_st_monitor": "val_mean_absolute_error", "early_st_monitor_mode": "min", "early_st_patience": 20},
+
+lstm2val_mdl_cfg = {"model": {"model_version": model_v, "learning_rate": l_rate, "final_learning_rate": l_rate/100, "epochs": n_epochs, "batch_size": b_size, "seed": seed,
+                              "early_st_first_epoch": 0, "early_st_monitor": "val_mean_absolute_error", "early_st_monitor_mode": "min", "early_st_patience": 20},
                     "session": {"gpu": gpu, "in_md5": False}}
+
+lstm2val_mdl = LSTM2VAL(lstm2val_mdl_cfg, rstval, w2v_mdl)
+lstm2val_mdl.train(dev=True, save_model=False)
 
 if stage == 0:
     lstm2val_mdl = LSTM2VAL(lstm2val_mdl_cfg, rstval, w2v_mdl)
@@ -91,12 +94,12 @@ if stage == 1:
     lstm2val_mdl.baseline(test=True)
     lstm2val_mdl.evaluate(test=True)
 
-'''
+exit()
 # MODELO 2: BOW2VAL  #################################################################################################
 '''
-bow2val_mdl_cfg = {"model": {"model_version":model_v, "learning_rate": l_rate, "final_learning_rate": l_rate/100, "epochs": n_epochs, "batch_size": b_size, "seed": seed,
-                            "early_st_first_epoch": 0, "early_st_monitor": "val_mean_absolute_error", "early_st_monitor_mode": "min", "early_st_patience": 20},
-                    "session": {"gpu": gpu, "in_md5": False}}
+bow2val_mdl_cfg = {"model": {"model_version": model_v, "learning_rate": l_rate, "final_learning_rate": l_rate/100, "epochs": n_epochs, "batch_size": b_size, "seed": seed,
+                             "early_st_first_epoch": 0, "early_st_monitor": "val_mean_absolute_error", "early_st_monitor_mode": "min", "early_st_patience": 20},
+                   "session": {"gpu": gpu, "in_md5": False}}
 
 if stage == 0:
     bow2val_mdl = BOW2VAL(bow2val_mdl_cfg, rstval)
@@ -117,8 +120,8 @@ if stage == 1:
 '''
 # MODELO 3: LSTM2RST ###################################################################################################
 '''
-lstm2rst_mdl_cfg = {"model": {"model_version":model_v, "learning_rate": l_rate, "final_learning_rate": l_rate/100, "epochs": n_epochs, "batch_size": b_size, "seed": seed,
-                            "early_st_first_epoch": 0, "early_st_monitor": "val_accuracy", "early_st_monitor_mode": "max", "early_st_patience": 20},
+lstm2rst_mdl_cfg = {"model": {"model_version": model_v, "learning_rate": l_rate, "final_learning_rate": l_rate/100, "epochs": n_epochs, "batch_size": b_size, "seed": seed,
+                              "early_st_first_epoch": 0, "early_st_monitor": "val_accuracy", "early_st_monitor_mode": "max", "early_st_patience": 20},
                     "session": {"gpu": gpu, "in_md5": False}}
 
 if stage == 0:
@@ -137,22 +140,18 @@ if stage == 1:
     lstm2rst_mdl.train(dev=False, save_model=True)
     lstm2rst_mdl.baseline(test=True)
     lstm2rst_mdl.evaluate(test=True)
-'''
+    lstm2rst_mdl.evaluate_text("Busco un restaurante barato")
 
-'''
 # Obtener, para cada palabra, los restaurantes más afines
-
-
-for wrd_idx, wrd in enumerate(bow2rst_dts.DATA["FEATURES_NAME"]):
+for wrd_idx, wrd in enumerate(rstval.DATA["FEATURES_NAME"]):
     bow_word = np.zeros(bow_n_words)
-    bow_word[wrd_idx]=1
+    bow_word[wrd_idx] = 1
     pred = bow2rst_mdl.MODEL.predict(np.expand_dims(bow_word, 0))
     rst_ids = np.argsort(-pred)[0][:3]
-    rst_names = bow2rst_dts.DATA["TRAIN_DEV"].loc[bow2rst_dts.DATA["TRAIN_DEV"].id_restaurant.isin(rst_ids)].name.unique()
+    rst_names = rstval.DATA["TRAIN_DEV"].loc[rstval.DATA["TRAIN_DEV"].id_restaurant.isin(rst_ids)].name.unique()
 
     print(wrd, " => ", ", ".join(rst_names))
 '''
-
 # MODELO 4: BOW2RST  ###################################################################################################
 '''
 bow2rst_mdl_cfg = {"model": {"model_version":model_v, "learning_rate": l_rate, "final_learning_rate": l_rate/100, "epochs": n_epochs, "batch_size": b_size, "seed": seed,
@@ -178,10 +177,13 @@ if stage == 1:
 
 '''
 # MODELO 5: LSTM&BOW2RST&VAL ###########################################################################################
-
+'''
 lstmbow2rstval_mdl_cfg = {"model": {"model_version": model_v, "learning_rate": l_rate, "final_learning_rate": l_rate/100, "epochs": n_epochs, "batch_size": b_size, "seed": seed,
                                     "early_st_first_epoch": 0, "early_st_monitor": "val_loss", "early_st_monitor_mode": "min", "early_st_patience": 20},
                           "session": {"gpu": gpu, "in_md5": False}}
+
+lstmbow2rstval_mdl = LSTMBOW2RSTVAL(lstmbow2rstval_mdl_cfg, rstval, w2v_mdl)
+lstmbow2rstval_mdl.train(dev=True, save_model=False)
 
 if stage == 0:
     lstmbow2rstval_mdl = LSTMBOW2RSTVAL(lstmbow2rstval_mdl_cfg, rstval, w2v_mdl)
@@ -201,3 +203,18 @@ if stage == 1:
     lstmbow2rstval_mdl.evaluate(test=True)
     # lstmbow2rstval_mdl.eval_custom_text("Busco un restaurante con menú degustación")
     # lstmbow2rstval_mdl.eval_custom_text("¿Dónde puedo comer fabada o cachopo?")
+
+    # Ejemplos "extraños"
+
+    # lstmbow2rstval_mdl.eval_custom_text("Busco un restaurante barato") => La salgar, Casa Zabala, Los Nogales
+    # Segun TAV son de los más caros de Gijón, solo que la gente pone "no es barato". El bow no tiene en cuenta el contexto
+
+    # lstmbow2rstval_mdl.eval_custom_text("Busco un restaurante caro") => La Tabla, La casa pompeyana, Ciudadela
+    # El primero si es caro, el resto aparecen por que la gente creen que son "un poco caros para lo que ofrecen"
+
+    # lstmbow2rstval_mdl.eval_custom_text("Busco un restaurante elegante") => V.Crespo, Auga, La tabla
+    # Acierta de milagro, por algún motivo las reviews que contienen "restaurante" son de sitios caros.
+
+    # lstmbow2rstval_mdl.eval_custom_text("Busco un restaurante malo") => Vesuvio, El mercante, Los nogales
+    # El primero no parece tan malo, el segundo si, está bien, pero el tercero aparece por los comentarios del tipo "por poner algo malo, lo unico malo, no hay nada malo"
+'''

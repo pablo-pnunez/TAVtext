@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from src.datasets.text_datasets.TextDataset import *
+from src.datasets.text_datasets.TextDataset import TextDataset
 from src.Common import to_pickle
 
 import pandas as pd

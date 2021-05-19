@@ -21,7 +21,7 @@ class W2V(ModelClass):
             model = gensim.models.Word2Vec(self.DATASET.DATA[self.CONFIG["model"]["train_set"]],
                                            min_count=self.CONFIG["model"]["min_count"],  # ignoramos las palabras que aparezcan menos de MINC veces
                                            window=self.CONFIG["model"]["window"],  # máxima distancia entre la palabra actual y la predicha
-                                           size=self.CONFIG["model"]["n_dimensions"],  # dimensión del espacio
+                                           vector_size=self.CONFIG["model"]["n_dimensions"],  # dimensión del espacio
                                            seed=self.CONFIG["model"]["seed"],
                                            workers=10)
         else:
