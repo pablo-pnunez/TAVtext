@@ -279,7 +279,7 @@ class LSTMBOW2RSTVAL(KerasModelClass):
 
             # X Palabras más relevantes para predecir el restaurante seleccionado
             word_weights = rst_model_weights[:, rst]  # + rst_model_weights_bias
-            word_ids = np.argsort(-word_weights)[:10]
+            word_ids = np.argsort(-word_weights)[:20]
             most_relevant_w = np.asarray(self.DATASET.DATA["FEATURES_NAME"])[word_ids]
 
             # Intersección entre palabras del usuario y del restaurante
