@@ -6,9 +6,9 @@ i=0
 
 declare -a CITIES=( "gijon" )
 
-declare -a MODELS=( "0" "1" "2" "3" )
-declare -a LRATES=( 5e-5 1e-4 5e-4 1e-3 )
-declare -a BATCHES=( 256 512 1024 )
+declare -a MODELS=( "0" "3" )
+declare -a LRATES=( 5e-5 1e-4 5e-4 )
+declare -a BATCHES=( 128 256 512 1024 )
 declare -a BOWNWORDS=( 300 )
 
 for CITY in "${CITIES[@]}" ;do
@@ -27,7 +27,7 @@ for CITY in "${CITIES[@]}" ;do
           echo "----$BATCH"
 
           #MANUAL GPU
-          nohup /usr/bin/python3.6 -u  Main.py  -stg $STAGE -ct $CITY -mv $MODEL -bs $BATCH -lr $LRATE -bownws $BOWWRDS > "scripts/out/"$CITY"/model_"$MODEL"_"$BATCH"_"$BOWWRDS"_["$LRATE"].txt" &
+          nohup venv/bin/python3.6 -u  Main.py  -stg $STAGE -ct $CITY -mv $MODEL -bs $BATCH -lr $LRATE -bownws $BOWWRDS > "scripts/out/"$CITY"/model_"$MODEL"_"$BATCH"_"$BOWWRDS"_["$LRATE"].txt" &
 
           # Almacenar los PID en una lista hasta alcanzar el máximo de procesos
           pids[${i}]=$!

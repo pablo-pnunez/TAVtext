@@ -25,7 +25,7 @@ args = parse_cmd_args()
 
 city = "gijon".lower().replace(" ", "") if args.ct is None else args.ct
 
-stage = -1 if args.stg is None else args.stg
+stage = 1 if args.stg is None else args.stg
 model_v = "0" if args.mv is None else args.mv
 
 gpu = int(np.argmin(list(map(lambda x: x["mem_used_percent"], nvgpu.gpu_info()))))
@@ -68,23 +68,20 @@ dts_cfg = {"city": city, "seed": seed, "data_path": base_path, "save_path": "dat
 rstval = RSTVALdataset(dts_cfg)
 
 # MODELO 1: LSTM2VAL ###################################################################################################
-
+'''
 lstm2val_mdl_cfg = {"model": {"model_version": model_v, "learning_rate": l_rate, "final_learning_rate": l_rate/100, "epochs": n_epochs, "batch_size": b_size, "seed": seed,
                               "early_st_first_epoch": 0, "early_st_monitor": "val_mean_absolute_error", "early_st_monitor_mode": "min", "early_st_patience": 20},
                     "session": {"gpu": gpu, "in_md5": False}}
 
-lstm2val_mdl = LSTM2VAL(lstm2val_mdl_cfg, rstval, w2v_mdl)
-lstm2val_mdl.train(dev=True, save_model=False)
-
 if stage == 0:
     lstm2val_mdl = LSTM2VAL(lstm2val_mdl_cfg, rstval, w2v_mdl)
     lstm2val_mdl.train(dev=True, save_model=True)
-    lstm2val_mdl.baseline()
-    lstm2val_mdl.evaluate(test=False)
+    # lstm2val_mdl.baseline()
+    # lstm2val_mdl.evaluate(test=False)
 
 if stage == 1:
     # Sobreescribir la configuración por la mejor conocida:
-    with open('models/LSTM2VAL/gijon/648042d8166ce7a02b24f9991b2778ce/cfg.json') as f: best_cfg_data = json.load(f)
+    with open('models/LSTM2VAL/gijon/710d06e2ae13e3ba6e9562138bd74091/cfg.json') as f: best_cfg_data = json.load(f)
     dts_cfg = best_cfg_data["dataset_config"]
     rstval = RSTVALdataset(dts_cfg)
     lstm2val_mdl_cfg["model"] = best_cfg_data["model"]
@@ -94,7 +91,7 @@ if stage == 1:
     lstm2val_mdl.baseline(test=True)
     lstm2val_mdl.evaluate(test=True)
 
-exit()
+'''
 # MODELO 2: BOW2VAL  #################################################################################################
 '''
 bow2val_mdl_cfg = {"model": {"model_version": model_v, "learning_rate": l_rate, "final_learning_rate": l_rate/100, "epochs": n_epochs, "batch_size": b_size, "seed": seed,
@@ -104,12 +101,12 @@ bow2val_mdl_cfg = {"model": {"model_version": model_v, "learning_rate": l_rate, 
 if stage == 0:
     bow2val_mdl = BOW2VAL(bow2val_mdl_cfg, rstval)
     bow2val_mdl.train(dev=True, save_model=True)
-    bow2val_mdl.baseline()
-    bow2val_mdl.evaluate(test=False)
+    # bow2val_mdl.baseline()
+    # bow2val_mdl.evaluate(test=False)
 
 if stage == 1:
     # Sobreescribir la configuración por la mejor conocida:
-    with open('models/BOW2VAL/gijon/35f62204f54af44c43df8f1de1829abf/cfg.json') as f: best_cfg_data = json.load(f)
+    with open('models/BOW2VAL/gijon/9a6104124e023491d7aa2b711b2fdd14/cfg.json') as f: best_cfg_data = json.load(f)
     rstval = RSTVALdataset(dts_cfg)
     bow2val_mdl_cfg["model"] = best_cfg_data["model"]
     bow2val_mdl = BOW2VAL(bow2val_mdl_cfg, rstval)
@@ -127,12 +124,12 @@ lstm2rst_mdl_cfg = {"model": {"model_version": model_v, "learning_rate": l_rate,
 if stage == 0:
     lstm2rst_mdl = LSTM2RST(lstm2rst_mdl_cfg, rstval, w2v_mdl)
     lstm2rst_mdl.train(dev=True, save_model=True)
-    lstm2rst_mdl.baseline()
-    lstm2rst_mdl.evaluate(test=False)
+    # lstm2rst_mdl.baseline()
+    # lstm2rst_mdl.evaluate(test=False)
 
 if stage == 1:
     # Sobreescribir la configuración por la mejor conocida:
-    with open('models/LSTM2RST/gijon/42e900956c0a8cb09d72c383a143b3d2/cfg.json') as f: best_cfg_data = json.load(f)
+    with open('models/LSTM2RST/gijon/e6991621f15ff02b5e4a3812eff9bd0d/cfg.json') as f: best_cfg_data = json.load(f)
     rstval = RSTVALdataset(dts_cfg)
     lstm2rst_mdl_cfg["model"] = best_cfg_data["model"]
     lstm2rst_mdl = LSTM2RST(lstm2rst_mdl_cfg, rstval, w2v_mdl)
@@ -141,7 +138,8 @@ if stage == 1:
     lstm2rst_mdl.baseline(test=True)
     lstm2rst_mdl.evaluate(test=True)
     lstm2rst_mdl.evaluate_text("Busco un restaurante barato")
-
+'''
+'''
 # Obtener, para cada palabra, los restaurantes más afines
 for wrd_idx, wrd in enumerate(rstval.DATA["FEATURES_NAME"]):
     bow_word = np.zeros(bow_n_words)
@@ -154,19 +152,19 @@ for wrd_idx, wrd in enumerate(rstval.DATA["FEATURES_NAME"]):
 '''
 # MODELO 4: BOW2RST  ###################################################################################################
 '''
-bow2rst_mdl_cfg = {"model": {"model_version":model_v, "learning_rate": l_rate, "final_learning_rate": l_rate/100, "epochs": n_epochs, "batch_size": b_size, "seed": seed,
-                            "early_st_first_epoch": 20, "early_st_monitor": "val_accuracy", "early_st_monitor_mode": "max", "early_st_patience": 20},
-                    "session": {"gpu": gpu, "in_md5": False}}
+bow2rst_mdl_cfg = {"model": {"model_version": model_v, "learning_rate": l_rate, "final_learning_rate": l_rate/100, "epochs": n_epochs, "batch_size": b_size, "seed": seed,
+                             "early_st_first_epoch": 20, "early_st_monitor": "val_accuracy", "early_st_monitor_mode": "max", "early_st_patience": 20},
+                   "session": {"gpu": gpu, "in_md5": False}}
 
 if stage == 0:
     bow2rst_mdl = BOW2RST(bow2rst_mdl_cfg, rstval)
     bow2rst_mdl.train(dev=True, save_model=True)
-    bow2rst_mdl.baseline()
-    bow2rst_mdl.evaluate(test=False)
+    # bow2rst_mdl.baseline()
+    # bow2rst_mdl.evaluate(test=False)
 
 if stage == 1:
     # Sobreescribir la configuración por la mejor conocida:
-    with open('models/BOW2RST/gijon/f08d283c548647bf5a43d56865af291e/cfg.json') as f: best_cfg_data = json.load(f)
+    with open('models/BOW2RST/gijon/ff7a6bb1de37283871842337f0946716/cfg.json') as f: best_cfg_data = json.load(f)
     rstval = RSTVALdataset(dts_cfg)
     bow2rst_mdl_cfg["model"] = best_cfg_data["model"]
     bow2rst_mdl = BOW2RST(bow2rst_mdl_cfg, rstval)
@@ -174,16 +172,12 @@ if stage == 1:
     bow2rst_mdl.train(dev=False, save_model=True)
     bow2rst_mdl.baseline(test=True)
     bow2rst_mdl.evaluate(test=True)
-
 '''
 # MODELO 5: LSTM&BOW2RST&VAL ###########################################################################################
-'''
+
 lstmbow2rstval_mdl_cfg = {"model": {"model_version": model_v, "learning_rate": l_rate, "final_learning_rate": l_rate/100, "epochs": n_epochs, "batch_size": b_size, "seed": seed,
                                     "early_st_first_epoch": 0, "early_st_monitor": "val_loss", "early_st_monitor_mode": "min", "early_st_patience": 20},
                           "session": {"gpu": gpu, "in_md5": False}}
-
-lstmbow2rstval_mdl = LSTMBOW2RSTVAL(lstmbow2rstval_mdl_cfg, rstval, w2v_mdl)
-lstmbow2rstval_mdl.train(dev=True, save_model=False)
 
 if stage == 0:
     lstmbow2rstval_mdl = LSTMBOW2RSTVAL(lstmbow2rstval_mdl_cfg, rstval, w2v_mdl)
@@ -193,7 +187,7 @@ if stage == 0:
 
 if stage == 1:
     # Sobreescribir la configuración por la mejor conocida:
-    with open('models/LSTMBOW2RSTVAL/gijon/1ad6768c985435a57e9767b76c5d1ee9/cfg.json') as f: best_cfg_data = json.load(f)
+    with open('models/LSTMBOW2RSTVAL/gijon/f06cb56740c05b1a6dbeba34230a8db3/cfg.json') as f: best_cfg_data = json.load(f)
     rstval = RSTVALdataset(dts_cfg)
     lstmbow2rstval_mdl_cfg["model"] = best_cfg_data["model"]
     lstmbow2rstval_mdl = LSTMBOW2RSTVAL(lstmbow2rstval_mdl_cfg, rstval, w2v_mdl)
@@ -201,20 +195,21 @@ if stage == 1:
     lstmbow2rstval_mdl.train(dev=False, save_model=True)
     lstmbow2rstval_mdl.baseline(test=True)
     lstmbow2rstval_mdl.evaluate(test=True)
-    # lstmbow2rstval_mdl.eval_custom_text("Busco un restaurante con menú degustación")
-    # lstmbow2rstval_mdl.eval_custom_text("¿Dónde puedo comer fabada o cachopo?")
+    lstmbow2rstval_mdl.eval_custom_text("Busco un restaurante con menú degustación")
+    lstmbow2rstval_mdl.eval_custom_text("¿Dónde puedo comer fabada o cachopo?")
 
     # Ejemplos "extraños"
 
-    # lstmbow2rstval_mdl.eval_custom_text("Busco un restaurante barato") => La salgar, Casa Zabala, Los Nogales
+    lstmbow2rstval_mdl.eval_custom_text("Busco un restaurante barato")  # => La salgar, Casa Zabala, Los Nogales
     # Segun TAV son de los más caros de Gijón, solo que la gente pone "no es barato". El bow no tiene en cuenta el contexto
 
-    # lstmbow2rstval_mdl.eval_custom_text("Busco un restaurante caro") => La Tabla, La casa pompeyana, Ciudadela
+    lstmbow2rstval_mdl.eval_custom_text("Busco un restaurante caro")  # => La Tabla, La casa pompeyana, Ciudadela
     # El primero si es caro, el resto aparecen por que la gente creen que son "un poco caros para lo que ofrecen"
 
-    # lstmbow2rstval_mdl.eval_custom_text("Busco un restaurante elegante") => V.Crespo, Auga, La tabla
+    lstmbow2rstval_mdl.eval_custom_text("Busco un restaurante elegante")  # => V.Crespo, Auga, La tabla
     # Acierta de milagro, por algún motivo las reviews que contienen "restaurante" son de sitios caros.
 
-    # lstmbow2rstval_mdl.eval_custom_text("Busco un restaurante malo") => Vesuvio, El mercante, Los nogales
+    lstmbow2rstval_mdl.eval_custom_text("Busco un restaurante malo")  # => Vesuvio, El mercante, Los nogales
     # El primero no parece tan malo, el segundo si, está bien, pero el tercero aparece por los comentarios del tipo "por poner algo malo, lo unico malo, no hay nada malo"
-'''
+
+    lstmbow2rstval_mdl.eval_custom_text("¿Dónde puedo comer arroz con bugre con buenas vistas?")
