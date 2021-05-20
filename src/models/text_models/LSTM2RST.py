@@ -99,9 +99,14 @@ class LSTM2RST(RSTModel):
         for rst in preds_rst:
             print("\t- %s" % (self.DATASET.DATA["TRAIN_DEV"].loc[self.DATASET.DATA["TRAIN_DEV"].id_restaurant == rst]["name"].values[0]))
 
+        print("\t-------------")
+
         # Para cada una de las palabras de la review, obtener el restaurante que más importancia le da
         for w in lstm_text[0]:
             preds_wrd = self.MODEL.predict(tf.keras.preprocessing.sequence.pad_sequences([[w]], maxlen=self.DATASET.DATA["MAX_LEN_PADDING"])).flatten()
+            restr_wrd = np.argsort(-preds_wrd.flatten())[:3]
+            restr_wrd = self.DATASET.DATA["TRAIN_DEV"].loc[self.DATASET.DATA["TRAIN_DEV"].id_restaurant.isin(restr_wrd)]["name"].unique().tolist()
+            print("\t ·%s => %s " % (list(self.DATASET.DATA["WORD_INDEX"].keys())[w-1], ", ".join(restr_wrd)))
 
 
 class MySequence(BaseSequence):

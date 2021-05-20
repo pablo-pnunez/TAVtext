@@ -195,21 +195,7 @@ if stage == 1:
     lstmbow2rstval_mdl.train(dev=False, save_model=True)
     lstmbow2rstval_mdl.baseline(test=True)
     lstmbow2rstval_mdl.evaluate(test=True)
-    lstmbow2rstval_mdl.eval_custom_text("Busco un restaurante con menú degustación")
-    lstmbow2rstval_mdl.eval_custom_text("¿Dónde puedo comer fabada o cachopo?")
 
-    # Ejemplos "extraños"
-
-    lstmbow2rstval_mdl.eval_custom_text("Busco un restaurante barato")  # => La salgar, Casa Zabala, Los Nogales
-    # Segun TAV son de los más caros de Gijón, solo que la gente pone "no es barato". El bow no tiene en cuenta el contexto
-
-    lstmbow2rstval_mdl.eval_custom_text("Busco un restaurante caro")  # => La Tabla, La casa pompeyana, Ciudadela
-    # El primero si es caro, el resto aparecen por que la gente creen que son "un poco caros para lo que ofrecen"
-
-    lstmbow2rstval_mdl.eval_custom_text("Busco un restaurante elegante")  # => V.Crespo, Auga, La tabla
-    # Acierta de milagro, por algún motivo las reviews que contienen "restaurante" son de sitios caros.
-
-    lstmbow2rstval_mdl.eval_custom_text("Busco un restaurante malo")  # => Vesuvio, El mercante, Los nogales
-    # El primero no parece tan malo, el segundo si, está bien, pero el tercero aparece por los comentarios del tipo "por poner algo malo, lo unico malo, no hay nada malo"
-
-    lstmbow2rstval_mdl.eval_custom_text("¿Dónde puedo comer arroz con bugre con buenas vistas?")
+    # Ejemplos de recomendación
+    lstmbow2rstval_mdl.eval_custom_text("Quiero comer un arroz con bogavante y con buenas vistas")
+    lstmbow2rstval_mdl.eval_custom_text("Quiero comer un buen cachopo y beber sidra")

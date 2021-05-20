@@ -146,4 +146,6 @@ class TextDataset(DatasetClass):
         spanish_stopwords += ["segun", "iba", "manera", "arriba"]
         spanish_stopwords += ["queda", "parecia", "imposible", "proxima"]
 
+        # ToDo: Quitar "saludos", "lorenzo" en el futuro
+
         return spanish_stopwords
