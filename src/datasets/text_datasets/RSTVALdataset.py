@@ -3,6 +3,7 @@
 from src.datasets.text_datasets.TextDataset import *
 from src.Common import to_pickle, print_g
 
+import os
 import pandas as pd
 import tensorflow as tf
 from sklearn.preprocessing import normalize
@@ -47,7 +48,9 @@ class RSTVALdataset(TextDataset):
             print("· Nº de ejemplos resultantes: %d" % len(all_data))
             print("· Nº de restaurantes: %d" % len(all_data.restaurantId.unique()))
             print("· Nº de usuarios: %d" % len(all_data.userId.unique()))
-            print("· Nº reviews medio por usuario: %f" % all_data.groupby("userId").apply(len).mean())
+            print("· Nº restaurantes medio por usuario: %f" % all_data.groupby("userId").apply(lambda x: len(x.restaurantId.unique())).mean())
+            os.makedirs("data/raw/", exist_ok=True)
+            all_data[["reviewId", "userId", "restaurantId", "rating", "text"]].to_pickle("data/raw/%s.pkl" % self.CONFIG["city"])
 
             # Crear id de restaurantes (para el ONE-HOT)
             rst_newid = pd.DataFrame(zip(r_mth_x, range(len(r_mth_x))), columns=["restaurantId", "id_restaurant"])
