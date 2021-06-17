@@ -43,6 +43,12 @@ class RSTVALdataset(TextDataset):
             u_mth_x = u_mth_x.loc[u_mth_x[0] == 1]["userId"].values
             all_data = all_data.loc[all_data["userId"].isin(u_mth_x)]
 
+            # Obtener los datos del conjunto tras el filtrado (para el paper)
+            print("· Nº de ejemplos resultantes: %d" % len(all_data))
+            print("· Nº de restaurantes: %d" % len(all_data.restaurantId.unique()))
+            print("· Nº de usuarios: %d" % len(all_data.userId.unique()))
+            print("· Nº reviews medio por usuario: %f" % all_data.groupby("userId").apply(len).mean())
+
             # Crear id de restaurantes (para el ONE-HOT)
             rst_newid = pd.DataFrame(zip(r_mth_x, range(len(r_mth_x))), columns=["restaurantId", "id_restaurant"])
             all_data = all_data.merge(rst_newid, on="restaurantId")
