@@ -26,6 +26,6 @@ class VALModel(KerasModelClass):
             mae = np.abs(the_mean - self.DATASET.DATA["TEST"].rating.values).mean()
             mse = np.power(the_mean - self.DATASET.DATA["TEST"].rating.values, 2).mean()
 
-        ttl = "TEST" if test else "DEV" 
+        ttl = "TEST" if test else "DEV"
 
         print_g("%s baseline MSE: %.4f  MAE: %.4f" % (ttl, mse, mae))

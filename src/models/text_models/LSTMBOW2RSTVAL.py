@@ -38,7 +38,7 @@ class LSTMBOW2RSTVAL(KerasModelClass):
         # Borrar modelo para ahorrar memoria
         del word_vectors
     
-        model = self.get_sub_model(w2v_emb_size,embedding_matrix)
+        model = self.get_sub_model(w2v_emb_size, embedding_matrix)
 
         return model
 
@@ -125,7 +125,7 @@ class LSTMBOW2RSTVAL(KerasModelClass):
 
         ret = self.MODEL.evaluate(test_set, verbose=0)
 
-        print_g(dict(zip(self.MODEL.metrics_names,ret)))
+        print_g(dict(zip(self.MODEL.metrics_names, ret)))
 
     def predict(self, test=False):
         if test:
