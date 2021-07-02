@@ -28,10 +28,19 @@ class RSTVALdataset(TextDataset):
 
             if "cities" in self.CONFIG.keys():
                 # Cargar los ficheros correspondientes (múltiples ciudades)
-                all_data = pd.concat([self.load_city(city) for city in self.CONFIG["cities"]])
+                all_data = []
+                stemming_dict = []
+                for city in self.CONFIG["cities"]:
+                    ct_dt, ct_st = self.load_city(city)
+                    all_data = pd.concat([all_data, ct_dt])
+                    stemming_dict = pd.concat([stemming_dict, ct_st])
+
+                all_data = all_data.sample(frac=1, random_state=self.CONFIG["seed"]).reset_index(drop=True)
+                stemming_dict = stemming_dict.drop_duplicates().sort_values("stemming").reset_index(drop=True)
+
             else:
                 # Cargar las reviews
-                all_data = self.load_city(self.CONFIG["city"])
+                all_data, stemming_dict = self.load_city(self.CONFIG["city"])
 
             # Restaurantes con X o más reseñas
             r_mth_x = all_data.groupby("restaurantId").apply(lambda x: 0 if len(x) < self.CONFIG["min_reviews_rst"] else 1).reset_index()
@@ -128,6 +137,7 @@ class RSTVALdataset(TextDataset):
             to_pickle(self.DATASET_PATH, "VECTORIZER", vectorizer)
             to_pickle(self.DATASET_PATH, "FEATURES_NAME", features_name)
             to_pickle(self.DATASET_PATH, "N_RST", len(all_data["id_restaurant"].unique()))
+            to_pickle(self.DATASET_PATH, "STEMMING_DICT", stemming_dict)
 
             to_pickle(self.DATASET_PATH, "WORD_INDEX", word_index)
             to_pickle(self.DATASET_PATH, "VOCAB_SIZE", len(word_index) + 1)

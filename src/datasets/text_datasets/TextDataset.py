@@ -20,6 +20,16 @@ class TextDataset(DatasetClass):
 
     def prerpocess_text(self, text):
 
+        # A minusculas, eliminar números, acentos etc...
+        text = self.__preprocess_text_base__(text)
+
+        # Hacer stemming si está activado
+        text = self.__preprocess_text_stemming__(text)
+
+        return text
+
+    def __preprocess_text_base__(self, text):
+
         # A minusculas
         text = text.lower()
 
@@ -41,6 +51,10 @@ class TextDataset(DatasetClass):
             rgx_d = r"\s*\d+\s*"
             text = re.sub(rgx_d, ' ', text).strip()
 
+        return text
+
+    def __preprocess_text_stemming__(self, text):
+
         # Eliminar plurales?
         if self.CONFIG["remove_plurals"]:
             stemmer = PorterStemmer()
@@ -50,7 +64,7 @@ class TextDataset(DatasetClass):
         if self.CONFIG["stemming"]:
             stemmer = SnowballStemmer('spanish')
             text = " ".join([stemmer.stem(w) for w in text.split(" ")])
-
+                  
         return text
 
     def load_city(self, city):
@@ -85,8 +99,29 @@ class TextDataset(DatasetClass):
             progressbar=True
         )
 
-        rev["text"] = rev["text"].mapply(self.prerpocess_text)
-        rev["title"] = rev["title"].mapply(self.prerpocess_text)
+        # Primero preprocesamos el texto eliminando elementos básicos (a minusculas, quitar números)
+        rev["text"] = rev["text"].mapply(self.__preprocess_text_base__)
+        rev["title"] = rev["title"].mapply(self.__preprocess_text_base__)
+
+        # Almancenamos una copia de lo anterior y hacemos stemming (si está activado)
+        rev["text_base"] = rev["text"]
+        rev["title_base"] = rev["title"]
+
+        rev["text"] = rev["text"].mapply(self.__preprocess_text_stemming__)
+        rev["title"] = rev["title"].mapply(self.__preprocess_text_stemming__)
+
+        # Obtenemos un diccionario palabra_base -> stemming (para evitar error de Allocation hay que hacerlo así de lento)
+                
+        stemming_dict = pd.DataFrame(columns=["stemming", "real"])
+        batches = np.array_split(rev, len(rev) // 10000)
+
+        for b in tqdm(batches, desc="Stemming dict", total=len(batches)):
+            base = np.concatenate((b.title_base+" "+b.text_base).str.split(" ").values)
+            stmg = np.concatenate((b.title+" "+b.text).str.split(" ").values)
+            stemming_dict = pd.concat([stemming_dict, pd.DataFrame(zip(stmg, base), columns=stemming_dict.columns)])
+            stemming_dict = stemming_dict.drop_duplicates()
+     
+        stemming_dict = stemming_dict.sort_values("stemming").reset_index(drop=True)
 
         # Obtener número de palabras de las reviews y del título
         rev["n_words_text"] = rev["text"].apply(lambda x: 0 if len(x) == 0 else len(x.split(" ")))
@@ -99,7 +134,7 @@ class TextDataset(DatasetClass):
         rev["n_char_text"] = rev["text"].apply(lambda x: len(x))
         rev = rev.loc[rev["n_char_text"] <= 2000]
 
-        return rev
+        return rev, stemming_dict
 
     def __get_es_stopwords__(self):
         # nltk.download('stopwords')

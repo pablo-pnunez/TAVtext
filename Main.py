@@ -39,7 +39,7 @@ min_reviews_usr = 1
 bow_n_words = 300 if args.bownws is None else args.bownws
 w2v_dimen = 300
 
-stemming = False
+stemming = True
 remove_plurals = False
 remove_accents = True
 remove_numbers = True
@@ -68,11 +68,15 @@ dts_cfg = {"city": city, "seed": seed, "data_path": base_path, "save_path": "dat
 rstval = RSTVALdataset(dts_cfg)
 
 # MODELO 1: LSTM2VAL ###################################################################################################
-'''
+
 lstm2val_mdl_cfg = {"model": {"model_version": model_v, "learning_rate": l_rate, "final_learning_rate": l_rate/100, "epochs": n_epochs, "batch_size": b_size, "seed": seed,
                               "early_st_first_epoch": 0, "early_st_monitor": "val_mean_absolute_error", "early_st_monitor_mode": "min", "early_st_patience": 20},
                     "session": {"gpu": gpu, "in_md5": False}}
 
+lstm2val_mdl = LSTM2VAL(lstm2val_mdl_cfg, rstval, w2v_mdl)
+lstm2val_mdl.train(dev=True, save_model=False)
+
+'''
 if stage == 0:
     lstm2val_mdl = LSTM2VAL(lstm2val_mdl_cfg, rstval, w2v_mdl)
     lstm2val_mdl.train(dev=True, save_model=True)
@@ -174,7 +178,7 @@ if stage == 1:
     bow2rst_mdl.evaluate(test=True)
 '''
 # MODELO 5: LSTM&BOW2RST&VAL ###########################################################################################
-
+'''
 lstmbow2rstval_mdl_cfg = {"model": {"model_version": model_v, "learning_rate": l_rate, "final_learning_rate": l_rate/100, "epochs": n_epochs, "batch_size": b_size, "seed": seed,
                                     "early_st_first_epoch": 0, "early_st_monitor": "val_loss", "early_st_monitor_mode": "min", "early_st_patience": 20},
                           "session": {"gpu": gpu, "in_md5": False}}
@@ -199,3 +203,4 @@ if stage == 1:
     # Ejemplos de recomendación
     lstmbow2rstval_mdl.eval_custom_text("Quiero comer un arroz con bogavante y con buenas vistas")
     lstmbow2rstval_mdl.eval_custom_text("Quiero comer un buen cachopo y beber sidra")
+'''
