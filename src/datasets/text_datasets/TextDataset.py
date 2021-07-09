@@ -1,14 +1,18 @@
 # -*- coding: utf-8 -*-
 from src.datasets.DatasetClass import DatasetClass
 
+import os
 import re
+import json
 import nltk
+import spacy
+import mapply
+import numpy as np
 import pandas as pd
 from tqdm import tqdm
-import numpy as np
 from unicodedata import normalize
 from nltk.corpus import stopwords
-import mapply
+import es_core_news_sm as spacy_es_model
 from nltk.stem import SnowballStemmer, PorterStemmer
 
 
@@ -16,6 +20,8 @@ class TextDataset(DatasetClass):
 
     def __init__(self, config):
         self.SPANISH_STOPWORDS = self.__get_es_stopwords__()
+        self.NLP = spacy_es_model.load(disable=["parser", "ner", "attribute_ruler"])
+
         DatasetClass.__init__(self, config=config)
 
     def prerpocess_text(self, text):
@@ -41,6 +47,10 @@ class TextDataset(DatasetClass):
         rgx_a = r'\s*[^\w\s]+\s*'
         text = re.sub(rgx_a, ' ', text).strip()
 
+        # Tagging & Lemmatización
+        if self.CONFIG["lemmatization"]:
+            text = " ".join([e.lemma_ for e in self.NLP(text)])
+
         # Eliminar accentos?
         if self.CONFIG["remove_accents"]:
             rgx_c = r"([^n\u0300-\u036f]|n(?!\u0303(?![\u0300-\u036f])))[\u0300-\u036f]+"
@@ -64,7 +74,7 @@ class TextDataset(DatasetClass):
         if self.CONFIG["stemming"]:
             stemmer = SnowballStemmer('spanish')
             text = " ".join([stemmer.stem(w) for w in text.split(" ")])
-                  
+               
         return text
 
     def load_city(self, city):

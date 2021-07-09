@@ -15,7 +15,7 @@ class RSTVALdataset(TextDataset):
     def __init__(self, config):
         TextDataset.__init__(self, config=config)
 
-    def get_data(self, load=["TRAIN_DEV", "TEST",  "WORD_INDEX", "VOCAB_SIZE", "MAX_LEN_PADDING", "TEXT_TOKENIZER", "VECTORIZER", "FEATURES_NAME", "N_RST"]):
+    def get_data(self, load=["TRAIN_DEV", "TEST",  "WORD_INDEX", "VOCAB_SIZE", "MAX_LEN_PADDING", "TEXT_TOKENIZER", "VECTORIZER", "FEATURES_NAME", "N_RST", "STEMMING_DICT"]):
 
         # Cargar los datos
         dict_data = self.get_dict_data(self.DATASET_PATH, load)

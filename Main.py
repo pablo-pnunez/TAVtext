@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+import json
+import nvgpu
+import numpy as np
 
 from src.Common import parse_cmd_args
 
@@ -15,18 +18,15 @@ from src.models.text_models.BOW2RST import BOW2RST
 from src.models.text_models.LSTMBOW2RSTVAL import LSTMFBOW2RSTVAL
 from src.models.text_models.LSTMBOW2RSTVAL import LSTMBOW2RSTVAL
 
-import json
-import nvgpu
-import numpy as np
 
-########################################################################################################################
+# #######################################################################################################################
 
 args = parse_cmd_args()
 
 city = "gijon".lower().replace(" ", "") if args.ct is None else args.ct
 
-stage = 1 if args.stg is None else args.stg
-model_v = "0" if args.mv is None else args.mv
+stage = 0 if args.stg is None else args.stg
+model_v = "2" if args.mv is None else args.mv
 
 gpu = int(np.argmin(list(map(lambda x: x["mem_used_percent"], nvgpu.gpu_info()))))
 seed = 100 if args.sd is None else args.sd
@@ -39,18 +39,19 @@ min_reviews_usr = 1
 bow_n_words = 300 if args.bownws is None else args.bownws
 w2v_dimen = 300
 
-stemming = True
+lemmatization = True
+stemming = False
+
 remove_plurals = False
 remove_accents = True
 remove_numbers = True
 
 base_path = "/media/nas/pperez/data/TripAdvisor/"
 
-
 # W2V ##################################################################################################################
 
 w2v_dts = W2Vdataset({"cities": ["gijon", "barcelona", "madrid"], "city": "multi", "seed": seed, "data_path": base_path, "save_path": "data/",  # base_path + "Datasets/",
-                      "remove_plurals": remove_plurals, "stemming": stemming, "remove_accents": remove_accents, "remove_numbers": remove_numbers})
+                      "remove_plurals": remove_plurals, "stemming": stemming, "lemmatization": lemmatization, "remove_accents": remove_accents, "remove_numbers": remove_numbers})
 
 w2v_mdl = W2V({"model": {"train_set": "ALL_TEXTS", "min_count": 100, "window": 5, "n_dimensions": w2v_dimen, "seed": seed},
                "session": {"gpu": gpu, "in_md5": False}}, w2v_dts)
@@ -60,7 +61,7 @@ w2v_mdl.train()
 # DATASET CONFIG #######################################################################################################
 
 dts_cfg = {"city": city, "seed": seed, "data_path": base_path, "save_path": "data/",  # base_path + "Datasets/",
-           "remove_plurals": remove_plurals, "stemming": stemming, "remove_accents": remove_accents, "remove_numbers": remove_numbers,
+           "remove_plurals": remove_plurals, "stemming": stemming, "lemmatization": lemmatization, "remove_accents": remove_accents, "remove_numbers": remove_numbers,
            "min_reviews_rst": min_reviews_rst, "min_reviews_usr": min_reviews_usr,
            "min_df": 5, "num_palabras": bow_n_words, "presencia": False, "text_column": "text",  # BOW
            "n_max_words": 0, "test_dev_split": .1, "truncate_padding": True}  # LSTM
@@ -69,6 +70,7 @@ rstval = RSTVALdataset(dts_cfg)
 
 # MODELO 1: LSTM2VAL ###################################################################################################
 
+'''
 lstm2val_mdl_cfg = {"model": {"model_version": model_v, "learning_rate": l_rate, "final_learning_rate": l_rate/100, "epochs": n_epochs, "batch_size": b_size, "seed": seed,
                               "early_st_first_epoch": 0, "early_st_monitor": "val_mean_absolute_error", "early_st_monitor_mode": "min", "early_st_patience": 20},
                     "session": {"gpu": gpu, "in_md5": False}}
@@ -76,7 +78,6 @@ lstm2val_mdl_cfg = {"model": {"model_version": model_v, "learning_rate": l_rate,
 lstm2val_mdl = LSTM2VAL(lstm2val_mdl_cfg, rstval, w2v_mdl)
 lstm2val_mdl.train(dev=True, save_model=False)
 
-'''
 if stage == 0:
     lstm2val_mdl = LSTM2VAL(lstm2val_mdl_cfg, rstval, w2v_mdl)
     lstm2val_mdl.train(dev=True, save_model=True)
@@ -94,8 +95,8 @@ if stage == 1:
     lstm2val_mdl.train(dev=False, save_model=True)
     lstm2val_mdl.baseline(test=True)
     lstm2val_mdl.evaluate(test=True)
-
 '''
+
 # MODELO 2: BOW2VAL  #################################################################################################
 '''
 bow2val_mdl_cfg = {"model": {"model_version": model_v, "learning_rate": l_rate, "final_learning_rate": l_rate/100, "epochs": n_epochs, "batch_size": b_size, "seed": seed,
@@ -120,7 +121,7 @@ if stage == 1:
     bow2val_mdl.evaluate(test=True)
 '''
 # MODELO 3: LSTM2RST ###################################################################################################
-'''
+
 lstm2rst_mdl_cfg = {"model": {"model_version": model_v, "learning_rate": l_rate, "final_learning_rate": l_rate/100, "epochs": n_epochs, "batch_size": b_size, "seed": seed,
                               "early_st_first_epoch": 0, "early_st_monitor": "val_accuracy", "early_st_monitor_mode": "max", "early_st_patience": 20},
                     "session": {"gpu": gpu, "in_md5": False}}
@@ -142,7 +143,7 @@ if stage == 1:
     lstm2rst_mdl.baseline(test=True)
     lstm2rst_mdl.evaluate(test=True)
     lstm2rst_mdl.evaluate_text("Busco un restaurante barato")
-'''
+
 '''
 # Obtener, para cada palabra, los restaurantes más afines
 for wrd_idx, wrd in enumerate(rstval.DATA["FEATURES_NAME"]):
