@@ -4,12 +4,13 @@ from src.Common import get_pickle, print_w
 import os
 import json
 import hashlib
+import collections
 
 
 class DatasetClass:
 
     def __init__(self, config):
-        self.CONFIG = config
+        self.CONFIG = dict(collections.OrderedDict(sorted(config.items())))  # Ordenar para evitar cambios en MD5
         self.DATASET_PATH = self.CONFIG["save_path"] + self.__class__.__name__ + "/" + self.__get_md5__() + "/"
 
         # Crear carpeta para el dataset

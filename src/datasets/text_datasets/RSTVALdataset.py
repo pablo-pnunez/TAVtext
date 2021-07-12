@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from src.datasets.text_datasets.TextDataset import *
-from src.Common import to_pickle, print_g
+from src.Common import to_pickle, print_g, print_e
 
 import os
 import pandas as pd
@@ -70,11 +70,33 @@ class RSTVALdataset(TextDataset):
             all_data = all_data.sample(frac=1, random_state=self.CONFIG["seed"]).reset_index(drop=True)
 
             # Crear vectores del BOW
-            vectorizer = CountVectorizer(stop_words=self.SPANISH_STOPWORDS, min_df=self.CONFIG["min_df"], max_features=self.CONFIG["num_palabras"], binary=self.CONFIG["presencia"])
+            if self.CONFIG["remove_stopwords"] == 0:
+                vectorizer = CountVectorizer(stop_words=None, min_df=self.CONFIG["min_df"], max_features=self.CONFIG["num_palabras"], binary=self.CONFIG["presencia"])
+            elif self.CONFIG["remove_stopwords"] == 1:
+                vectorizer = CountVectorizer(stop_words=self.SPANISH_STOPWORDS, min_df=self.CONFIG["min_df"], max_features=self.CONFIG["num_palabras"], binary=self.CONFIG["presencia"])
+            elif self.CONFIG["remove_stopwords"] == 2:
+                if self.CONFIG["lemmatization"]:
+                    # Se hace un countvectorizer con todas las palabras para obtener la frecuencia de cada una
+                    vectorizer = CountVectorizer(stop_words=None, min_df=self.CONFIG["min_df"], max_features=None, binary=self.CONFIG["presencia"])
+                    bow = vectorizer.fit_transform(all_data[self.CONFIG["text_column"]])
+                    word_freq = np.asarray(bow.sum(axis=0))[0]
+                    # Se obtiene, para cada palabra, su POS (part of speech)
+                    word_pos = [w[0].pos_ for w in self.NLP.pipe(vectorizer.get_feature_names())]
+                    # Se alamacena todo en un DF para buscar X palabras más frecuentes que cumplan las exigencias
+                    word_data = pd.DataFrame(zip(vectorizer.get_feature_names(), word_freq, word_pos), columns=["feature", "freq", "pos"]).sort_values("freq", ascending=False).reset_index(drop=True)
+                    selected_words = word_data.loc[word_data.pos.isin(["ADJ", "VERB"])].iloc[:self.CONFIG["num_palabras"]].reset_index(drop=True)
+                    # Todas las que no sean seleccionadas, se consideran stopwords
+                    stop_words = word_data.loc[~word_data.feature.isin(selected_words.feature)].feature.tolist()
+                    vectorizer = CountVectorizer(stop_words=stop_words, min_df=self.CONFIG["min_df"], max_features=self.CONFIG["num_palabras"], binary=self.CONFIG["presencia"])
+                else:
+                    print_e("La selección automática de palabras requiere de lemmatización.")
+                    exit()
+
             bow = vectorizer.fit_transform(all_data[self.CONFIG["text_column"]])
 
-            # El vocabulary_ es un diccionario {palabra:idx_columna}. Se ordena para saber a que palabra corresponde cada columna de las <self.CONFIG["num_palabras"]>
-            features_name = sorted(vectorizer.vocabulary_)
+            # Cada palabra corresponde con cada columna de las <self.CONFIG["num_palabras"]>
+            features_name = vectorizer.get_feature_names()
+            np.savetxt(self.DATASET_PATH+"features.csv", features_name, fmt="%s")
 
             # Normalizar vector de cada review
             normed_bow = normalize(bow.todense(), axis=1, norm='l1')
