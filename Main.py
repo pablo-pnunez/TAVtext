@@ -28,9 +28,9 @@ city = "gijon".lower().replace(" ", "") if args.ct is None else args.ct
 stage = 0 if args.stg is None else args.stg
 model_v = "3" if args.mv is None else args.mv
 
-gpu = 0 # int(np.argmin(list(map(lambda x: x["mem_used_percent"], nvgpu.gpu_info()))))
+gpu = 0  # int(np.argmin(list(map(lambda x: x["mem_used_percent"], nvgpu.gpu_info()))))
 seed = 100 if args.sd is None else args.sd
-l_rate = 1e-4 if args.lr is None else args.lr
+l_rate = 1e-3 if args.lr is None else args.lr
 n_epochs = 1000 if args.ep is None else args.ep
 b_size = 256 if args.bs is None else args.bs
 
@@ -39,8 +39,8 @@ min_reviews_usr = 1
 bow_n_words = 300 if args.bownws is None else args.bownws
 w2v_dimen = 300
 
-remove_stopwords = 1  # 0, 1 o 2 (No quitar, quitar manual, quitar automático)
-lemmatization = True
+remove_stopwords = 0  # 0, 1 o 2 (No quitar, quitar manual, quitar automático)
+lemmatization = False
 
 stemming = False
 remove_plurals = False

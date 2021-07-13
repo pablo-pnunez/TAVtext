@@ -84,7 +84,7 @@ class RSTVALdataset(TextDataset):
                     word_pos = [w[0].pos_ for w in self.NLP.pipe(vectorizer.get_feature_names())]
                     # Se alamacena todo en un DF para buscar X palabras más frecuentes que cumplan las exigencias
                     word_data = pd.DataFrame(zip(vectorizer.get_feature_names(), word_freq, word_pos), columns=["feature", "freq", "pos"]).sort_values("freq", ascending=False).reset_index(drop=True)
-                    selected_words = word_data.loc[word_data.pos.isin(["ADJ", "VERB"])].iloc[:self.CONFIG["num_palabras"]].reset_index(drop=True)
+                    selected_words = word_data.loc[word_data.pos.isin(["ADJ", "NOUN"])].iloc[:self.CONFIG["num_palabras"]].reset_index(drop=True)
                     # Todas las que no sean seleccionadas, se consideran stopwords
                     stop_words = word_data.loc[~word_data.feature.isin(selected_words.feature)].feature.tolist()
                     vectorizer = CountVectorizer(stop_words=stop_words, min_df=self.CONFIG["min_df"], max_features=self.CONFIG["num_palabras"], binary=self.CONFIG["presencia"])
