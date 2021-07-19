@@ -181,7 +181,7 @@ if stage == 1:
     bow2rst_mdl.evaluate(test=True)
 '''
 # MODELO 5: LSTM&BOW2RST&VAL ###########################################################################################
-
+'''
 lstmbow2rstval_mdl_cfg = {"model": {"model_version": model_v, "learning_rate": l_rate, "final_learning_rate": l_rate/100, "epochs": n_epochs, "batch_size": b_size, "seed": seed,
                                     "early_st_first_epoch": 0, "early_st_monitor": "val_loss", "early_st_monitor_mode": "min", "early_st_patience": 20},
                           "session": {"gpu": gpu, "in_md5": False}}
@@ -208,3 +208,4 @@ if stage == 1:
     lstmbow2rstval_mdl.eval_custom_text("Quiero comer un arroz con bogavante y con buenas vistas")
     lstmbow2rstval_mdl.eval_custom_text("Quiero comer un buen cachopo y beber sidra")
 
+'''
