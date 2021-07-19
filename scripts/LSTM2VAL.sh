@@ -1,6 +1,6 @@
 #!/bin/bash
 
-MAXTSTS=6
+MAXTSTS=4
 STAGE=0 # GRIDSEARCH o TRAIN
 i=0
 
@@ -23,7 +23,7 @@ for CITY in "${CITIES[@]}" ;do
         echo "---$BATCH"
 
         #MANUAL GPU
-        nohup venv/bin/python3.6 -u  Main.py  -stg $STAGE -ct $CITY -mv $MODEL -bs $BATCH -lr $LRATE > "scripts/out/"$CITY"/model_"$MODEL"_"$BATCH"_["$LRATE"].txt" &
+        nohup venv/bin/python3.8 -u  Main.py  -stg $STAGE -ct $CITY -mv $MODEL -bs $BATCH -lr $LRATE > "scripts/out/"$CITY"/model_"$MODEL"_"$BATCH"_["$LRATE"].txt" &
 
         # Almacenar los PID en una lista hasta alcanzar el máximo de procesos
         pids[${i}]=$!
