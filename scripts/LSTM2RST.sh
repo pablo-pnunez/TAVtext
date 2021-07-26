@@ -8,8 +8,11 @@ declare -a CITIES=( "gijon" )
 
 declare -a MODELS=( "0" "2" )
 declare -a LRATES=( 1e-4 5e-4 1e-3 5e-3 )
-declare -a BATCHES=( 256 512 1024 )
+declare -a BATCHES=( 128 256 512 1024 2048 )
 
+declare -a MODELS=( "2" )
+declare -a LRATES=( 5e-4 )
+declare -a BATCHES=( 64 )
 
 for CITY in "${CITIES[@]}" ;do
   echo "$CITY"

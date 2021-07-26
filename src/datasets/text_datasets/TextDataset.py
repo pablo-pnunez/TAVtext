@@ -19,6 +19,7 @@ from nltk.stem import SnowballStemmer, PorterStemmer
 class TextDataset(DatasetClass):
 
     def __init__(self, config):
+        nltk.download('stopwords')
         self.SPANISH_STOPWORDS = self.__get_es_stopwords__()
         self.NLP = spacy_es_model.load(disable=["parser", "ner", "attribute_ruler"])
 

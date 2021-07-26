@@ -70,20 +70,41 @@ class RSTVALdataset(TextDataset):
             all_data = all_data.sample(frac=1, random_state=self.CONFIG["seed"]).reset_index(drop=True)
 
             # Crear vectores del BOW
-            if self.CONFIG["remove_stopwords"] == 0:
+            if self.CONFIG["remove_stopwords"] == 0: # Solo más frecuentes
                 vectorizer = CountVectorizer(stop_words=None, min_df=self.CONFIG["min_df"], max_features=self.CONFIG["num_palabras"], binary=self.CONFIG["presencia"])
-            elif self.CONFIG["remove_stopwords"] == 1:
+            elif self.CONFIG["remove_stopwords"] == 1: # Más frecuentes + stopwords manual
                 vectorizer = CountVectorizer(stop_words=self.SPANISH_STOPWORDS, min_df=self.CONFIG["min_df"], max_features=self.CONFIG["num_palabras"], binary=self.CONFIG["presencia"])
-            elif self.CONFIG["remove_stopwords"] == 2:
+            elif self.CONFIG["remove_stopwords"] == 2: # Más frecuentes + stopwords automático
                 if self.CONFIG["lemmatization"]:
                     # Se hace un countvectorizer con todas las palabras para obtener la frecuencia de cada una
                     vectorizer = CountVectorizer(stop_words=None, min_df=self.CONFIG["min_df"], max_features=None, binary=self.CONFIG["presencia"])
                     bow = vectorizer.fit_transform(all_data[self.CONFIG["text_column"]])
                     word_freq = np.asarray(bow.sum(axis=0))[0]
-                    # Se obtiene, para cada palabra, su POS (part of speech)
-                    word_pos = [w[0].pos_ for w in self.NLP.pipe(vectorizer.get_feature_names())]
+
+                    # Hay que obtener el POS (part of speech) de cada palabra en su contexto (si hay varios, el más habitual)
+                    # · Primero se dividen todas las reviews por palabras
+                    rvw_cpy = all_data[[self.CONFIG["text_column"]]].copy()
+                    rvw_cpy[self.CONFIG["text_column"]] = rvw_cpy[self.CONFIG["text_column"]].apply(lambda x: x.split())
+                    
+                    word_pos = []
+
+                    for w in tqdm(vectorizer.get_feature_names()):
+                        # · Para cada una de las palabras más frecuentes, se miran las reviews que la contienen
+                        rvs_with_w = rvw_cpy.loc[rvw_cpy[self.CONFIG["text_column"]].apply(lambda x: w in x)]
+                        # · Para evitar sobrecarga, nos quedamos con 20 reviews como máximo
+                        rvs_with_w = rvs_with_w.sample(min(len(rvs_with_w), 20), random_state=self.CONFIG["seed"])
+                        # · Buscamos la posición concreta de la palabra dentro de la review
+                        rvs_with_w["w_loc"] = rvs_with_w[self.CONFIG["text_column"]].apply(lambda x: np.argwhere(np.asarray(x) == w).flatten()[0])
+                        # · Obtenemos un vector de POS para cada palabra de las reviews y nos quedamos con el POS de la que nos interesa
+                        rvs_with_w["w_pos"] = rvs_with_w.apply(lambda x: [n.pos_ for n in self.NLP(" ".join(x[self.CONFIG["text_column"]]))][x.w_loc],  1)
+                        # · Finalmente, como habrá varios POS, nos quedamos con el que aparezca en la mayoría de reviews
+                        poses, p_counts = np.unique(rvs_with_w.w_pos, return_counts=True)
+                        word_pos.append(poses[p_counts.argmax()])
+
                     # Se alamacena todo en un DF para buscar X palabras más frecuentes que cumplan las exigencias
                     word_data = pd.DataFrame(zip(vectorizer.get_feature_names(), word_freq, word_pos), columns=["feature", "freq", "pos"]).sort_values("freq", ascending=False).reset_index(drop=True)
+                    word_data.to_excel(self.DATASET_PATH+"all_features.xlsx")
+
                     selected_words = word_data.loc[word_data.pos.isin(["ADJ", "NOUN"])].iloc[:self.CONFIG["num_palabras"]].reset_index(drop=True)
                     # Todas las que no sean seleccionadas, se consideran stopwords
                     stop_words = word_data.loc[~word_data.feature.isin(selected_words.feature)].feature.tolist()

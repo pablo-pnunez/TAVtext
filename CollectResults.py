@@ -21,7 +21,11 @@ ret = []
 for f in os.listdir(path):
     config_file = path+f+"/cfg.json"
     log_file = path+f+("/dev/" if dev else "")+"log.csv"
-    log_data = pd.read_csv(log_file)
+
+    try: 
+        log_data = pd.read_csv(log_file)
+    except Exception:
+        continue
 
     with open(config_file) as json_file:
         config_data = json.load(json_file)
@@ -38,5 +42,5 @@ for f in os.listdir(path):
 
 ret = pd.DataFrame(ret, columns=list(res.keys()))
 ret = ret.loc[:, ret.apply(pd.Series.nunique) != 1]  # Eliminar columnas que no varían.
-ret.to_csv(model+"_GS.csv")
+ret.to_excel(model+"_GS.xlsx")
 print(ret)

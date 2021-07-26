@@ -5,7 +5,6 @@ from src.sequences.BaseSequence import BaseSequence
 
 import numpy as np
 import tensorflow as tf
-from sklearn.preprocessing import MultiLabelBinarizer
 
 
 class BOW2VAL(VALModel):

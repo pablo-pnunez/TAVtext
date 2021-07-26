@@ -30,9 +30,9 @@ model_v = "3" if args.mv is None else args.mv
 
 gpu = 0  # int(np.argmin(list(map(lambda x: x["mem_used_percent"], nvgpu.gpu_info()))))
 seed = 100 if args.sd is None else args.sd
-l_rate = 5e-5 if args.lr is None else args.lr
+l_rate = 5e-4 if args.lr is None else args.lr
 n_epochs = 1000 if args.ep is None else args.ep
-b_size = 128 if args.bs is None else args.bs
+b_size = 512 if args.bs is None else args.bs
 
 min_reviews_rst = 100
 min_reviews_usr = 1
@@ -86,7 +86,7 @@ if stage == 0:
 
 if stage == 1:
     # Sobreescribir la configuración por la mejor conocida:
-    with open('models/LSTM2VAL/gijon/72fe05bcd63dd9c70b5c4c51273b77a5/cfg.json') as f: best_cfg_data = json.load(f)
+    with open('models/LSTM2VAL/gijon/2336c81f5d7779092e0cd3cfc39c55a7/cfg.json') as f: best_cfg_data = json.load(f)
     dts_cfg = best_cfg_data["dataset_config"]
     rstval = RSTVALdataset(dts_cfg)
     lstm2val_mdl_cfg["model"] = best_cfg_data["model"]
@@ -110,7 +110,7 @@ if stage == 0:
 
 if stage == 1:
     # Sobreescribir la configuración por la mejor conocida:
-    with open('models/BOW2VAL/gijon/4386e896937739e3be8a47165b505d91/cfg.json') as f: best_cfg_data = json.load(f)
+    with open('models/BOW2VAL/gijon/15489c29fa15711844cf2300107a246d/cfg.json') as f: best_cfg_data = json.load(f)
     dts_cfg = best_cfg_data["dataset_config"]
     rstval = RSTVALdataset(dts_cfg)
     bow2val_mdl_cfg["model"] = best_cfg_data["model"]
@@ -134,7 +134,7 @@ if stage == 0:
 
 if stage == 1:
     # Sobreescribir la configuración por la mejor conocida:
-    with open('models/LSTM2RST/gijon/cefbf053002ece52ebf57cb4838fc365/cfg.json') as f: best_cfg_data = json.load(f)
+    with open('models/LSTM2RST/gijon/a95bb91a0aed4aa856c9579775914970/cfg.json') as f: best_cfg_data = json.load(f)
     dts_cfg = best_cfg_data["dataset_config"]
     rstval = RSTVALdataset(dts_cfg)
     lstm2rst_mdl_cfg["model"] = best_cfg_data["model"]
@@ -170,7 +170,7 @@ if stage == 0:
 
 if stage == 1:
     # Sobreescribir la configuración por la mejor conocida:
-    with open('models/BOW2RST/gijon/94e572eed6c93e4b99fb6acb2eb92ba7/cfg.json') as f: best_cfg_data = json.load(f)
+    with open('models/BOW2RST/gijon/c81670f3048bc05122aace9a0c996d37/cfg.json') as f: best_cfg_data = json.load(f)
     dts_cfg = best_cfg_data["dataset_config"]
     rstval = RSTVALdataset(dts_cfg)
     bow2rst_mdl_cfg["model"] = best_cfg_data["model"]
@@ -179,9 +179,11 @@ if stage == 1:
     bow2rst_mdl.train(dev=False, save_model=True)
     bow2rst_mdl.baseline(test=True)
     bow2rst_mdl.evaluate(test=True)
+
+    bow2rst_mdl.eval_custom_text("Quiero comer un arroz con bogavante y con buenas vistas")
 '''
 # MODELO 5: LSTM&BOW2RST&VAL ###########################################################################################
-'''
+
 lstmbow2rstval_mdl_cfg = {"model": {"model_version": model_v, "learning_rate": l_rate, "final_learning_rate": l_rate/100, "epochs": n_epochs, "batch_size": b_size, "seed": seed,
                                     "early_st_first_epoch": 0, "early_st_monitor": "val_loss", "early_st_monitor_mode": "min", "early_st_patience": 20},
                           "session": {"gpu": gpu, "in_md5": False}}
@@ -194,7 +196,7 @@ if stage == 0:
 
 if stage == 1:
     # Sobreescribir la configuración por la mejor conocida:
-    with open('models/LSTMBOW2RSTVAL/gijon/386be890452ec94b2a816d2e3e79ab01/cfg.json') as f: best_cfg_data = json.load(f)
+    with open('models/LSTMBOW2RSTVAL/gijon/83ec2aa262ad2671b75845a61582e13f/cfg.json') as f: best_cfg_data = json.load(f)
     dts_cfg = best_cfg_data["dataset_config"]
     rstval = RSTVALdataset(dts_cfg)
     lstmbow2rstval_mdl_cfg["model"] = best_cfg_data["model"]
@@ -207,5 +209,6 @@ if stage == 1:
     # Ejemplos de recomendación
     lstmbow2rstval_mdl.eval_custom_text("Quiero comer un arroz con bogavante y con buenas vistas")
     lstmbow2rstval_mdl.eval_custom_text("Quiero comer un buen cachopo y beber sidra")
+    lstmbow2rstval_mdl.eval_custom_text("Quiero probar la peor y más cara comida de la ciudad")
 
-'''
+# ToDo: Falta el último modelo con 350 y 400
