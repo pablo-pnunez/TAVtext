@@ -70,11 +70,11 @@ class RSTVALdataset(TextDataset):
             all_data = all_data.sample(frac=1, random_state=self.CONFIG["seed"]).reset_index(drop=True)
 
             # Crear vectores del BOW
-            if self.CONFIG["remove_stopwords"] == 0: # Solo más frecuentes
+            if self.CONFIG["remove_stopwords"] == 0:  # Solo más frecuentes
                 vectorizer = CountVectorizer(stop_words=None, min_df=self.CONFIG["min_df"], max_features=self.CONFIG["num_palabras"], binary=self.CONFIG["presencia"])
-            elif self.CONFIG["remove_stopwords"] == 1: # Más frecuentes + stopwords manual
+            elif self.CONFIG["remove_stopwords"] == 1:  # Más frecuentes + stopwords manual
                 vectorizer = CountVectorizer(stop_words=self.SPANISH_STOPWORDS, min_df=self.CONFIG["min_df"], max_features=self.CONFIG["num_palabras"], binary=self.CONFIG["presencia"])
-            elif self.CONFIG["remove_stopwords"] == 2: # Más frecuentes + stopwords automático
+            elif self.CONFIG["remove_stopwords"] == 2:  # Más frecuentes + stopwords automático
                 if self.CONFIG["lemmatization"]:
                     # Se hace un countvectorizer con todas las palabras para obtener la frecuencia de cada una
                     vectorizer = CountVectorizer(stop_words=None, min_df=self.CONFIG["min_df"], max_features=None, binary=self.CONFIG["presencia"])

@@ -72,7 +72,7 @@ dts_cfg = {"city": city, "seed": seed, "data_path": base_path, "save_path": "dat
 
 rstval = RSTVALdataset(dts_cfg)
 
-#ToDo hacer con hilos parte de selección automática (creo)
+# ToDo hacer con hilos parte de selección automática (creo)
 
 exit()
 
