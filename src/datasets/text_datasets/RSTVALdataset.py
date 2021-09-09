@@ -85,7 +85,7 @@ class RSTVALdataset(TextDataset):
                     # · Primero se dividen todas las reviews por palabras
                     rvw_cpy = all_data[[self.CONFIG["text_column"]]].copy()
                     rvw_cpy[self.CONFIG["text_column"]] = rvw_cpy[self.CONFIG["text_column"]].apply(lambda x: x.split())
-                    
+                                     
                     word_pos = []
 
                     for w in tqdm(vectorizer.get_feature_names()):
@@ -105,10 +105,12 @@ class RSTVALdataset(TextDataset):
                     word_data = pd.DataFrame(zip(vectorizer.get_feature_names(), word_freq, word_pos), columns=["feature", "freq", "pos"]).sort_values("freq", ascending=False).reset_index(drop=True)
                     word_data.to_excel(self.DATASET_PATH+"all_features.xlsx")
 
-                    selected_words = word_data.loc[word_data.pos.isin(["ADJ", "NOUN"])].iloc[:self.CONFIG["num_palabras"]].reset_index(drop=True)
+                    selected_words = word_data.loc[word_data.pos.isin(["ADJ", "NOUN"])]
+                    num_selected_words = int(len(selected_words)*(self.CONFIG["num_palabras"]/100))
+                    selected_words = selected_words.iloc[:num_selected_words].reset_index(drop=True)
                     # Todas las que no sean seleccionadas, se consideran stopwords
                     stop_words = word_data.loc[~word_data.feature.isin(selected_words.feature)].feature.tolist()
-                    vectorizer = CountVectorizer(stop_words=stop_words, min_df=self.CONFIG["min_df"], max_features=self.CONFIG["num_palabras"], binary=self.CONFIG["presencia"])
+                    vectorizer = CountVectorizer(stop_words=stop_words, min_df=self.CONFIG["min_df"], max_features=num_selected_words, binary=self.CONFIG["presencia"])
                 else:
                     print_e("La selección automática de palabras requiere de lemmatización.")
                     exit()

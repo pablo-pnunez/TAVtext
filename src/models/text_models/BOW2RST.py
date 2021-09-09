@@ -18,7 +18,7 @@ class BOW2RST(RSTModel):
 
         mv = self.CONFIG["model"]["model_version"]
         model = tf.keras.models.Sequential()
-        model.add(tf.keras.layers.Input(shape=(self.DATASET.CONFIG["num_palabras"],), name="input_bow"))
+        model.add(tf.keras.layers.Input(shape=(len(self.DATASET.DATA["FEATURES_NAME"]),), name="input_bow"))
 
         if mv == "0":
             model.add(tf.keras.layers.Dense(self.DATASET.DATA["N_RST"], name="bow_2_rst", kernel_initializer=tf.keras.initializers.Ones()))

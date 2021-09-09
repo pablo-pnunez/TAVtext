@@ -4,8 +4,8 @@ import pandas as pd
 import numpy as np
 
 
-city = "gijon"
-model = "LSTMBOW2RSTVAL"
+city = "barcelona"
+model = "BOW2RST"
 dev = True
 
 if "RSTVAL" in model:
