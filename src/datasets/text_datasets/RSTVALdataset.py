@@ -6,8 +6,25 @@ from src.Common import to_pickle, print_g, print_e
 import os
 import pandas as pd
 import tensorflow as tf
+from functools import partial
+from multiprocessing import Pool
 from sklearn.preprocessing import normalize
 from sklearn.feature_extraction.text import CountVectorizer
+
+
+def features_pos(w, RVW, NLP, text_column, seed):
+    # Para cada una de las palabras más frecuentes, se miran las reviews que la contienen
+    rvs_with_w = RVW.loc[RVW[text_column].apply(lambda x: w in x)]
+    # Para evitar sobrecarga, nos quedamos con 20 reviews como máximo
+    rvs_with_w = rvs_with_w.sample(min(len(rvs_with_w), 20), random_state=seed)
+    # Buscamos la posición concreta de la palabra dentro de la review
+    rvs_with_w["w_loc"] = rvs_with_w[text_column].apply(lambda x: np.argwhere(np.asarray(x) == w).flatten()[0])
+    # Obtenemos un vector de POS para cada palabra de las reviews y nos quedamos con el POS de la que nos interesa
+    rvs_with_w["w_pos"] = rvs_with_w.apply(lambda x: [n.pos_ for n in NLP(" ".join(x[text_column]))][x.w_loc],  1)
+    # Finalmente, como habrá varios POS, nos quedamos con el que aparezca en la mayoría de reviews
+    poses, p_counts = np.unique(rvs_with_w.w_pos, return_counts=True)
+    # Retornar resultado
+    return poses[p_counts.argmax()]
 
 
 class RSTVALdataset(TextDataset):
@@ -83,11 +100,24 @@ class RSTVALdataset(TextDataset):
 
                     # Hay que obtener el POS (part of speech) de cada palabra en su contexto (si hay varios, el más habitual)
                     # · Primero se dividen todas las reviews por palabras
-                    rvw_cpy = all_data[[self.CONFIG["text_column"]]].copy()
-                    rvw_cpy[self.CONFIG["text_column"]] = rvw_cpy[self.CONFIG["text_column"]].apply(lambda x: x.split())
-                                     
+                    RVW_CP = all_data[[self.CONFIG["text_column"]]].copy()
+                    RVW_CP[self.CONFIG["text_column"]] = RVW_CP[self.CONFIG["text_column"]].apply(lambda x: x.split())
+                  
+                    features = vectorizer.get_feature_names()
                     word_pos = []
 
+                    fn_partial = partial(features_pos, RVW=RVW_CP, NLP=self.NLP, text_column=self.CONFIG["text_column"], seed=self.CONFIG["seed"])  # Se fijan los parametros que no varian
+
+                    nppc = 10
+                    pool = Pool(processes=nppc)
+
+                    for ret in tqdm(pool.imap(fn_partial, features, chunksize=200), total=len(features)):
+                        word_pos.append(ret)
+
+                    pool.close()
+                    pool.join()
+
+                    '''
                     for w in tqdm(vectorizer.get_feature_names()):
                         # · Para cada una de las palabras más frecuentes, se miran las reviews que la contienen
                         rvs_with_w = rvw_cpy.loc[rvw_cpy[self.CONFIG["text_column"]].apply(lambda x: w in x)]
@@ -100,9 +130,10 @@ class RSTVALdataset(TextDataset):
                         # · Finalmente, como habrá varios POS, nos quedamos con el que aparezca en la mayoría de reviews
                         poses, p_counts = np.unique(rvs_with_w.w_pos, return_counts=True)
                         word_pos.append(poses[p_counts.argmax()])
+                    '''
 
                     # Se alamacena todo en un DF para buscar X palabras más frecuentes que cumplan las exigencias
-                    word_data = pd.DataFrame(zip(vectorizer.get_feature_names(), word_freq, word_pos), columns=["feature", "freq", "pos"]).sort_values("freq", ascending=False).reset_index(drop=True)
+                    word_data = pd.DataFrame(zip(features, word_freq, word_pos), columns=["feature", "freq", "pos"]).sort_values("freq", ascending=False).reset_index(drop=True)
                     word_data.to_excel(self.DATASET_PATH+"all_features.xlsx")
 
                     selected_words = word_data.loc[word_data.pos.isin(["ADJ", "NOUN"])]
@@ -193,3 +224,5 @@ class RSTVALdataset(TextDataset):
             to_pickle(self.DATASET_PATH, "TEST", test)
 
             return self.get_dict_data(self.DATASET_PATH, load)
+
+

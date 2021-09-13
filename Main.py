@@ -72,10 +72,6 @@ dts_cfg = {"city": city, "seed": seed, "data_path": base_path, "save_path": "dat
 
 rstval = RSTVALdataset(dts_cfg)
 
-# ToDo hacer con hilos parte de selección automática (creo)
-
-exit()
-
 # MODELO 1: LSTM2VAL ###################################################################################################
 '''
 lstm2val_mdl_cfg = {"model": {"model_version": model_v, "learning_rate": l_rate, "final_learning_rate": l_rate/100, "epochs": n_epochs, "batch_size": b_size, "seed": seed,
