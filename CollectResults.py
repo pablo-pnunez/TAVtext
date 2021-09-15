@@ -42,5 +42,5 @@ for f in os.listdir(path):
 
 ret = pd.DataFrame(ret, columns=list(res.keys()))
 ret = ret.loc[:, ret.apply(pd.Series.nunique) != 1]  # Eliminar columnas que no varían.
-ret.to_excel(model+"_GS.xlsx")
+ret.to_excel("%s_%s_GS.xlsx" % (model, city))
 print(ret)

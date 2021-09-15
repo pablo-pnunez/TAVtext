@@ -12,7 +12,6 @@ import pandas as pd
 from tqdm import tqdm
 from unicodedata import normalize
 from nltk.corpus import stopwords
-import es_core_news_sm as spacy_es_model
 from nltk.stem import SnowballStemmer, PorterStemmer
 
 
@@ -21,7 +20,17 @@ class TextDataset(DatasetClass):
     def __init__(self, config):
         nltk.download('stopwords')
         self.SPANISH_STOPWORDS = self.__get_es_stopwords__()
-        self.NLP = spacy_es_model.load(disable=["parser", "ner", "attribute_ruler"])
+
+        if config["city"] in ["gijon", "madrid", "barcelona"]:
+            import es_core_news_sm as spacy_es_model  # python -m spacy download es_core_news_sm
+            self.NLP = spacy_es_model.load(disable=["parser", "ner", "attribute_ruler"])
+
+        elif config["city"] in ["newyorkcity", "london"]:
+            import en_core_web_sm as spacy_en_model  # python -m spacy download en_core_web_sm
+            self.NLP = spacy_en_model.load(disable=["parser", "ner", "attribute_ruler"])
+        else:
+            import fr_core_news_sm as spacy_fr_model  # python -m spacy download fr_core_news_sm
+            self.NLP = spacy_fr_model.load(disable=["parser", "ner", "attribute_ruler"])
 
         DatasetClass.__init__(self, config=config)
 
@@ -73,9 +82,10 @@ class TextDataset(DatasetClass):
 
         # Stemming?
         if self.CONFIG["stemming"]:
+            print("Actualizar código para otros idiomas");exit()
             stemmer = SnowballStemmer('spanish')
             text = " ".join([stemmer.stem(w) for w in text.split(" ")])
-               
+     
         return text
 
     def load_city(self, city):

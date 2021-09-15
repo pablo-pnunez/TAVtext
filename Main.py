@@ -23,12 +23,12 @@ from src.models.text_models.LSTMBOW2RSTVAL import LSTMBOW2RSTVAL
 
 args = parse_cmd_args()
 
-city = "madrid".lower().replace(" ", "") if args.ct is None else args.ct
+city = "gijon".lower().replace(" ", "") if args.ct is None else args.ct
 
-stage = 1 if args.stg is None else args.stg
+stage = 0 if args.stg is None else args.stg
 model_v = "3" if args.mv is None else args.mv
 
-gpu = 1  # int(np.argmin(list(map(lambda x: x["mem_used_percent"], nvgpu.gpu_info()))))
+gpu = 0  # int(np.argmin(list(map(lambda x: x["mem_used_percent"], nvgpu.gpu_info()))))
 seed = 100 if args.sd is None else args.sd
 l_rate = 5e-4 if args.lr is None else args.lr
 n_epochs = 1000 if args.ep is None else args.ep
@@ -67,10 +67,10 @@ dts_cfg = {"city": city, "seed": seed, "data_path": base_path, "save_path": "dat
            "remove_plurals": remove_plurals, "remove_stopwords": remove_stopwords, "remove_accents": remove_accents, "remove_numbers": remove_numbers,
            "stemming": stemming, "lemmatization": lemmatization,
            "min_reviews_rst": min_reviews_rst, "min_reviews_usr": min_reviews_usr,
-           "min_df": 5, "num_palabras": bow_pct_words, "presencia": False, "text_column": "text",  # BOW
-           "n_max_words": 0, "test_dev_split": .1, "truncate_padding": True}  # LSTM
+           "min_df": 5, "bow_pct_words": bow_pct_words, "presencia": False, "text_column": "text",  # BOW
+           "n_max_words": 0, "test_dev_split": .1, "truncate_padding": True}
 
-rstval = RSTVALdataset(dts_cfg)
+rstval = RSTVALdataset(dts_cfg, load=["TRAIN_DEV", "TEST", "WORD_INDEX", "VOCAB_SIZE", "MAX_LEN_PADDING", "TEXT_TOKENIZER", "VECTORIZER", "FEATURES_NAME", "N_RST", "STEMMING_DICT"])
 
 # MODELO 1: LSTM2VAL ###################################################################################################
 '''

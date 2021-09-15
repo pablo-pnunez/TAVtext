@@ -8,6 +8,7 @@ import pandas as pd
 import tensorflow as tf
 from functools import partial
 from multiprocessing import Pool
+from scipy.sparse import csc_matrix
 from sklearn.preprocessing import normalize
 from sklearn.feature_extraction.text import CountVectorizer
 
@@ -29,13 +30,14 @@ def features_pos(w, RVW, NLP, text_column, seed):
 
 class RSTVALdataset(TextDataset):
 
-    def __init__(self, config):
+    def __init__(self, config, load):
+        self.load_datasets = load
         TextDataset.__init__(self, config=config)
 
-    def get_data(self, load=["TRAIN_DEV", "TEST",  "WORD_INDEX", "VOCAB_SIZE", "MAX_LEN_PADDING", "TEXT_TOKENIZER", "VECTORIZER", "FEATURES_NAME", "N_RST", "STEMMING_DICT"]):
+    def get_data(self):
 
         # Cargar los datos
-        dict_data = self.get_dict_data(self.DATASET_PATH, load)
+        dict_data = self.get_dict_data(self.DATASET_PATH, self.load_datasets)
 
         # Si ya existen, retornar
         if dict_data:
@@ -88,9 +90,10 @@ class RSTVALdataset(TextDataset):
 
             # Crear vectores del BOW
             if self.CONFIG["remove_stopwords"] == 0:  # Solo más frecuentes
-                vectorizer = CountVectorizer(stop_words=None, min_df=self.CONFIG["min_df"], max_features=self.CONFIG["num_palabras"], binary=self.CONFIG["presencia"])
+                vectorizer = CountVectorizer(stop_words=None, min_df=self.CONFIG["min_df"], max_features=self.CONFIG["bow_pct_words"], binary=self.CONFIG["presencia"])
             elif self.CONFIG["remove_stopwords"] == 1:  # Más frecuentes + stopwords manual
-                vectorizer = CountVectorizer(stop_words=self.SPANISH_STOPWORDS, min_df=self.CONFIG["min_df"], max_features=self.CONFIG["num_palabras"], binary=self.CONFIG["presencia"])
+                print("Actualizar código para otros idiomas");exit()
+                vectorizer = CountVectorizer(stop_words=self.SPANISH_STOPWORDS, min_df=self.CONFIG["min_df"], max_features=self.CONFIG["bow_pct_words"], binary=self.CONFIG["presencia"])
             elif self.CONFIG["remove_stopwords"] == 2:  # Más frecuentes + stopwords automático
                 if self.CONFIG["lemmatization"]:
                     # Se hace un countvectorizer con todas las palabras para obtener la frecuencia de cada una
@@ -137,7 +140,7 @@ class RSTVALdataset(TextDataset):
                     word_data.to_excel(self.DATASET_PATH+"all_features.xlsx")
 
                     selected_words = word_data.loc[word_data.pos.isin(["ADJ", "NOUN"])]
-                    num_selected_words = int(len(selected_words)*(self.CONFIG["num_palabras"]/100))
+                    num_selected_words = int(len(selected_words)*(self.CONFIG["bow_pct_words"]/100))
                     selected_words = selected_words.iloc[:num_selected_words].reset_index(drop=True)
                     # Todas las que no sean seleccionadas, se consideran stopwords
                     stop_words = word_data.loc[~word_data.feature.isin(selected_words.feature)].feature.tolist()
@@ -148,15 +151,17 @@ class RSTVALdataset(TextDataset):
 
             bow = vectorizer.fit_transform(all_data[self.CONFIG["text_column"]])
 
-            # Cada palabra corresponde con cada columna de las <self.CONFIG["num_palabras"]>
+            # Cada palabra corresponde con cada columna de las <self.CONFIG["bow_pct_words"]>
             features_name = vectorizer.get_feature_names()
             np.savetxt(self.DATASET_PATH+"features.csv", features_name, fmt="%s")
 
             # Normalizar vector de cada review
-            normed_bow = normalize(bow.todense(), axis=1, norm='l1')
+            # normed_bow = normalize(bow.todense(), axis=1, norm='l1')
+            normed_bow = normalize(bow, axis=1, norm='l1')
 
             # Incroporar BOW en los datos
-            all_data["bow"] = normed_bow.tolist()
+            # all_data["bow"] = normed_bow.tolist()
+            all_data["bow"] = list(map(csc_matrix, normed_bow))
 
             # Tokenizar las palabras (Asociar cada palabra a un índice [WORD_INDEX])
             if self.CONFIG["n_max_words"] == 0:
@@ -223,6 +228,6 @@ class RSTVALdataset(TextDataset):
             to_pickle(self.DATASET_PATH, "TRAIN_DEV", train_dev)
             to_pickle(self.DATASET_PATH, "TEST", test)
 
-            return self.get_dict_data(self.DATASET_PATH, load)
+            return self.get_dict_data(self.DATASET_PATH, self.load_datasets)
 
 

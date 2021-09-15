@@ -5,6 +5,7 @@ from src.sequences.BaseSequence import BaseSequence
 
 import numpy as np
 import tensorflow as tf
+from scipy.sparse import csc_matrix
 
 
 class BOW2VAL(VALModel):
@@ -81,7 +82,8 @@ class BOW2VALsequence(BaseSequence):
         return ret
 
     def preprocess_input(self, batch_data):
-        return np.row_stack(batch_data.bow)
+        # return np.row_stack(batch_data.bow)
+        return np.row_stack(batch_data.bow.apply(lambda x: x.todense().tolist()[0]))
 
     def preprocess_output(self, batch_data):
         return batch_data["rating"].values

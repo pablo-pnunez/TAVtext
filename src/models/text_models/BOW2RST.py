@@ -120,7 +120,8 @@ class BOW2RSTsequence(BaseSequence):
         return ret
 
     def preprocess_input(self, batch_data):
-        return np.row_stack(batch_data.bow)
+        # return np.row_stack(batch_data.bow)
+        return np.row_stack(batch_data.bow.apply(lambda x: x.todense().tolist()[0]))
 
     def preprocess_output(self, batch_data):
         return self.KHOT.fit_transform(np.expand_dims(batch_data.id_restaurant.values, -1))
