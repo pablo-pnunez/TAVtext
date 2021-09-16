@@ -30,14 +30,13 @@ def features_pos(w, RVW, NLP, text_column, seed):
 
 class RSTVALdataset(TextDataset):
 
-    def __init__(self, config, load):
-        self.load_datasets = load
+    def __init__(self, config):
         TextDataset.__init__(self, config=config)
 
-    def get_data(self):
+    def get_data(self, load=["TRAIN_DEV", "TEST", "WORD_INDEX", "VOCAB_SIZE", "MAX_LEN_PADDING", "TEXT_TOKENIZER", "VECTORIZER", "FEATURES_NAME", "N_RST", "STEMMING_DICT"]):
 
         # Cargar los datos
-        dict_data = self.get_dict_data(self.DATASET_PATH, self.load_datasets)
+        dict_data = self.get_dict_data(self.DATASET_PATH, load)
 
         # Si ya existen, retornar
         if dict_data:
@@ -228,6 +227,6 @@ class RSTVALdataset(TextDataset):
             to_pickle(self.DATASET_PATH, "TRAIN_DEV", train_dev)
             to_pickle(self.DATASET_PATH, "TEST", test)
 
-            return self.get_dict_data(self.DATASET_PATH, self.load_datasets)
+            return self.get_dict_data(self.DATASET_PATH, load)
 
 

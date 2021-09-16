@@ -4,7 +4,7 @@ import pandas as pd
 import numpy as np
 
 
-city = "barcelona"
+city = "madrid"
 model = "BOW2RST"
 dev = True
 

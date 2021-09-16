@@ -99,15 +99,16 @@ class TextDataset(DatasetClass):
         rev = rev[['reviewId', 'userId', 'restaurantId', 'rating', 'date', 'language', 'text', 'title', 'url']]
         rev["city"] = city
 
+        # Casting a int de algunas columnas
+        res = res.astype({'id': 'int64'})
+        rev = rev.astype({'reviewId': 'int64', 'restaurantId': 'int64', 'rating': 'int64'})
+
         # Concatenar restaurantes y reviews
         rev = rev.merge(res[["id", "name"]], left_on="restaurantId", right_on="id", how="left")
         rev = rev.drop(columns=["id"])
 
         # Eliminar reviews vacías (que tengan NAN, pero sigue habiendo reviews con texto=="")
         rev = rev.loc[(~rev["text"].isna()) & (~rev["title"].isna())]
-
-        # Casting a int de algunas columnas
-        rev = rev.astype({'reviewId': 'int64', 'restaurantId': 'int64', 'rating': 'int64'})
 
         # Preprocesar las StopWords
         self.SPANISH_STOPWORDS = self.prerpocess_text(" ".join(self.SPANISH_STOPWORDS)).split(" ")

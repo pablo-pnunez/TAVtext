@@ -23,9 +23,9 @@ from src.models.text_models.LSTMBOW2RSTVAL import LSTMBOW2RSTVAL
 
 args = parse_cmd_args()
 
-city = "gijon".lower().replace(" ", "") if args.ct is None else args.ct
+city = "madrid".lower().replace(" ", "") if args.ct is None else args.ct
 
-stage = 0 if args.stg is None else args.stg
+stage = 1 if args.stg is None else args.stg
 model_v = "3" if args.mv is None else args.mv
 
 gpu = 0  # int(np.argmin(list(map(lambda x: x["mem_used_percent"], nvgpu.gpu_info()))))
@@ -50,7 +50,12 @@ remove_numbers = True
 base_path = "/media/nas/pperez/data/TripAdvisor/"
 
 # W2V ##################################################################################################################
+
 '''
+cities = ["gijon", "barcelona", "madrid"] if city in ["gijon", "barcelona", "madrid"] else []
+cities = ["newyorkcity", "london"] if city in ["newyorkcity", "london"] else cities
+cities = ["paris] if city in ["paris"] else cities
+
 w2v_dts = W2Vdataset({"cities": ["gijon", "barcelona", "madrid"], "city": "multi", "seed": seed, "data_path": base_path, "save_path": "data/",  # base_path + "Datasets/",
                       "remove_plurals": remove_plurals, "stemming": stemming, "lemmatization": lemmatization,
                       "remove_accents": remove_accents, "remove_numbers": remove_numbers,
@@ -70,7 +75,8 @@ dts_cfg = {"city": city, "seed": seed, "data_path": base_path, "save_path": "dat
            "min_df": 5, "bow_pct_words": bow_pct_words, "presencia": False, "text_column": "text",  # BOW
            "n_max_words": 0, "test_dev_split": .1, "truncate_padding": True}
 
-rstval = RSTVALdataset(dts_cfg, load=["TRAIN_DEV", "TEST", "WORD_INDEX", "VOCAB_SIZE", "MAX_LEN_PADDING", "TEXT_TOKENIZER", "VECTORIZER", "FEATURES_NAME", "N_RST", "STEMMING_DICT"])
+rstval = RSTVALdataset(dts_cfg)
+
 
 # MODELO 1: LSTM2VAL ###################################################################################################
 '''
@@ -170,8 +176,9 @@ if stage == 0:
     # bow2rst_mdl.evaluate(test=False)
 
 if stage == 1:
+    bst_cfg = {"gijon": "c1f6541e4fac0312424cec3d8dfde6c3", "barcelona": "d7237d7e37d73cce6b68148477892c36", "madrid": "5d97d648d77592416dad175a576eb1cb"}
     # Sobreescribir la configuración por la mejor conocida:
-    with open('models/BOW2RST/gijon/8d404f1c6bca13d8504bc54e410ad990/cfg.json') as f: best_cfg_data = json.load(f)  # 300
+    with open('models/BOW2RST/%s/%s/cfg.json' % (city, bst_cfg[city])) as f: best_cfg_data = json.load(f)  # 300
     # with open('models/BOW2RST/gijon/c81670f3048bc05122aace9a0c996d37/cfg.json') as f: best_cfg_data = json.load(f)  # 400
     dts_cfg = best_cfg_data["dataset_config"]
     rstval = RSTVALdataset(dts_cfg)
