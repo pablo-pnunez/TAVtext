@@ -17,7 +17,7 @@ class BOW2VAL(VALModel):
 
         mv = self.CONFIG["model"]["model_version"]
         model = tf.keras.models.Sequential()
-        model.add(tf.keras.layers.Input(shape=(self.DATASET.CONFIG["num_palabras"],), name="input_bow"))
+        model.add(tf.keras.layers.Input(shape=(len(self.DATASET.DATA["FEATURES_NAME"]),), name="input_bow"))
 
         if mv == "0":
             model.add(tf.keras.layers.Dense(128, activation='relu'))

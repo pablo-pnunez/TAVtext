@@ -85,6 +85,7 @@ class BOW2RST(RSTModel):
 
         print("\n")
         print_g("\'%s\'" % text_src)
+        print("\LEMM: %s" % (text))
         print("\tBOW: %s" % (",".join(bow_words)))
 
         for rst in recommended_rests:
