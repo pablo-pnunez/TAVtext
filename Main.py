@@ -25,7 +25,7 @@ args = parse_cmd_args()
 
 city = "gijon".lower().replace(" ", "") if args.ct is None else args.ct
 
-stage = 1 if args.stg is None else args.stg
+stage = 0 if args.stg is None else args.stg
 model_v = "3" if args.mv is None else args.mv
 
 gpu = int(np.argmin(list(map(lambda x: x["mem_used_percent"], nvgpu.gpu_info()))))
@@ -53,10 +53,9 @@ base_path = "/media/nas/pperez/data/TripAdvisor/"
 
 # ToDo: Que pasa con vegana (no aparece en el vocabulario)?
 
-'''
 cities = ["gijon", "barcelona", "madrid"] if city in ["gijon", "barcelona", "madrid"] else []
 cities = ["newyorkcity", "london"] if city in ["newyorkcity", "london"] else cities
-cities = ["paris] if city in ["paris"] else cities
+cities = ["paris"] if city in ["paris"] else cities
 
 w2v_dts = W2Vdataset({"cities": ["gijon", "barcelona", "madrid"], "city": "multi", "seed": seed, "data_path": base_path, "save_path": "data/",  # base_path + "Datasets/",
                       "remove_plurals": remove_plurals, "stemming": stemming, "lemmatization": lemmatization,
@@ -67,7 +66,7 @@ w2v_mdl = W2V({"model": {"train_set": "ALL_TEXTS", "min_count": 100, "window": 5
                "session": {"gpu": gpu, "in_md5": False}}, w2v_dts)
 
 w2v_mdl.train()
-'''
+
 # DATASET CONFIG #######################################################################################################
 
 dts_cfg = {"city": city, "seed": seed, "data_path": base_path, "save_path": "data/",  # base_path + "Datasets/",
@@ -79,8 +78,9 @@ dts_cfg = {"city": city, "seed": seed, "data_path": base_path, "save_path": "dat
 
 rstval = RSTVALdataset(dts_cfg)
 
+
 # MODELO 1: LSTM2VAL ###################################################################################################
-'''
+
 lstm2val_mdl_cfg = {"model": {"model_version": model_v, "learning_rate": l_rate, "final_learning_rate": l_rate/100, "epochs": n_epochs, "batch_size": b_size, "seed": seed,
                               "early_st_first_epoch": 0, "early_st_monitor": "val_mean_absolute_error", "early_st_monitor_mode": "min", "early_st_patience": 20},
                     "session": {"gpu": gpu, "in_md5": False}}
@@ -92,8 +92,9 @@ if stage == 0:
     # lstm2val_mdl.evaluate(test=False)
 
 if stage == 1:
+    bst_cfg = {"gijon": "", "barcelona": "", "madrid": ""}
     # Sobreescribir la configuración por la mejor conocida:
-    with open('models/LSTM2VAL/gijon/2336c81f5d7779092e0cd3cfc39c55a7/cfg.json') as f: best_cfg_data = json.load(f)
+    with open('models/LSTM2VAL/%s/%s/cfg.json' % (city, bst_cfg[city])) as f: best_cfg_data = json.load(f)
     dts_cfg = best_cfg_data["dataset_config"]
     rstval = RSTVALdataset(dts_cfg)
     lstm2val_mdl_cfg["model"] = best_cfg_data["model"]
@@ -102,7 +103,7 @@ if stage == 1:
     lstm2val_mdl.train(dev=False, save_model=True)
     lstm2val_mdl.baseline(test=True)
     lstm2val_mdl.evaluate(test=True)
-'''
+
 # MODELO 2: BOW2VAL  #################################################################################################
 '''
 bow2val_mdl_cfg = {"model": {"model_version": model_v, "learning_rate": l_rate, "final_learning_rate": l_rate/100, "epochs": n_epochs, "batch_size": b_size, "seed": seed,
@@ -142,8 +143,9 @@ if stage == 0:
     # lstm2rst_mdl.evaluate(test=False)
 
 if stage == 1:
+    bst_cfg = {"gijon": "", "barcelona": "", "madrid": ""}
     # Sobreescribir la configuración por la mejor conocida:
-    with open('models/LSTM2RST/gijon/a95bb91a0aed4aa856c9579775914970/cfg.json') as f: best_cfg_data = json.load(f)
+    with open('models/LSTM2RST/%s/%s/cfg.json' % (city, bst_cfg[city])) as f: best_cfg_data = json.load(f) 
     dts_cfg = best_cfg_data["dataset_config"]
     rstval = RSTVALdataset(dts_cfg)
     lstm2rst_mdl_cfg["model"] = best_cfg_data["model"]
@@ -207,9 +209,9 @@ if stage == 0:
     # lstmbow2rstval_mdl.evaluate(test=False)
 
 if stage == 1:
+    bst_cfg = {"gijon": "", "barcelona": "", "madrid": ""}
     # Sobreescribir la configuración por la mejor conocida:
-    with open('models/LSTMBOW2RSTVAL/gijon/386be890452ec94b2a816d2e3e79ab01/cfg.json') as f: best_cfg_data = json.load(f)  # 300 
-    # with open('models/LSTMBOW2RSTVAL/gijon/83ec2aa262ad2671b75845a61582e13f/cfg.json') as f: best_cfg_data = json.load(f)  # 400 
+    with open('models/LSTMBOW2RSTVAL/%s/%s/cfg.json' % (city, bst_cfg[city])) as f: best_cfg_data = json.load(f) 
 
     dts_cfg = best_cfg_data["dataset_config"]
     rstval = RSTVALdataset(dts_cfg)
