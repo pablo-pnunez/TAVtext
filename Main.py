@@ -23,7 +23,7 @@ from src.models.text_models.LSTMBOW2RSTVAL import LSTMBOW2RSTVAL
 
 args = parse_cmd_args()
 
-city = "barcelona".lower().replace(" ", "") if args.ct is None else args.ct
+city = "gijon".lower().replace(" ", "") if args.ct is None else args.ct
 
 stage = 1 if args.stg is None else args.stg
 model_v = "3" if args.mv is None else args.mv
@@ -50,6 +50,8 @@ remove_numbers = True
 base_path = "/media/nas/pperez/data/TripAdvisor/"
 
 # W2V ##################################################################################################################
+
+# ToDo: Que pasa con vegana (no aparece en el vocabulario)?
 
 '''
 cities = ["gijon", "barcelona", "madrid"] if city in ["gijon", "barcelona", "madrid"] else []
@@ -102,7 +104,7 @@ if stage == 1:
     lstm2val_mdl.evaluate(test=True)
 '''
 # MODELO 2: BOW2VAL  #################################################################################################
-
+'''
 bow2val_mdl_cfg = {"model": {"model_version": model_v, "learning_rate": l_rate, "final_learning_rate": l_rate/100, "epochs": n_epochs, "batch_size": b_size, "seed": seed,
                              "early_st_first_epoch": 0, "early_st_monitor": "val_mean_absolute_error", "early_st_monitor_mode": "min", "early_st_patience": 20},
                    "session": {"gpu": gpu, "in_md5": False}}
@@ -114,7 +116,7 @@ if stage == 0:
     # bow2val_mdl.evaluate(test=False)
 
 if stage == 1:
-    bst_cfg = {"gijon": "a91cdeda9af8ccb79214b435f14c0f40", "barcelona": "", "madrid": ""}
+    bst_cfg = {"gijon": "a91cdeda9af8ccb79214b435f14c0f40", "barcelona": "1ebdba6928f8d29ae3c25d27b6970396", "madrid": "bb11e8d8a4e96f0a4697991b0a63b02a"}
     # Sobreescribir la configuración por la mejor conocida:
     with open('models/BOW2VAL/%s/%s/cfg.json' % (city, bst_cfg[city])) as f: best_cfg_data = json.load(f) # 300
     # with open('models/BOW2VAL/gijon/15489c29fa15711844cf2300107a246d/cfg.json') as f: best_cfg_data = json.load(f) # 400
@@ -126,7 +128,7 @@ if stage == 1:
     bow2val_mdl.train(dev=False, save_model=True)
     bow2val_mdl.baseline(test=True)
     bow2val_mdl.evaluate(test=True)
-
+'''
 # MODELO 3: LSTM2RST ###################################################################################################
 '''
 lstm2rst_mdl_cfg = {"model": {"model_version": model_v, "learning_rate": l_rate, "final_learning_rate": l_rate/100, "epochs": n_epochs, "batch_size": b_size, "seed": seed,

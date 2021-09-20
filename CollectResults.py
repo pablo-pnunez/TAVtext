@@ -3,7 +3,7 @@ import json
 import pandas as pd
 import numpy as np
 
-city = "gijon"
+city = "barcelona"
 model = "BOW2VAL"
 dev = True
 

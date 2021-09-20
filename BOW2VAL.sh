@@ -6,7 +6,7 @@ i=0
 
 declare -a CITIES=( "barcelona" "madrid" )
 
-declare -a MODELS=( "3" )
+declare -a MODELS=( "0" )
 declare -a LRATES=( 1e-5 5e-5 1e-4 5e-4)
 declare -a BATCHES=( 32 64 128 256 )
 declare -a BOWNWORDS=( 10 )
