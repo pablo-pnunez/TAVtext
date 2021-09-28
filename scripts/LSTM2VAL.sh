@@ -10,6 +10,13 @@ declare -a MODELS=( "0" "3" )
 declare -a LRATES=( 1e-4 5e-4 1e-3 )
 declare -a BATCHES=( 256 512 )
 
+declare -a CITIES=( "gijon" )
+
+declare -a MODELS=( "3" )
+declare -a LRATES=( 5e-4 )
+declare -a BATCHES=( 2048 )
+
+
 
 for CITY in "${CITIES[@]}" ;do
   echo "$CITY"

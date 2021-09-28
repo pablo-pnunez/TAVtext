@@ -23,7 +23,7 @@ from src.models.text_models.LSTMBOW2RSTVAL import LSTMBOW2RSTVAL
 
 args = parse_cmd_args()
 
-city = "gijon".lower().replace(" ", "") if args.ct is None else args.ct
+city = "barcelona".lower().replace(" ", "") if args.ct is None else args.ct
 
 stage = 0 if args.stg is None else args.stg
 model_v = "3" if args.mv is None else args.mv
@@ -80,7 +80,7 @@ rstval = RSTVALdataset(dts_cfg)
 
 
 # MODELO 1: LSTM2VAL ###################################################################################################
-
+'''
 lstm2val_mdl_cfg = {"model": {"model_version": model_v, "learning_rate": l_rate, "final_learning_rate": l_rate/100, "epochs": n_epochs, "batch_size": b_size, "seed": seed,
                               "early_st_first_epoch": 0, "early_st_monitor": "val_mean_absolute_error", "early_st_monitor_mode": "min", "early_st_patience": 20},
                     "session": {"gpu": gpu, "in_md5": False}}
@@ -89,10 +89,10 @@ if stage == 0:
     lstm2val_mdl = LSTM2VAL(lstm2val_mdl_cfg, rstval, w2v_mdl)
     lstm2val_mdl.train(dev=True, save_model=True)
     # lstm2val_mdl.baseline()
-    # lstm2val_mdl.evaluate(test=False)
+    # lstm2val_mdl.evaluate(test=False)ez
 
 if stage == 1:
-    bst_cfg = {"gijon": "", "barcelona": "", "madrid": ""}
+    bst_cfg = {"gijon": "32ba236b8eccf04c8e3236c259c59956", "barcelona": "e976e1661a848cdbb87efef2288cf762", "madrid": "faaa56ac7ce23b17881f3be8bca31e34"}
     # Sobreescribir la configuración por la mejor conocida:
     with open('models/LSTM2VAL/%s/%s/cfg.json' % (city, bst_cfg[city])) as f: best_cfg_data = json.load(f)
     dts_cfg = best_cfg_data["dataset_config"]
@@ -103,7 +103,7 @@ if stage == 1:
     lstm2val_mdl.train(dev=False, save_model=True)
     lstm2val_mdl.baseline(test=True)
     lstm2val_mdl.evaluate(test=True)
-
+'''
 # MODELO 2: BOW2VAL  #################################################################################################
 '''
 bow2val_mdl_cfg = {"model": {"model_version": model_v, "learning_rate": l_rate, "final_learning_rate": l_rate/100, "epochs": n_epochs, "batch_size": b_size, "seed": seed,
@@ -131,7 +131,7 @@ if stage == 1:
     bow2val_mdl.evaluate(test=True)
 '''
 # MODELO 3: LSTM2RST ###################################################################################################
-'''
+
 lstm2rst_mdl_cfg = {"model": {"model_version": model_v, "learning_rate": l_rate, "final_learning_rate": l_rate/100, "epochs": n_epochs, "batch_size": b_size, "seed": seed,
                               "early_st_first_epoch": 0, "early_st_monitor": "val_accuracy", "early_st_monitor_mode": "max", "early_st_patience": 20},
                     "session": {"gpu": gpu, "in_md5": False}}
@@ -155,7 +155,7 @@ if stage == 1:
     lstm2rst_mdl.baseline(test=True)
     lstm2rst_mdl.evaluate(test=True)
     lstm2rst_mdl.evaluate_text("Busco un restaurante barato")
-'''
+
 '''
 # Obtener, para cada palabra, los restaurantes más afines
 for wrd_idx, wrd in enumerate(rstval.DATA["FEATURES_NAME"]):

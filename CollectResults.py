@@ -4,7 +4,7 @@ import pandas as pd
 import numpy as np
 
 city = "barcelona"
-model = "BOW2VAL"
+model = "LSTM2VAL"
 dev = True
 
 if "RSTVAL" in model:
