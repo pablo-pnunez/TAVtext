@@ -1,0 +1,35 @@
+[93m[WARNING] Model folder already exists...[0m
+[92m[INFO] Loading existing model...[0m
+[92m[INFO] Model already trained![0m
+[93m[WARNING] Model folder already exists...[0m
+[92m[INFO] Loading w2v...[0m
+Model: "sequential"
+_________________________________________________________________
+Layer (type)                 Output Shape              Param #   
+=================================================================
+embedding (Embedding)        (None, None, 300)         9783000   
+_________________________________________________________________
+lstm (LSTM)                  (None, 256)               570368    
+_________________________________________________________________
+dropout (Dropout)            (None, 256)               0         
+_________________________________________________________________
+dense (Dense)                (None, 148)               38036     
+=================================================================
+Total params: 10,391,404
+Trainable params: 608,404
+Non-trainable params: 9,783,000
+_________________________________________________________________
+None
+Epoch 1/1000
+15/15 - 19s - loss: 5.0227 - accuracy: 0.0306 - top_5: 0.0834 - top_10: 0.1319 - val_loss: 4.7165 - val_accuracy: 0.0831 - val_top_5: 0.1934 - val_top_10: 0.2681
+Epoch 2/1000
+15/15 - 15s - loss: 4.8012 - accuracy: 0.0684 - top_5: 0.1567 - top_10: 0.2236 - val_loss: 4.6190 - val_accuracy: 0.0851 - val_top_5: 0.2100 - val_top_10: 0.2880
+Epoch 3/1000
+15/15 - 15s - loss: 4.6944 - accuracy: 0.0754 - top_5: 0.1841 - top_10: 0.2609 - val_loss: 4.5747 - val_accuracy: 0.0864 - val_top_5: 0.2171 - val_top_10: 0.2989
+Epoch 4/1000
+15/15 - 15s - loss: 4.6325 - accuracy: 0.0842 - top_5: 0.1990 - top_10: 0.2785 - val_loss: 4.5423 - val_accuracy: 0.0887 - val_top_5: 0.2171 - val_top_10: 0.3038
+Epoch 5/1000
+15/15 - 15s - loss: 4.5776 - accuracy: 0.0887 - top_5: 0.2103 - top_10: 0.2953 - val_loss: 4.5080 - val_accuracy: 0.0945 - val_top_5: 0.2258 - val_top_10: 0.3112
+Epoch 6/1000
+15/15 - 14s - loss: 4.5246 - accuracy: 0.0950 - top_5: 0.2198 - top_10: 0.3074 - val_loss: 4.4611 - val_accuracy: 0.1004 - val_top_5: 0.2393 - val_top_10: 0.3224
+Epoch 7/1000
