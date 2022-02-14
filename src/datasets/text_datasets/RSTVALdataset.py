@@ -4,7 +4,9 @@ from src.datasets.text_datasets.TextDataset import *
 from src.Common import to_pickle, print_g, print_e
 
 import os
+import numpy as np
 import pandas as pd
+from tqdm import tqdm
 import tensorflow as tf
 from functools import partial
 from multiprocessing import Pool
@@ -12,7 +14,7 @@ from scipy.sparse import csc_matrix
 from sklearn.preprocessing import normalize
 from sklearn.feature_extraction.text import CountVectorizer
 
-
+'''
 def features_pos(w, RVW, NLP, text_column, seed):
     # Para cada una de las palabras más frecuentes, se miran las reviews que la contienen
     rvs_with_w = RVW.loc[RVW[text_column].apply(lambda x: w in x)]
@@ -25,8 +27,9 @@ def features_pos(w, RVW, NLP, text_column, seed):
     # Finalmente, como habrá varios POS, nos quedamos con el que aparezca en la mayoría de reviews
     poses, p_counts = np.unique(rvs_with_w.w_pos, return_counts=True)
     # Retornar resultado
+    print(w)
     return poses[p_counts.argmax()]
-
+'''
 
 class RSTVALdataset(TextDataset):
 
@@ -91,8 +94,8 @@ class RSTVALdataset(TextDataset):
             if self.CONFIG["remove_stopwords"] == 0:  # Solo más frecuentes
                 vectorizer = CountVectorizer(stop_words=None, min_df=self.CONFIG["min_df"], max_features=self.CONFIG["bow_pct_words"], binary=self.CONFIG["presencia"])
             elif self.CONFIG["remove_stopwords"] == 1:  # Más frecuentes + stopwords manual
-                print("Actualizar código para otros idiomas");exit()
-                vectorizer = CountVectorizer(stop_words=self.SPANISH_STOPWORDS, min_df=self.CONFIG["min_df"], max_features=self.CONFIG["bow_pct_words"], binary=self.CONFIG["presencia"])
+                print("Actualizar código para otros idiomas"); exit()
+                vectorizer = CountVectorizer(stop_words=self.STOPWORDS, min_df=self.CONFIG["min_df"], max_features=self.CONFIG["bow_pct_words"], binary=self.CONFIG["presencia"])
             elif self.CONFIG["remove_stopwords"] == 2:  # Más frecuentes + stopwords automático
                 if self.CONFIG["lemmatization"]:
                     # Se hace un countvectorizer con todas las palabras para obtener la frecuencia de cada una
@@ -101,23 +104,74 @@ class RSTVALdataset(TextDataset):
                     word_freq = np.asarray(bow.sum(axis=0))[0]
 
                     # Hay que obtener el POS (part of speech) de cada palabra en su contexto (si hay varios, el más habitual)
-                    # · Primero se dividen todas las reviews por palabras
+                    pos_values = np.array(["ADJ", "ADP", "ADV", "AUX", "CONJ", "CCONJ", "DET", "INTJ", "NOUN", "NUM", "PART", "PRON", "PROPN", "PUNCT", "SCONJ", "SYM", "VERB", "X", "SPACE"])
+
+                    # · Obtenemos los conjuntos relevantes
                     RVW_CP = all_data[[self.CONFIG["text_column"]]].copy()
-                    RVW_CP[self.CONFIG["text_column"]] = RVW_CP[self.CONFIG["text_column"]].apply(lambda x: x.split())
-                  
+                    # RVW_CP[self.CONFIG["text_column"]] = RVW_CP[self.CONFIG["text_column"]].apply(lambda x: x.split())                
                     features = vectorizer.get_feature_names()
+                    
+                    # · Luego se crear varias estructuras de datos para almacenar los valores de POS
+                    features_df = pd.DataFrame(zip(range(len(features)), features), columns=["id_feature", "feature"])
+                    features_df = features_df.set_index("feature")
+                    pos_df = pd.DataFrame(zip(range(len(pos_values)), pos_values), columns=["id_pos", "pos"])
+                    pos_df = pos_df.set_index("pos")
+                    mtrx = np.zeros((len(features), len(pos_values)), dtype=int)
+
+                    # · Hacemos 32 batches para evitar sobrecarga de RAM
+                    batches = np.array_split(RVW_CP, 32)
+
+                    # · Para cada batch, obtener POS de sus palabras y almacenar valores en mtrx
+                    for idx, b in tqdm(enumerate(batches), desc="Features POS"):
+                        POS = list(self.NLP.pipe(b.text, n_process=8))  # 8 es lo mejor
+
+                        all_words = np.concatenate(list(map(lambda x: [(str(w), w.pos_) for w in x], POS)))
+                        all_df = pd.DataFrame(all_words, columns=["feature", "pos"])
+                        all_df = all_df.loc[all_df.feature.isin(features)].reset_index(drop=True)
+                        all_df = all_df.merge(features_df, on="feature").merge(pos_df, on="pos")
+                        all_df = all_df.groupby(["id_feature", "id_pos"]).apply(len).reset_index()
+
+                        mtrx[all_df.id_feature, all_df.id_pos] += all_df[0]
+
+                        del all_df, b, POS
+
+                    # · Obtener los POS de las features (más común)
+                    word_pos = pos_values[np.apply_along_axis(np.argmax, 1, mtrx)]
+
+                    '''
                     word_pos = []
 
                     fn_partial = partial(features_pos, RVW=RVW_CP, NLP=self.NLP, text_column=self.CONFIG["text_column"], seed=self.CONFIG["seed"])  # Se fijan los parametros que no varian
 
-                    nppc = 10
+                    nppc = 4
                     pool = Pool(processes=nppc)
+
+                    ret = pool.map_async(fn_partial, features)
+
+                    total = int(np.ceil(len(features)/ret._chunksize))
+                    pbar = tqdm(total=total)
+
+                    while not ret.ready():
+                        pbar.n = total-ret._number_left
+                        pbar.last_print_n = total-ret._number_left
+                        pbar.refresh()
+                        ret.wait(timeout=1)
+                    pbar.n = total
+                    pbar.last_print_n = total
+                    pbar.refresh()
+                    pbar.close()
+
+                    word_pos = ret.get()
+                    '''
+
+                    '''
 
                     for ret in tqdm(pool.imap(fn_partial, features, chunksize=200), total=len(features)):
                         word_pos.append(ret)
 
                     pool.close()
                     pool.join()
+                    '''
 
                     '''
                     for w in tqdm(vectorizer.get_feature_names()):

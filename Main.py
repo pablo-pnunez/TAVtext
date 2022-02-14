@@ -23,16 +23,16 @@ from src.models.text_models.LSTMBOW2RSTVAL import LSTMBOW2RSTVAL
 
 args = parse_cmd_args()
 
-city = "barcelona".lower().replace(" ", "") if args.ct is None else args.ct
+city = "paris".lower().replace(" ", "") if args.ct is None else args.ct
 
 stage = 0 if args.stg is None else args.stg
-model_v = "3" if args.mv is None else args.mv
+model_v = "2" if args.mv is None else args.mv
 
-gpu = int(np.argmin(list(map(lambda x: x["mem_used_percent"], nvgpu.gpu_info()))))
+gpu = int(np.argmin(list(map(lambda x: x["mem_used_percent"], nvgpu.gpu_info())))) if args.gpu is None else args.gpu
 seed = 100 if args.sd is None else args.sd
 l_rate = 5e-4 if args.lr is None else args.lr
 n_epochs = 1000 if args.ep is None else args.ep
-b_size = 512 if args.bs is None else args.bs
+b_size = 2**13 if args.bs is None else args.bs
 
 min_reviews_rst = 100
 min_reviews_usr = 1
@@ -57,7 +57,7 @@ cities = ["gijon", "barcelona", "madrid"] if city in ["gijon", "barcelona", "mad
 cities = ["newyorkcity", "london"] if city in ["newyorkcity", "london"] else cities
 cities = ["paris"] if city in ["paris"] else cities
 
-w2v_dts = W2Vdataset({"cities": ["gijon", "barcelona", "madrid"], "city": "multi", "seed": seed, "data_path": base_path, "save_path": "data/",  # base_path + "Datasets/",
+w2v_dts = W2Vdataset({"cities": cities, "city": "multi", "seed": seed, "data_path": base_path, "save_path": "data/",  # base_path + "Datasets/",
                       "remove_plurals": remove_plurals, "stemming": stemming, "lemmatization": lemmatization,
                       "remove_accents": remove_accents, "remove_numbers": remove_numbers,
                       })
@@ -130,7 +130,7 @@ if stage == 1:
     bow2val_mdl.evaluate(test=True)
 '''
 # MODELO 3: LSTM2RST ###################################################################################################
-
+'''
 lstm2rst_mdl_cfg = {"model": {"model_version": model_v, "learning_rate": l_rate, "final_learning_rate": l_rate/100, "epochs": n_epochs, "batch_size": b_size, "seed": seed,
                               "early_st_first_epoch": 0, "early_st_monitor": "val_accuracy", "early_st_monitor_mode": "max", "early_st_patience": 20},
                     "session": {"gpu": gpu, "in_md5": False}}
@@ -142,7 +142,7 @@ if stage == 0:
     # lstm2rst_mdl.evaluate(test=False)
 
 if stage == 1:
-    bst_cfg = {"gijon": "", "barcelona": "", "madrid": ""}
+    bst_cfg = {"gijon": "1c072eb640c097bf3c3f1a791f40c62b", "barcelona": "698a03dc1c00adaae7600e0144a8119a", "madrid": "8633acfd23aa82b5aca6c3e810cb3710"}
     # Sobreescribir la configuración por la mejor conocida:
     with open('models/LSTM2RST/%s/%s/cfg.json' % (city, bst_cfg[city])) as f: best_cfg_data = json.load(f) 
     dts_cfg = best_cfg_data["dataset_config"]
@@ -154,7 +154,7 @@ if stage == 1:
     lstm2rst_mdl.baseline(test=True)
     lstm2rst_mdl.evaluate(test=True)
     lstm2rst_mdl.evaluate_text("Busco un restaurante barato")
-
+'''
 '''
 # Obtener, para cada palabra, los restaurantes más afines
 for wrd_idx, wrd in enumerate(rstval.DATA["FEATURES_NAME"]):
@@ -179,7 +179,7 @@ if stage == 0:
     # bow2rst_mdl.evaluate(test=False)
 
 if stage == 1:
-    bst_cfg = {"gijon": "c1f6541e4fac0312424cec3d8dfde6c3", "barcelona": "d7237d7e37d73cce6b68148477892c36", "madrid": "5d97d648d77592416dad175a576eb1cb"}
+    bst_cfg = {"gijon": "c1f6541e4fac0312424cec3d8dfde6c3", "barcelona": "d7237d7e37d73cce6b68148477892c36", "madrid": "5d97d648d77592416dad175a576eb1cb", "newyorkcity": "c3b019e94f4304e66dca2f0be0bb9fee", "paris": "8071cd9b1d81852e5bfece40a4b9d44a"}
     # Sobreescribir la configuración por la mejor conocida:
     with open('models/BOW2RST/%s/%s/cfg.json' % (city, bst_cfg[city])) as f: best_cfg_data = json.load(f)  # 300
     # with open('models/BOW2RST/gijon/c81670f3048bc05122aace9a0c996d37/cfg.json') as f: best_cfg_data = json.load(f)  # 400
@@ -194,9 +194,13 @@ if stage == 1:
 
     bow2rst_mdl.eval_custom_text("Quiero comer un arroz con bogavante y con buenas vistas")
     bow2rst_mdl.eval_custom_text("Donde puedo comer comida vegana")
+    bow2rst_mdl.eval_custom_text("I want to eat some vegan food")
+    bow2rst_mdl.eval_custom_text("The cheapest pizza in town")
+    bow2rst_mdl.eval_custom_text("Spanish paella and sangria")
+    bow2rst_mdl.eval_custom_text("Je veux manger des steaks pas chers")
 '''
 # MODELO 5: LSTM&BOW2RST&VAL ###########################################################################################
-'''
+
 lstmbow2rstval_mdl_cfg = {"model": {"model_version": model_v, "learning_rate": l_rate, "final_learning_rate": l_rate/100, "epochs": n_epochs, "batch_size": b_size, "seed": seed,
                                     "early_st_first_epoch": 0, "early_st_monitor": "val_loss", "early_st_monitor_mode": "min", "early_st_patience": 20},
                           "session": {"gpu": gpu, "in_md5": False}}
@@ -225,4 +229,4 @@ if stage == 1:
     lstmbow2rstval_mdl.eval_custom_text("Quiero comer un arroz con bogavante y con buenas vistas")
     lstmbow2rstval_mdl.eval_custom_text("Quiero comer un buen cachopo y beber sidra")
     lstmbow2rstval_mdl.eval_custom_text("Quiero probar la peor y más cara comida de la ciudad")
-'''
+

@@ -31,7 +31,7 @@ class LSTMBOW2RSTVAL(KerasModelClass):
         for word, i in self.DATASET.DATA["WORD_INDEX"].items():
             try:
                 embedding_vector = word_vectors[word]
-                embedding_matrix[i] = embedding_vector
+                embedding_matrix[i] = embedding_vector # TODO: AQUí será i-1??
             except KeyError:
                 continue
 
@@ -44,7 +44,7 @@ class LSTMBOW2RSTVAL(KerasModelClass):
 
     def get_sub_model(self, w2v_emb_size, embedding_matrix):
         mv = self.CONFIG["model"]["model_version"]
-        input_bow = tf.keras.layers.Input(shape=(self.DATASET.CONFIG["num_palabras"],), name="input_bow")
+        input_bow = tf.keras.layers.Input(shape=(len(self.DATASET.DATA["FEATURES_NAME"]),), name="input_bow")
 
         if mv == "0":
             x = tf.keras.layers.Dense(self.DATASET.DATA["N_RST"], name="bow_2_rst", kernel_initializer=tf.keras.initializers.Ones())(input_bow)
@@ -66,7 +66,7 @@ class LSTMBOW2RSTVAL(KerasModelClass):
             output_val = tf.keras.layers.Dense(1, name="output_valor")(h)
             val_model = tf.keras.models.Model(inputs=[input_rst, input_lstm], outputs=[output_val], name="valor_model")
 
-        if mv == "1":
+        elif mv == "1":
             x = tf.keras.layers.Dense(self.DATASET.DATA["N_RST"], name="bow_2_rst", kernel_initializer=tf.keras.initializers.Ones())(input_bow)
             x = tf.keras.layers.Dropout(.1)(x)
             x = tf.keras.layers.BatchNormalization(name="bow_2_rst_bn")(x)
@@ -84,7 +84,7 @@ class LSTMBOW2RSTVAL(KerasModelClass):
             output_val = tf.keras.layers.Dense(1, name="output_valor")(h)
             val_model = tf.keras.models.Model(inputs=[input_rst, input_lstm], outputs=[output_val], name="valor_model")
 
-        if mv == "2":
+        elif mv == "2":
             x = tf.keras.layers.Dense(self.DATASET.DATA["N_RST"], name="bow_2_rst", kernel_initializer=tf.keras.initializers.Ones())(input_bow)
             x = tf.keras.layers.Dropout(.3)(x)
             x = tf.keras.layers.BatchNormalization(name="bow_2_rst_bn")(x)
@@ -101,12 +101,32 @@ class LSTMBOW2RSTVAL(KerasModelClass):
             output_val = tf.keras.layers.Dense(1, name="output_valor")(h)
             val_model = tf.keras.models.Model(inputs=[input_rst, input_lstm], outputs=[output_val], name="valor_model")
 
+        elif mv == "3":
+            x = tf.keras.layers.Dense(self.DATASET.DATA["N_RST"], name="bow_2_rst", kernel_initializer=tf.keras.initializers.Ones())(input_bow)
+            x = tf.keras.layers.Dropout(.3)(x)
+            x = tf.keras.layers.BatchNormalization(name="bow_2_rst_bn")(x)
+            output_rst = tf.keras.layers.Activation("softmax", name="output_rst")(x)
+
+            input_w2v = tf.keras.layers.Input(shape=(self.DATASET.DATA["MAX_LEN_PADDING"],), name="input_w2v")
+            h = tf.keras.layers.Embedding(self.DATASET.DATA["VOCAB_SIZE"], w2v_emb_size, weights=[embedding_matrix], trainable=False, mask_zero=True)(input_w2v)
+            output_lstm = tf.keras.layers.LSTM(128, name="output_lstm")(h)
+
+            input_rst = tf.keras.layers.Input(shape=(self.DATASET.DATA["N_RST"],), name="input_rst")
+            input_lstm = tf.keras.layers.Input(shape=(128,), name="input_lstm")
+            h = tf.keras.layers.Concatenate(axis=1)([input_rst, input_lstm])
+            h = tf.keras.layers.Dense(128, activation='relu')(h)
+            output_val = tf.keras.layers.Dense(1, name="output_valor")(h)
+            val_model = tf.keras.models.Model(inputs=[input_rst, input_lstm], outputs=[output_val], name="valor_model")
+
+        else:
+            raise AssertionError
+
         model = tf.keras.models.Model(inputs=[input_bow, input_w2v], outputs=[output_rst, val_model([output_rst, output_lstm])])
 
         losses = {"output_rst": "categorical_crossentropy", "valor_model": "mean_squared_error"}
         metrics = {"output_rst": ['accuracy', tf.keras.metrics.TopKCategoricalAccuracy(k=5, name='top_5'), tf.keras.metrics.TopKCategoricalAccuracy(k=10, name='top_10')],
                    "valor_model": ["mean_absolute_error"]}
-        model.compile(loss=losses, optimizer=tf.keras.optimizers.Adam(lr=self.CONFIG["model"]["learning_rate"]), metrics=metrics)
+        model.compile(loss=losses, optimizer=tf.keras.optimizers.Adam(learning_rate=self.CONFIG["model"]["learning_rate"]), metrics=metrics)
 
         return model
 
@@ -342,12 +362,13 @@ class LSTMFBOW2RSTVAL(LSTMBOW2RSTVAL):
         return train, dev
 
 
-class LSTMFBOW2RSTVALsequence(BaseSequence):
+class LSTMBOW2RSTVALsequence(BaseSequence):
 
     def __init__(self, model, set_name="TRAIN_DEV", is_dev=-1):
         self.IS_DEV = is_dev
         self.SET_NAME = set_name
         BaseSequence.__init__(self, parent_model=model)
+        self.KHOT = MultiLabelBinarizer(classes=list(range(self.MODEL.DATASET.DATA["N_RST"])))
 
     def init_data(self):
         ret = self.MODEL.DATASET.DATA[self.SET_NAME]
@@ -358,20 +379,9 @@ class LSTMFBOW2RSTVALsequence(BaseSequence):
         return ret
 
     def preprocess_input(self, batch_data):
-        x1 = np.row_stack(batch_data.bow)
+        x1 = np.row_stack(batch_data.bow.apply(lambda x: x.todense().tolist()[0]))
         x2 = np.row_stack(batch_data.seq)
         return [x1, x2]
-
-    def preprocess_output(self, batch_data):
-        y = batch_data["rating"].values
-        return y
-
-
-class LSTMBOW2RSTVALsequence(LSTMFBOW2RSTVALsequence):
-
-    def __init__(self, model, set_name="TRAIN_DEV", is_dev=-1):
-        LSTMFBOW2RSTVALsequence.__init__(self, model=model, set_name=set_name, is_dev=is_dev)
-        self.KHOT = MultiLabelBinarizer(classes=list(range(self.MODEL.DATASET.DATA["N_RST"])))
 
     def preprocess_output(self, batch_data):
         y1 = self.KHOT.fit_transform(np.expand_dims(batch_data.id_restaurant.values, -1))

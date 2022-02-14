@@ -19,18 +19,21 @@ class TextDataset(DatasetClass):
 
     def __init__(self, config):
         nltk.download('stopwords')
-        self.SPANISH_STOPWORDS = self.__get_es_stopwords__()
 
         if config["city"] in ["gijon", "madrid", "barcelona"]:
             import es_core_news_sm as spacy_es_model  # python -m spacy download es_core_news_sm
             self.NLP = spacy_es_model.load(disable=["parser", "ner", "attribute_ruler"])
+            self.STOPWORDS = self.__get_stopwords__(lang="es")
 
         elif config["city"] in ["newyorkcity", "london"]:
             import en_core_web_sm as spacy_en_model  # python -m spacy download en_core_web_sm
-            self.NLP = spacy_en_model.load(disable=["parser", "ner", "attribute_ruler"])
+            self.NLP = spacy_en_model.load(disable=["parser", "ner"])
+            self.STOPWORDS = self.__get_stopwords__(lang="en")
+
         else:
             import fr_core_news_sm as spacy_fr_model  # python -m spacy download fr_core_news_sm
             self.NLP = spacy_fr_model.load(disable=["parser", "ner", "attribute_ruler"])
+            self.STOPWORDS = self.__get_stopwords__(lang="fr")
 
         DatasetClass.__init__(self, config=config)
 
@@ -111,7 +114,7 @@ class TextDataset(DatasetClass):
         rev = rev.loc[(~rev["text"].isna()) & (~rev["title"].isna())]
 
         # Preprocesar las StopWords
-        self.SPANISH_STOPWORDS = self.prerpocess_text(" ".join(self.SPANISH_STOPWORDS)).split(" ")
+        self.STOPWORDS = self.prerpocess_text(" ".join(self.STOPWORDS)).split(" ")
 
         # Preprocesar los textos
         mapply.init(
@@ -158,51 +161,59 @@ class TextDataset(DatasetClass):
 
         return rev, stemming_dict
 
-    def __get_es_stopwords__(self):
+    def __get_stopwords__(self, lang="es"):
         # nltk.download('stopwords')
+        ret_stgrs = []
 
-        spanish_stopwords = stopwords.words('spanish')
-        spanish_stopwords += ["gijon", "asturiano", "asturias"]
-        spanish_stopwords += ['ademas', 'alli', 'aqui', 'asturias', 'asi', 'aunque', 'cada', 'casa', 'casi',
-                              'comido', 'comimos', 'cosas', 'creo', 'decir', 'despues', 'dos', 'dia', 'fin',
-                              'hace', 'hacer', 'hora', 'ido', 'igual', 'ir', 'lado', 'luego', 'mas', 'merece',
-                              'mismo', 'momento', 'mucha', 'muchas', 'parece', 'parte', 'pedimos', 'pedir', 'probar',
-                              'puede', 'puedes', 'pues', 'punto', 'relacion', 'reservar', 'seguro', 'semana', 'ser',
-                              'si',
-                              'sido', 'siempre', 'sitio', 'sitios', 'solo', 'si', 'tan', 'tener', 'toda', 'tomar',
-                              'tres',
-                              'unas', 'varias', 'veces', 'ver', 'verdad', 'vez', 'visita', 'bastante', 'duda', 'gran',
-                              'menos', 'no', 'nunca', 'opinion', 'primera', 'primero', 'segundo', 'mejor',
-                              'mejores']
-        spanish_stopwords += ['alguna', 'caso', 'centro', 'cierto', 'comentario',
-                              'cosa',
-                              'cualquier', 'cuanto', 'cuenta', 'da', 'decidimos', 'demasiado', 'dentro', 'destacar',
-                              'detalle',
-                              'dia', 'dias', 'esperamos', 'esperar', 'general', 'gracias', 'haber', 'hacen', 'hecho',
-                              'lleno',
-                              'media', 'minutos', 'noche', 'nota', 'poder', 'ponen', 'probado', 'puedo', 'reserva',
-                              'resto',
-                              'sabor', 'solo', 'tiempo', 'todas', 'tomamos', 'totalmente', 'vamos', 'varios', 'vida',
-                              'unico']
-        spanish_stopwords += ['ahora', 'aun', 'cerca', 'ciudad', 'cuatro', 'elegir', 'encima', 'falta', 'final',
-                              'ganas',
-                              'hoy', 'llegamos', 'medio', 'mundo', 'nuevo', 'ocasiones', 'opcion', 'parecio', 'pasar',
-                              'pedido',
-                              'pesar', 'poner', 'probamos', 'pronto', 'realmente', 'salimos', 'sirven', 'situado',
-                              'tampoco',
-                              'tarde', 'tipo', 'va', 'vas', 'voy']
-        spanish_stopwords += ['come', 'demas', 'ello', 'etc', 'incluso', 'llegar', 'pasado', 'primer', 'pusieron',
-                              'quedamos', 'quieres', 'saludo', 'tambien', 'trabajo', 'tras', 'verano']
-        spanish_stopwords += ['algun', 'cenamos', 'comentarios', 'comiendo', 'dan', 'dice', 'domingo', 'ofrecen',
-                              'razonable', 'tamaño']
-        spanish_stopwords += ['nadie', 'ningun', 'opiniones', 'quizas', 'san', 'sino']
-        spanish_stopwords += ['atendio', 'pega', 'sabado', 'dicho', 'par', 'total', 'años', 'año', 'ultima', 'comer']
-        spanish_stopwords += ['ahi', 'restaurante']
-        spanish_stopwords += ["claro", "dar", "dieron", "dijo", "entrar", "equipo", "establecimiento", "forma", "hacia", "ibamos", "local", "mayor", "mientras", "misma", "ninguna", "paso", "pedi", "pudimos", "pueden", "resumen", "seguir", "segunda", "siendo", "suele", "supuesto", "ultimo"]
-        spanish_stopwords += ["pagamos", "tal", "saber", "deja", "toque", "puesto"]
-        spanish_stopwords += ["segun", "iba", "manera", "arriba"]
-        spanish_stopwords += ["queda", "parecia", "imposible", "proxima"]
+        if lang == "es":
+            ret_stgrs = stopwords.words('spanish')
+            ret_stgrs += ["gijon", "asturiano", "asturias"]
+            ret_stgrs += ['ademas', 'alli', 'aqui', 'asturias', 'asi', 'aunque', 'cada', 'casa', 'casi',
+                          'comido', 'comimos', 'cosas', 'creo', 'decir', 'despues', 'dos', 'dia', 'fin',
+                          'hace', 'hacer', 'hora', 'ido', 'igual', 'ir', 'lado', 'luego', 'mas', 'merece',
+                          'mismo', 'momento', 'mucha', 'muchas', 'parece', 'parte', 'pedimos', 'pedir', 'probar',
+                          'puede', 'puedes', 'pues', 'punto', 'relacion', 'reservar', 'seguro', 'semana', 'ser',
+                          'si',
+                          'sido', 'siempre', 'sitio', 'sitios', 'solo', 'si', 'tan', 'tener', 'toda', 'tomar',
+                          'tres',
+                          'unas', 'varias', 'veces', 'ver', 'verdad', 'vez', 'visita', 'bastante', 'duda', 'gran',
+                          'menos', 'no', 'nunca', 'opinion', 'primera', 'primero', 'segundo', 'mejor',
+                          'mejores']
+            ret_stgrs += ['alguna', 'caso', 'centro', 'cierto', 'comentario',
+                          'cosa',
+                          'cualquier', 'cuanto', 'cuenta', 'da', 'decidimos', 'demasiado', 'dentro', 'destacar',
+                          'detalle',
+                          'dia', 'dias', 'esperamos', 'esperar', 'general', 'gracias', 'haber', 'hacen', 'hecho',
+                          'lleno',
+                          'media', 'minutos', 'noche', 'nota', 'poder', 'ponen', 'probado', 'puedo', 'reserva',
+                          'resto',
+                          'sabor', 'solo', 'tiempo', 'todas', 'tomamos', 'totalmente', 'vamos', 'varios', 'vida',
+                          'unico']
+            ret_stgrs += ['ahora', 'aun', 'cerca', 'ciudad', 'cuatro', 'elegir', 'encima', 'falta', 'final',
+                          'ganas',
+                          'hoy', 'llegamos', 'medio', 'mundo', 'nuevo', 'ocasiones', 'opcion', 'parecio', 'pasar',
+                          'pedido',
+                          'pesar', 'poner', 'probamos', 'pronto', 'realmente', 'salimos', 'sirven', 'situado',
+                          'tampoco',
+                          'tarde', 'tipo', 'va', 'vas', 'voy']
+            ret_stgrs += ['come', 'demas', 'ello', 'etc', 'incluso', 'llegar', 'pasado', 'primer', 'pusieron',
+                          'quedamos', 'quieres', 'saludo', 'tambien', 'trabajo', 'tras', 'verano']
+            ret_stgrs += ['algun', 'cenamos', 'comentarios', 'comiendo', 'dan', 'dice', 'domingo', 'ofrecen',
+                          'razonable', 'tamaño']
+            ret_stgrs += ['nadie', 'ningun', 'opiniones', 'quizas', 'san', 'sino']
+            ret_stgrs += ['atendio', 'pega', 'sabado', 'dicho', 'par', 'total', 'años', 'año', 'ultima', 'comer']
+            ret_stgrs += ['ahi', 'restaurante']
+            ret_stgrs += ["claro", "dar", "dieron", "dijo", "entrar", "equipo", "establecimiento", "forma", "hacia", "ibamos", "local", "mayor", "mientras", "misma", "ninguna", "paso", "pedi", "pudimos", "pueden", "resumen", "seguir", "segunda", "siendo", "suele", "supuesto", "ultimo"]
+            ret_stgrs += ["pagamos", "tal", "saber", "deja", "toque", "puesto"]
+            ret_stgrs += ["segun", "iba", "manera", "arriba"]
+            ret_stgrs += ["queda", "parecia", "imposible", "proxima"]
 
-        # ToDo: Quitar "saludos", "lorenzo" en el futuro
+            # ToDo: Quitar "saludos", "lorenzo" en el futuro
 
-        return spanish_stopwords
+        elif lang == "en":
+            ret_stgrs = stopwords.words("english")
+
+        elif lang == "fr":
+            ret_stgrs = stopwords.words("french")
+
+        return ret_stgrs

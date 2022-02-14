@@ -3,8 +3,8 @@ import json
 import pandas as pd
 import numpy as np
 
-city = "gijon"
-model = "LSTM2RST"
+city = "paris"
+model = "LSTMBOW2RSTVAL"
 dev = True
 
 if "RSTVAL" in model:

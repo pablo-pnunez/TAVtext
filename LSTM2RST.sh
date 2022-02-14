@@ -1,19 +1,16 @@
 #!/bin/bash
 
-MAXTSTS=4
+MAXTSTS=2
 STAGE=0 # GRIDSEARCH o TRAIN
 i=0
 
-declare -a CITIES=( "gijon" )
+declare -a CITIES=( "barcelona" "madrid" )
 
-declare -a MODELS=( "0" "2" )
+declare -a MODELS=( "2" )
 declare -a LRATES=( 1e-4 5e-4 1e-3 5e-3 )
 declare -a BATCHES=( 128 256 512 1024 2048 )
 
 
-declare -a MODELS=( "2" )
-declare -a LRATES=( 1e-3 )
-declare -a BATCHES=( 2048 )
 
 for CITY in "${CITIES[@]}" ;do
   echo "$CITY"
