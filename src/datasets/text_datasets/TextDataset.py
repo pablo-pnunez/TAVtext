@@ -17,7 +17,7 @@ from nltk.stem import SnowballStemmer, PorterStemmer
 
 class TextDataset(DatasetClass):
 
-    def __init__(self, config):
+    def __init__(self, config, load):
         nltk.download('stopwords')
 
         if config["city"] in ["gijon", "madrid", "barcelona"]:
@@ -35,7 +35,7 @@ class TextDataset(DatasetClass):
             self.NLP = spacy_fr_model.load(disable=["parser", "ner", "attribute_ruler"])
             self.STOPWORDS = self.__get_stopwords__(lang="fr")
 
-        DatasetClass.__init__(self, config=config)
+        DatasetClass.__init__(self, config=config, load=load)
 
     def prerpocess_text(self, text):
 

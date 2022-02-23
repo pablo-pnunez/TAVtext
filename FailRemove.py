@@ -2,7 +2,7 @@ import os
 import shutil
 import pandas as pd
 
-path = "models/BOW2RST/barcelona/"
+path = "models/LSTM2RST/gijon/"
 
 for folder in os.listdir(path):
     total_path = path+folder+"/"

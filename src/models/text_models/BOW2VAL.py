@@ -44,7 +44,7 @@ class BOW2VAL(VALModel):
             model.add(tf.keras.layers.Dense(32, activation='relu'))
 
         model.add(tf.keras.layers.Dense(1))
-        model.compile(loss='mean_squared_error', optimizer=tf.keras.optimizers.Adam(lr=self.CONFIG["model"]["learning_rate"]), metrics=['mean_absolute_error'])
+        model.compile(loss='mean_squared_error', optimizer=tf.keras.optimizers.Adam(learning_rate=self.CONFIG["model"]["learning_rate"]), metrics=['mean_absolute_error'])
 
         return model
 
@@ -62,8 +62,10 @@ class BOW2VAL(VALModel):
             test_set = BOW2VALsequence(self, is_dev=1)
 
         ret = self.MODEL.evaluate(test_set, verbose=0)
-
-        print_g(dict(zip(self.MODEL.metrics_names, ret)))
+        ret = dict(zip(self.MODEL.metrics_names, ret))
+        print_g(ret)
+        
+        return ret
 
 
 class BOW2VALsequence(BaseSequence):

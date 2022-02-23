@@ -286,7 +286,7 @@ class LSTMBOW2RSTVAL(KerasModelClass):
 
         # Predecir 5 restaurantes con la parte correspondiente del modelo
         rev_rst_pred = rst_model.predict(normed_bow)
-        rev_rst_pred = np.apply_along_axis(lambda x: (-x).argsort()[:3], 1, rev_rst_pred)
+        rev_rst_pred = np.apply_along_axis(lambda x: (-x).argsort()[:4], 1, rev_rst_pred)
         recommended_rests = rev_rst_pred.flatten()
 
         print("\n")

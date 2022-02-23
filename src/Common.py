@@ -57,6 +57,7 @@ def parse_cmd_args():
     parser.add_argument('-bs', type=int, help="Batch size")
     parser.add_argument('-stg', type=int, help="stage")
     parser.add_argument('-mv', type=str, help="Model version")
+    parser.add_argument('-mn', type=str, help="Model name")
     parser.add_argument('-bownws', type=int, help="BOW n words")
 
     args = parser.parse_args()

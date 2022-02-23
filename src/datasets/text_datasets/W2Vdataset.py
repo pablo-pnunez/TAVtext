@@ -8,8 +8,8 @@ import pandas as pd
 
 class W2Vdataset(TextDataset):
 
-    def __init__(self, config):
-        TextDataset.__init__(self, config=config)
+    def __init__(self, config, load=None):
+        TextDataset.__init__(self, config=config, load=load)
 
     def get_data(self, load=["ALL_TEXTS", "ALL_TITLES", "STEMMING_DICT"]):
 
@@ -17,7 +17,7 @@ class W2Vdataset(TextDataset):
         dict_data = self.get_dict_data(self.DATASET_PATH, load)
 
         # Si ya existen, retornar
-        if dict_data:
+        if dict_data is not False and len(dict_data) == len(load):
             return dict_data
         # Si no existe, crear
         else:

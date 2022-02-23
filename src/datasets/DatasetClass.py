@@ -9,7 +9,7 @@ import collections
 
 class DatasetClass:
 
-    def __init__(self, config):
+    def __init__(self, config, load):
         self.CONFIG = dict(collections.OrderedDict(sorted(config.items())))  # Ordenar para evitar cambios en MD5
         self.DATASET_PATH = self.CONFIG["save_path"] + self.__class__.__name__ + "/" + self.__get_md5__() + "/"
 
@@ -21,7 +21,8 @@ class DatasetClass:
             with open(self.DATASET_PATH + '/cfg.json', 'w') as fp:
                 json.dump(self.CONFIG, fp, indent=4)
 
-        self.DATA = self.get_data()
+        if load is None: self.DATA = self.get_data()
+        else: self.DATA = self.get_data(load=load)
 
     def get_data(self):
         """Retorna un diccionario con los datos"""

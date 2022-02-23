@@ -28,7 +28,7 @@ for CITY in "${CITIES[@]}" ;do
           echo "----$BATCH"
 
           #MANUAL GPU
-          nohup venv/bin/python3.8 -u  Main.py  -stg $STAGE -ct $CITY -mv $MODEL -bs $BATCH -lr $LRATE -bownws $BOWWRDS > "scripts/out/"$CITY"/model_"$MODEL"_"$BATCH"_"$BOWWRDS"_["$LRATE"].txt" &
+          # nohup venv/bin/python3.8 -u  Main.py  -stg $STAGE -ct $CITY -mv $MODEL -bs $BATCH -lr $LRATE -bownws $BOWWRDS > "scripts/out/"$CITY"/model_"$MODEL"_"$BATCH"_"$BOWWRDS"_["$LRATE"].txt" &
 
           # Almacenar los PID en una lista hasta alcanzar el máximo de procesos
           pids[${i}]=$!
