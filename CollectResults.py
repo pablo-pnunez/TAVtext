@@ -5,7 +5,7 @@ import numpy as np
 
 city = "newyorkcity"
 # model = "LSTMBOW2RSTVAL"
-model = "BOW2RST"
+model = "LSTM2VAL"
 dev = True
 
 if "RSTVAL" in model:

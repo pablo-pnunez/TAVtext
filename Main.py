@@ -21,13 +21,16 @@ from src.models.text_models.LSTMBOW2RSTVAL import LSTMBOW2RSTVAL
 
 # #######################################################################################################################
 
+# with tf.device('/gpu:0'):
+#  tensorflow_dataset = tf.constant(numpy_dataset)
+
 args = parse_cmd_args()
 
-model = "BOW2VAL" if args.mn is None else args.mn
-city = "gijon".lower().replace(" ", "") if args.ct is None else args.ct
+model = "BOW2RST" if args.mn is None else args.mn
+city = "madrid".lower().replace(" ", "") if args.ct is None else args.ct
 
-stage = 1 if args.stg is None else args.stg
-model_v = "3" if args.mv is None else args.mv
+stage = -1 if args.stg is None else args.stg
+model_v = "2" if args.mv is None else args.mv
 
 gpu = int(np.argmin(list(map(lambda x: x["mem_used_percent"], nvgpu.gpu_info())))) if args.gpu is None else args.gpu
 seed = 100 if args.sd is None else args.sd
@@ -52,7 +55,8 @@ base_path = "/media/nas/pperez/data/TripAdvisor/"
 
 # ToDo: Que pasa con vegana (no aparece en el vocabulario)?
 # ToDo: Retornar frases de las reviews como explicación?
-# ToDo: Se puede obtener explicaciones también con w2v a la entrada? (creo que ya lo probé, poniendo una sola palabra en la lstm y viendo las probabilidades de la salida para cada restaurante)
+# ToDo: Se puede obtener explicaciones también con w2v a la entrada? (creo que ya lo probé, poniendo una sola palabra (de las seleccionadas como relevantes mediante POS) en la lstm y viendo las probabilidades de la salida para cada restaurante)
+# ToDo: Para entrenar, crear dataset más pequeño que evite cargar en RAM textos como se hizo en paris
 
 # DATASET CONFIG #######################################################################################################
 
@@ -63,10 +67,12 @@ dts_cfg = {"city": city, "seed": seed, "data_path": base_path, "save_path": "dat
            "min_df": 5, "bow_pct_words": bow_pct_words, "presencia": False, "text_column": "text",  # BOW
            "n_max_words": 0, "test_dev_split": .1, "truncate_padding": True}
 
-if stage == 0:
+if stage != 1:
     rstval = RSTVALdataset(dts_cfg, load=["TRAIN_DEV", "WORD_INDEX", "VOCAB_SIZE", "FEATURES_NAME", "MAX_LEN_PADDING", "N_RST"])
 else:
     rstval = RSTVALdataset(dts_cfg)
+
+# rstval.get_data_stats()
 
 if "LSTM" in model:
     # W2V ----------------------------------------------------------------------------------------------------------------
@@ -87,7 +93,7 @@ if "LSTM" in model:
     if "LSTM2VAL" == model:
         # MODELO 1: LSTM2VAL ###################################################################################################
         lstm2val_mdl_cfg = {"model": {"model_version": model_v, "learning_rate": l_rate, "final_learning_rate": l_rate/100, "epochs": n_epochs, "batch_size": b_size, "seed": seed,
-                                    "early_st_first_epoch": 0, "early_st_monitor": "val_mean_absolute_error", "early_st_monitor_mode": "min", "early_st_patience": 20},
+                                      "early_st_first_epoch": 0, "early_st_monitor": "val_mean_absolute_error", "early_st_monitor_mode": "min", "early_st_patience": 20},
                             "session": {"gpu": gpu, "in_md5": False}}
 
         if stage == 0:
@@ -97,7 +103,8 @@ if "LSTM" in model:
             # lstm2val_mdl.evaluate(test=False)ez
 
         if stage == 1:
-            bst_cfg = {"gijon": "32ba236b8eccf04c8e3236c259c59956", "barcelona": "e976e1661a848cdbb87efef2288cf762", "madrid": "faaa56ac7ce23b17881f3be8bca31e34"}
+            bst_cfg = {"gijon": "32ba236b8eccf04c8e3236c259c59956", "barcelona": "e976e1661a848cdbb87efef2288cf762", "madrid": "faaa56ac7ce23b17881f3be8bca31e34", 
+                       "paris": "54a424e8078c26921b8b3fe274cccf0e", "newyorkcity": "fe3ff3021d97d9d55eebfc875862bc20"}
             # Sobreescribir la configuración por la mejor conocida:
             with open('models/LSTM2VAL/%s/%s/cfg.json' % (city, bst_cfg[city])) as f: best_cfg_data = json.load(f)
             dts_cfg = best_cfg_data["dataset_config"]
@@ -112,8 +119,12 @@ if "LSTM" in model:
     if "LSTM2RST" == model:
         # MODELO 3: LSTM2RST ###################################################################################################
         lstm2rst_mdl_cfg = {"model": {"model_version": model_v, "learning_rate": l_rate, "final_learning_rate": l_rate/100, "epochs": n_epochs, "batch_size": b_size, "seed": seed,
-                                    "early_st_first_epoch": 0, "early_st_monitor": "val_accuracy", "early_st_monitor_mode": "max", "early_st_patience": 20},
+                                      "early_st_first_epoch": 0, "early_st_monitor": "val_accuracy", "early_st_monitor_mode": "max", "early_st_patience": 20},
                             "session": {"gpu": gpu, "in_md5": False}}
+
+        if stage == -1:
+            lstm2rst_mdl = LSTM2RST(lstm2rst_mdl_cfg, rstval, w2v_mdl)
+            lstm2rst_mdl.train(dev=True, save_model=False)
 
         if stage == 0:
             lstm2rst_mdl = LSTM2RST(lstm2rst_mdl_cfg, rstval, w2v_mdl)
@@ -122,7 +133,8 @@ if "LSTM" in model:
             # lstm2rst_mdl.evaluate(test=False)
 
         if stage == 1:
-            bst_cfg = {"gijon": "1c072eb640c097bf3c3f1a791f40c62b", "barcelona": "698a03dc1c00adaae7600e0144a8119a", "madrid": "8633acfd23aa82b5aca6c3e810cb3710"}
+            bst_cfg = {"gijon": "1c072eb640c097bf3c3f1a791f40c62b", "barcelona": "698a03dc1c00adaae7600e0144a8119a", "madrid": "8633acfd23aa82b5aca6c3e810cb3710",
+                       "paris": "7d335b8682a84bac0e93e4745462782c", "newyorkcity": "a24784519ccff33aebe6da8db8d77526"}
             # Sobreescribir la configuración por la mejor conocida:
             with open('models/LSTM2RST/%s/%s/cfg.json' % (city, bst_cfg[city])) as f: best_cfg_data = json.load(f) 
             dts_cfg = best_cfg_data["dataset_config"]
@@ -160,7 +172,8 @@ if "LSTM" in model:
             # lstmbow2rstval_mdl.evaluate(test=False)
 
         if stage == 1:
-            bst_cfg = {"gijon": "fcec46055a28f7430cb7119ca19f9ec9", "barcelona": "3ad69708e0be5c12ce48c97e1cf96791", "madrid": "d50f37f1de4e4e1aff5e07af2865364c", "paris": "81197eefea1c3c3344bafa16c3e1e237", "newyorkcity": "b428f1f775205a1322bc8f371e420e74"}
+            bst_cfg = {"gijon": "fcec46055a28f7430cb7119ca19f9ec9", "barcelona": "3ad69708e0be5c12ce48c97e1cf96791", "madrid": "d50f37f1de4e4e1aff5e07af2865364c", 
+                       "paris": "81197eefea1c3c3344bafa16c3e1e237", "newyorkcity": "b428f1f775205a1322bc8f371e420e74"}
             # Sobreescribir la configuración por la mejor conocida:
             with open('models/LSTMBOW2RSTVAL/%s/%s/cfg.json' % (city, bst_cfg[city])) as f: best_cfg_data = json.load(f)
 
@@ -200,7 +213,8 @@ else:
             # bow2val_mdl.evaluate(test=False)
 
         if stage == 1:
-            bst_cfg = {"gijon": "a91cdeda9af8ccb79214b435f14c0f40", "barcelona": "1ebdba6928f8d29ae3c25d27b6970396", "madrid": "bb11e8d8a4e96f0a4697991b0a63b02a"}
+            bst_cfg = {"gijon": "a91cdeda9af8ccb79214b435f14c0f40", "barcelona": "1ebdba6928f8d29ae3c25d27b6970396", "madrid": "bb11e8d8a4e96f0a4697991b0a63b02a", 
+                       "paris": "54a424e8078c26921b8b3fe274cccf0e", "newyorkcity": "d9030ef0b1d127a18436a723f4a74eee"}
             # Sobreescribir la configuración por la mejor conocida:
             with open('models/BOW2VAL/%s/%s/cfg.json' % (city, bst_cfg[city])) as f: best_cfg_data = json.load(f) # 300
             # with open('models/BOW2VAL/gijon/15489c29fa15711844cf2300107a246d/cfg.json') as f: best_cfg_data = json.load(f) # 400
@@ -219,6 +233,10 @@ else:
                                      "early_st_first_epoch": 20, "early_st_monitor": "val_accuracy", "early_st_monitor_mode": "max", "early_st_patience": 20},
                            "session": {"gpu": gpu, "in_md5": False}}
 
+        if stage == -1:
+            bow2rst_mdl = BOW2RST(bow2rst_mdl_cfg, rstval)
+            bow2rst_mdl.train(dev=True, save_model=False)
+
         if stage == 0:
             bow2rst_mdl = BOW2RST(bow2rst_mdl_cfg, rstval)
             bow2rst_mdl.train(dev=True, save_model=True)
@@ -226,7 +244,8 @@ else:
             # bow2rst_mdl.evaluate(test=False)
 
         if stage == 1:
-            bst_cfg = {"gijon": "c1f6541e4fac0312424cec3d8dfde6c3", "barcelona": "bc0ee46301cabbac60c6882752a58370", "madrid": "95058ad056b72a7ccd6f767da5429d40", "newyorkcity": "c3b019e94f4304e66dca2f0be0bb9fee", "paris": "8071cd9b1d81852e5bfece40a4b9d44a"}
+            bst_cfg = {"gijon": "c1f6541e4fac0312424cec3d8dfde6c3", "barcelona": "bc0ee46301cabbac60c6882752a58370", "madrid": "95058ad056b72a7ccd6f767da5429d40", 
+                       "paris": "7608bb542fe77a81ebc53ce7914854b1", "newyorkcity": "c2b46058a7bc0b71f7bcd96830c6d5fc"}
             # Sobreescribir la configuración por la mejor conocida:
             with open('models/BOW2RST/%s/%s/cfg.json' % (city, bst_cfg[city])) as f: best_cfg_data = json.load(f)  # 300
             # with open('models/BOW2RST/gijon/c81670f3048bc05122aace9a0c996d37/cfg.json') as f: best_cfg_data = json.load(f)  # 400
@@ -239,9 +258,10 @@ else:
             bow2rst_mdl.baseline(test=True)
             bow2rst_mdl.evaluate(test=True)
 
-            bow2rst_mdl.eval_custom_text("Quiero comer un arroz con bogavante y con buenas vistas")
-            bow2rst_mdl.eval_custom_text("Donde puedo comer comida vegana")
-            bow2rst_mdl.eval_custom_text("I want to eat some vegan food")
-            bow2rst_mdl.eval_custom_text("The cheapest pizza in town")
-            bow2rst_mdl.eval_custom_text("Spanish paella and sangria")
-            bow2rst_mdl.eval_custom_text("Je veux manger des steaks pas chers")
+            bow2rst_mdl.eval_custom_text("Quiero comer arroz con arroz con arroz comer")
+            # bow2rst_mdl.eval_custom_text("Quiero comer un arroz con bogavante y con buenas vistas")
+            # bow2rst_mdl.eval_custom_text("Donde puedo comer comida vegana")
+            # bow2rst_mdl.eval_custom_text("I want to eat some vegan food")
+            # bow2rst_mdl.eval_custom_text("The cheapest pizza in town")
+            # bow2rst_mdl.eval_custom_text("Spanish paella and sangria")
+            # bow2rst_mdl.eval_custom_text("Je veux manger des steaks pas chers")

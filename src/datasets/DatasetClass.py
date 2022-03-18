@@ -31,7 +31,7 @@ class DatasetClass:
     def get_dict_data(self, file_path, load):
         """Busca en 'file_path' los ficheros en 'load'"""
         ret_dict = {}
-
+        # a[["seq","rating","id_restaurant", "dev"]]
         for d in load:
             if os.path.exists(file_path + d):
                 ret_dict[d] = get_pickle(file_path, d)

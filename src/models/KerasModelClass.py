@@ -47,7 +47,7 @@ class KerasModelClass(ModelClass):
 
         is_dev = dev_sequence is not None
 
-        train_cfg = {"verbose": 2, "workers": 1, "max_queue_size": 40, "multiprocessing": True}
+        train_cfg = {"verbose": 2, "workers": 6, "max_queue_size": 20, "multiprocessing": True}
 
         callbacks = []
 

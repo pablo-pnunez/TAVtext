@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
+from torch import embedding
 from src.Common import print_g
 from src.models.text_models.VALModel import VALModel
-from src.sequences.BaseSequence import BaseSequence
+from src.sequences.BaseSequence import BaseSequence, BaseSequenceXY
 
+import os
 import numpy as np
 import tensorflow as tf
 from sklearn.preprocessing import MultiLabelBinarizer
@@ -17,6 +19,7 @@ class LSTM2VAL(VALModel):
 
     def get_model(self):
         print_g("Loading w2v...")
+
         word_vectors = self.W2V_MODEL.MODEL.wv
         w2v_emb_size = word_vectors.vectors.shape[1]
         embedding_matrix = np.zeros((self.DATASET.DATA["VOCAB_SIZE"], w2v_emb_size))
@@ -31,6 +34,8 @@ class LSTM2VAL(VALModel):
         del word_vectors
 
         model = self.get_sub_model(w2v_emb_size, embedding_matrix)
+
+        print(model.summary())
 
         return model
 
@@ -90,15 +95,17 @@ class LSTM2VAL(VALModel):
         train = LSTM2VALsequence(self, is_dev=0)
         dev = LSTM2VALsequence(self, is_dev=1)
 
+        self.DATASET.DATA["TRAIN_DEV"] = []
+
         return train, dev
 
 
-class LSTM2VALsequence(BaseSequence):
+class LSTM2VALsequence(BaseSequenceXY):
 
     def __init__(self, model, set_name="TRAIN_DEV", is_dev=-1):
         self.IS_DEV = is_dev
         self.SET_NAME = set_name
-        BaseSequence.__init__(self, parent_model=model)
+        BaseSequenceXY.__init__(self, parent_model=model)
 
     def init_data(self):
         ret = self.MODEL.DATASET.DATA[self.SET_NAME]
@@ -106,10 +113,15 @@ class LSTM2VALsequence(BaseSequence):
         if self.IS_DEV >= 0:
             ret = ret.loc[ret["dev"] == self.IS_DEV]
 
-        return ret
+        with tf.device("GPU"):
+            X = tf.constant(np.row_stack(ret.seq))
+            Y = tf.constant(ret.rating)
+            del ret
+
+        return (X, Y)
 
     def preprocess_input(self, batch_data):
-        return np.row_stack(batch_data.seq)
+        return batch_data
 
     def preprocess_output(self, batch_data):
-        return batch_data["rating"].values
+        return batch_data

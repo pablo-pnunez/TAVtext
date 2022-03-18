@@ -283,4 +283,17 @@ class RSTVALdataset(TextDataset):
 
             return self.get_dict_data(self.DATASET_PATH, load)
 
+    def get_data_stats(self):
+        ALL = self.DATA["TRAIN_DEV"].append(self.DATA["TEST"])
 
+        n_revs = len(ALL["reviewId"].unique())
+        n_rests = len(ALL["id_restaurant"].unique())
+        
+        revs_per_res = ALL.groupby("id_restaurant").apply(lambda x: len(x.reviewId.unique()))
+        avg_revs_rest = revs_per_res.mean()
+        pctg_total_revs_rest_pop = revs_per_res.sort_values().iloc[-1]/n_revs
+
+        avg_rating = ALL.rating.mean()/10
+        std_rating = ALL.rating.std()/10
+
+        print("\n".join(map(str, [self.CONFIG["city"],n_revs, n_rests, avg_revs_rest, pctg_total_revs_rest_pop, avg_rating, std_rating])))

@@ -43,6 +43,7 @@ class BOW2RST(RSTModel):
 
         model.add(tf.keras.layers.Activation("softmax", name="output_rst"))
         metrics = ['accuracy', tf.keras.metrics.TopKCategoricalAccuracy(k=5, name='top_5'), tf.keras.metrics.TopKCategoricalAccuracy(k=10, name='top_10')]
+        model.build(self.CONFIG["model"]["batch_size"])
         model.compile(optimizer=tf.keras.optimizers.Adam(self.CONFIG["model"]["learning_rate"]), loss=tf.keras.losses.CategoricalCrossentropy(), metrics=metrics)
 
         return model

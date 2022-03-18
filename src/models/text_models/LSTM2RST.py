@@ -126,7 +126,9 @@ class MySequence(BaseSequence):
         return ret
 
     def preprocess_input(self, batch_data):
-        return np.row_stack(batch_data.seq)
+        data = np.row_stack(batch_data.seq)
+        return data
 
     def preprocess_output(self, batch_data):
-        return self.KHOT.fit_transform(np.expand_dims(batch_data.id_restaurant.values, -1))
+        data = self.KHOT.fit_transform(np.expand_dims(batch_data.id_restaurant.values, -1))
+        return data
