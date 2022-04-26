@@ -26,10 +26,10 @@ from src.models.text_models.LSTMBOW2RSTVAL import LSTMBOW2RSTVAL
 
 args = parse_cmd_args()
 
-model = "BOW2RST" if args.mn is None else args.mn
-city = "madrid".lower().replace(" ", "") if args.ct is None else args.ct
+model = "LSTM2RST" if args.mn is None else args.mn
+city = "gijon".lower().replace(" ", "") if args.ct is None else args.ct
 
-stage = -1 if args.stg is None else args.stg
+stage = 1 if args.stg is None else args.stg
 model_v = "2" if args.mv is None else args.mv
 
 gpu = int(np.argmin(list(map(lambda x: x["mem_used_percent"], nvgpu.gpu_info())))) if args.gpu is None else args.gpu
@@ -71,6 +71,7 @@ if stage != 1:
     rstval = RSTVALdataset(dts_cfg, load=["TRAIN_DEV", "WORD_INDEX", "VOCAB_SIZE", "FEATURES_NAME", "MAX_LEN_PADDING", "N_RST"])
 else:
     rstval = RSTVALdataset(dts_cfg)
+    rstval.get_data_stats()
 
 # rstval.get_data_stats()
 
