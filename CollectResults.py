@@ -3,9 +3,9 @@ import json
 import pandas as pd
 import numpy as np
 
-
-city = "gijon"
-model = "LSTMBOW2RSTVAL"
+city = "newyorkcity"
+# model = "LSTMBOW2RSTVAL"
+model = "LSTM2VAL"
 dev = True
 
 if "RSTVAL" in model:
@@ -21,7 +21,11 @@ ret = []
 for f in os.listdir(path):
     config_file = path+f+"/cfg.json"
     log_file = path+f+("/dev/" if dev else "")+"log.csv"
-    log_data = pd.read_csv(log_file)
+
+    try: 
+        log_data = pd.read_csv(log_file)
+    except Exception:
+        continue
 
     with open(config_file) as json_file:
         config_data = json.load(json_file)
@@ -38,5 +42,5 @@ for f in os.listdir(path):
 
 ret = pd.DataFrame(ret, columns=list(res.keys()))
 ret = ret.loc[:, ret.apply(pd.Series.nunique) != 1]  # Eliminar columnas que no varían.
-ret.to_csv(model+"_GS.csv")
+ret.to_excel("%s_%s_GS.xlsx" % (model, city))
 print(ret)

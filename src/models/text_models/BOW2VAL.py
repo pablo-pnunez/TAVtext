@@ -5,7 +5,7 @@ from src.sequences.BaseSequence import BaseSequence
 
 import numpy as np
 import tensorflow as tf
-from sklearn.preprocessing import MultiLabelBinarizer
+from scipy.sparse import csc_matrix
 
 
 class BOW2VAL(VALModel):
@@ -17,7 +17,7 @@ class BOW2VAL(VALModel):
 
         mv = self.CONFIG["model"]["model_version"]
         model = tf.keras.models.Sequential()
-        model.add(tf.keras.layers.Input(shape=(self.DATASET.CONFIG["num_palabras"],), name="input_bow"))
+        model.add(tf.keras.layers.Input(shape=(len(self.DATASET.DATA["FEATURES_NAME"]),), name="input_bow"))
 
         if mv == "0":
             model.add(tf.keras.layers.Dense(128, activation='relu'))
@@ -44,7 +44,7 @@ class BOW2VAL(VALModel):
             model.add(tf.keras.layers.Dense(32, activation='relu'))
 
         model.add(tf.keras.layers.Dense(1))
-        model.compile(loss='mean_squared_error', optimizer=tf.keras.optimizers.Adam(lr=self.CONFIG["model"]["learning_rate"]), metrics=['mean_absolute_error'])
+        model.compile(loss='mean_squared_error', optimizer=tf.keras.optimizers.Adam(learning_rate=self.CONFIG["model"]["learning_rate"]), metrics=['mean_absolute_error'])
 
         return model
 
@@ -62,8 +62,10 @@ class BOW2VAL(VALModel):
             test_set = BOW2VALsequence(self, is_dev=1)
 
         ret = self.MODEL.evaluate(test_set, verbose=0)
-
-        print_g(dict(zip(self.MODEL.metrics_names, ret)))
+        ret = dict(zip(self.MODEL.metrics_names, ret))
+        print_g(ret)
+        
+        return ret
 
 
 class BOW2VALsequence(BaseSequence):
@@ -82,7 +84,8 @@ class BOW2VALsequence(BaseSequence):
         return ret
 
     def preprocess_input(self, batch_data):
-        return np.row_stack(batch_data.bow)
+        # return np.row_stack(batch_data.bow)
+        return np.row_stack(batch_data.bow.apply(lambda x: x.todense().tolist()[0]))
 
     def preprocess_output(self, batch_data):
         return batch_data["rating"].values

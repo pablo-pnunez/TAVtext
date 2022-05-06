@@ -19,7 +19,8 @@ class KerasModelClass(ModelClass):
     def __config_session__(self):
         # Selecciona una de las gpu dispobiles
         os.environ["CUDA_VISIBLE_DEVICES"] = str(self.CONFIG["session"]["gpu"])
-
+        # tf.keras.mixed_precision.set_global_policy('mixed_float16')
+        
         gpus = tf.config.experimental.list_physical_devices("GPU")
         for g in gpus:
             tf.config.experimental.set_memory_growth(g, True)
@@ -46,7 +47,7 @@ class KerasModelClass(ModelClass):
 
         is_dev = dev_sequence is not None
 
-        train_cfg = {"verbose": 2, "workers": 1, "max_queue_size": 40, "multiprocessing":False}
+        train_cfg = {"verbose": 2, "workers": 6, "max_queue_size": 20, "multiprocessing": True}
 
         callbacks = []
 

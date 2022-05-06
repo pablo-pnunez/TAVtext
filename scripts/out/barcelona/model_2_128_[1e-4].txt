@@ -1,0 +1,42 @@
+[93m[WARNING] Model folder already exists...[0m
+[92m[INFO] Loading existing model...[0m
+[92m[INFO] Model already trained![0m
+[92m[INFO] Loading w2v...[0m
+Model: "sequential"
+_________________________________________________________________
+Layer (type)                 Output Shape              Param #   
+=================================================================
+embedding (Embedding)        (None, None, 300)         37182000  
+_________________________________________________________________
+lstm (LSTM)                  (None, 256)               570368    
+_________________________________________________________________
+dropout (Dropout)            (None, 256)               0         
+_________________________________________________________________
+dense (Dense)                (None, 1325)              340525    
+=================================================================
+Total params: 38,092,893
+Trainable params: 910,893
+Non-trainable params: 37,182,000
+_________________________________________________________________
+None
+Epoch 1/1000
+2010/2010 - 891s - loss: 7.0246 - accuracy: 0.0138 - top_5: 0.0334 - top_10: 0.0496 - val_loss: 6.7383 - val_accuracy: 0.0312 - val_top_5: 0.0670 - val_top_10: 0.0949
+Epoch 2/1000
+2010/2010 - 927s - loss: 6.7271 - accuracy: 0.0310 - top_5: 0.0667 - top_10: 0.0916 - val_loss: 6.5228 - val_accuracy: 0.0481 - val_top_5: 0.0938 - val_top_10: 0.1238
+Epoch 3/1000
+2010/2010 - 931s - loss: 6.4961 - accuracy: 0.0460 - top_5: 0.0945 - top_10: 0.1259 - val_loss: 6.2106 - val_accuracy: 0.0664 - val_top_5: 0.1331 - val_top_10: 0.1757
+Epoch 4/1000
+2010/2010 - 930s - loss: 6.1635 - accuracy: 0.0608 - top_5: 0.1281 - top_10: 0.1725 - val_loss: 5.8037 - val_accuracy: 0.0858 - val_top_5: 0.1773 - val_top_10: 0.2357
+Epoch 5/1000
+2010/2010 - 930s - loss: 5.8212 - accuracy: 0.0755 - top_5: 0.1607 - top_10: 0.2168 - val_loss: 5.4461 - val_accuracy: 0.1012 - val_top_5: 0.2131 - val_top_10: 0.2828
+Epoch 6/1000
+2010/2010 - 932s - loss: 5.5485 - accuracy: 0.0886 - top_5: 0.1905 - top_10: 0.2561 - val_loss: 5.1953 - val_accuracy: 0.1193 - val_top_5: 0.2468 - val_top_10: 0.3272
+Epoch 7/1000
+2010/2010 - 930s - loss: 5.3338 - accuracy: 0.1009 - top_5: 0.2171 - top_10: 0.2892 - val_loss: 4.9973 - val_accuracy: 0.1336 - val_top_5: 0.2775 - val_top_10: 0.3616
+Epoch 8/1000
+2010/2010 - 928s - loss: 5.1602 - accuracy: 0.1128 - top_5: 0.2416 - top_10: 0.3192 - val_loss: 4.8455 - val_accuracy: 0.1466 - val_top_5: 0.3009 - val_top_10: 0.3875
+Epoch 9/1000
+2010/2010 - 929s - loss: 5.0242 - accuracy: 0.1232 - top_5: 0.2622 - top_10: 0.3436 - val_loss: 4.7116 - val_accuracy: 0.1562 - val_top_5: 0.3199 - val_top_10: 0.4104
+Epoch 10/1000
+2010/2010 - 924s - loss: 4.8994 - accuracy: 0.1343 - top_5: 0.2815 - top_10: 0.3672 - val_loss: 4.6015 - val_accuracy: 0.1688 - val_top_5: 0.3384 - val_top_10: 0.4335
+Epoch 11/1000

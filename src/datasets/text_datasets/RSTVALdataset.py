@@ -1,37 +1,67 @@
 # -*- coding: utf-8 -*-
 
 from src.datasets.text_datasets.TextDataset import *
-from src.Common import to_pickle, print_g
+from src.Common import to_pickle, print_g, print_e
 
 import os
+import numpy as np
 import pandas as pd
+from tqdm import tqdm
 import tensorflow as tf
+from functools import partial
+from multiprocessing import Pool
+from scipy.sparse import csc_matrix
 from sklearn.preprocessing import normalize
 from sklearn.feature_extraction.text import CountVectorizer
 
+'''
+def features_pos(w, RVW, NLP, text_column, seed):
+    # Para cada una de las palabras más frecuentes, se miran las reviews que la contienen
+    rvs_with_w = RVW.loc[RVW[text_column].apply(lambda x: w in x)]
+    # Para evitar sobrecarga, nos quedamos con 20 reviews como máximo
+    rvs_with_w = rvs_with_w.sample(min(len(rvs_with_w), 20), random_state=seed)
+    # Buscamos la posición concreta de la palabra dentro de la review
+    rvs_with_w["w_loc"] = rvs_with_w[text_column].apply(lambda x: np.argwhere(np.asarray(x) == w).flatten()[0])
+    # Obtenemos un vector de POS para cada palabra de las reviews y nos quedamos con el POS de la que nos interesa
+    rvs_with_w["w_pos"] = rvs_with_w.apply(lambda x: [n.pos_ for n in NLP(" ".join(x[text_column]))][x.w_loc],  1)
+    # Finalmente, como habrá varios POS, nos quedamos con el que aparezca en la mayoría de reviews
+    poses, p_counts = np.unique(rvs_with_w.w_pos, return_counts=True)
+    # Retornar resultado
+    print(w)
+    return poses[p_counts.argmax()]
+'''
 
 class RSTVALdataset(TextDataset):
 
-    def __init__(self, config):
-        TextDataset.__init__(self, config=config)
+    def __init__(self, config, load=None):
+        TextDataset.__init__(self, config=config, load=load)
 
-    def get_data(self, load=["TRAIN_DEV", "TEST",  "WORD_INDEX", "VOCAB_SIZE", "MAX_LEN_PADDING", "TEXT_TOKENIZER", "VECTORIZER", "FEATURES_NAME", "N_RST"]):
+    def get_data(self, load=["TRAIN_DEV", "TEST", "WORD_INDEX", "VOCAB_SIZE", "MAX_LEN_PADDING", "TEXT_TOKENIZER", "VECTORIZER", "FEATURES_NAME", "N_RST", "STEMMING_DICT"]):
 
         # Cargar los datos
         dict_data = self.get_dict_data(self.DATASET_PATH, load)
 
         # Si ya existen, retornar
-        if dict_data:
+        if dict_data is not False and len(dict_data) == len(load):
             return dict_data
         # Si no existe, crear
         else:
 
             if "cities" in self.CONFIG.keys():
                 # Cargar los ficheros correspondientes (múltiples ciudades)
-                all_data = pd.concat([self.load_city(city) for city in self.CONFIG["cities"]])
+                all_data = []
+                stemming_dict = []
+                for city in self.CONFIG["cities"]:
+                    ct_dt, ct_st = self.load_city(city)
+                    all_data = pd.concat([all_data, ct_dt])
+                    stemming_dict = pd.concat([stemming_dict, ct_st])
+
+                all_data = all_data.sample(frac=1, random_state=self.CONFIG["seed"]).reset_index(drop=True)
+                stemming_dict = stemming_dict.drop_duplicates().sort_values("stemming").reset_index(drop=True)
+
             else:
                 # Cargar las reviews
-                all_data = self.load_city(self.CONFIG["city"])
+                all_data, stemming_dict = self.load_city(self.CONFIG["city"])
 
             # Restaurantes con X o más reseñas
             r_mth_x = all_data.groupby("restaurantId").apply(lambda x: 0 if len(x) < self.CONFIG["min_reviews_rst"] else 1).reset_index()
@@ -61,17 +91,130 @@ class RSTVALdataset(TextDataset):
             all_data = all_data.sample(frac=1, random_state=self.CONFIG["seed"]).reset_index(drop=True)
 
             # Crear vectores del BOW
-            vectorizer = CountVectorizer(stop_words=self.SPANISH_STOPWORDS, min_df=self.CONFIG["min_df"], max_features=self.CONFIG["num_palabras"], binary=self.CONFIG["presencia"])
+            if self.CONFIG["remove_stopwords"] == 0:  # Solo más frecuentes
+                vectorizer = CountVectorizer(stop_words=None, min_df=self.CONFIG["min_df"], max_features=self.CONFIG["bow_pct_words"], binary=self.CONFIG["presencia"])
+            elif self.CONFIG["remove_stopwords"] == 1:  # Más frecuentes + stopwords manual
+                print("Actualizar código para otros idiomas"); exit()
+                vectorizer = CountVectorizer(stop_words=self.STOPWORDS, min_df=self.CONFIG["min_df"], max_features=self.CONFIG["bow_pct_words"], binary=self.CONFIG["presencia"])
+            elif self.CONFIG["remove_stopwords"] == 2:  # Más frecuentes + stopwords automático
+                if self.CONFIG["lemmatization"]:
+                    # Se hace un countvectorizer con todas las palabras para obtener la frecuencia de cada una
+                    vectorizer = CountVectorizer(stop_words=None, min_df=self.CONFIG["min_df"], max_features=None, binary=self.CONFIG["presencia"])
+                    bow = vectorizer.fit_transform(all_data[self.CONFIG["text_column"]])
+                    word_freq = np.asarray(bow.sum(axis=0))[0]
+
+                    # Hay que obtener el POS (part of speech) de cada palabra en su contexto (si hay varios, el más habitual)
+                    pos_values = np.array(["ADJ", "ADP", "ADV", "AUX", "CONJ", "CCONJ", "DET", "INTJ", "NOUN", "NUM", "PART", "PRON", "PROPN", "PUNCT", "SCONJ", "SYM", "VERB", "X", "SPACE"])
+
+                    # · Obtenemos los conjuntos relevantes
+                    RVW_CP = all_data[[self.CONFIG["text_column"]]].copy()
+                    # RVW_CP[self.CONFIG["text_column"]] = RVW_CP[self.CONFIG["text_column"]].apply(lambda x: x.split())                
+                    features = vectorizer.get_feature_names()
+                    
+                    # · Luego se crear varias estructuras de datos para almacenar los valores de POS
+                    features_df = pd.DataFrame(zip(range(len(features)), features), columns=["id_feature", "feature"])
+                    features_df = features_df.set_index("feature")
+                    pos_df = pd.DataFrame(zip(range(len(pos_values)), pos_values), columns=["id_pos", "pos"])
+                    pos_df = pos_df.set_index("pos")
+                    mtrx = np.zeros((len(features), len(pos_values)), dtype=int)
+
+                    # · Hacemos 32 batches para evitar sobrecarga de RAM
+                    batches = np.array_split(RVW_CP, 32)
+
+                    # · Para cada batch, obtener POS de sus palabras y almacenar valores en mtrx
+                    for idx, b in tqdm(enumerate(batches), desc="Features POS"):
+                        POS = list(self.NLP.pipe(b.text, n_process=8))  # 8 es lo mejor
+
+                        all_words = np.concatenate(list(map(lambda x: [(str(w), w.pos_) for w in x], POS)))
+                        all_df = pd.DataFrame(all_words, columns=["feature", "pos"])
+                        all_df = all_df.loc[all_df.feature.isin(features)].reset_index(drop=True)
+                        all_df = all_df.merge(features_df, on="feature").merge(pos_df, on="pos")
+                        all_df = all_df.groupby(["id_feature", "id_pos"]).apply(len).reset_index()
+
+                        mtrx[all_df.id_feature, all_df.id_pos] += all_df[0]
+
+                        del all_df, b, POS
+
+                    # · Obtener los POS de las features (más común)
+                    word_pos = pos_values[np.apply_along_axis(np.argmax, 1, mtrx)]
+
+                    '''
+                    word_pos = []
+
+                    fn_partial = partial(features_pos, RVW=RVW_CP, NLP=self.NLP, text_column=self.CONFIG["text_column"], seed=self.CONFIG["seed"])  # Se fijan los parametros que no varian
+
+                    nppc = 4
+                    pool = Pool(processes=nppc)
+
+                    ret = pool.map_async(fn_partial, features)
+
+                    total = int(np.ceil(len(features)/ret._chunksize))
+                    pbar = tqdm(total=total)
+
+                    while not ret.ready():
+                        pbar.n = total-ret._number_left
+                        pbar.last_print_n = total-ret._number_left
+                        pbar.refresh()
+                        ret.wait(timeout=1)
+                    pbar.n = total
+                    pbar.last_print_n = total
+                    pbar.refresh()
+                    pbar.close()
+
+                    word_pos = ret.get()
+                    '''
+
+                    '''
+
+                    for ret in tqdm(pool.imap(fn_partial, features, chunksize=200), total=len(features)):
+                        word_pos.append(ret)
+
+                    pool.close()
+                    pool.join()
+                    '''
+
+                    '''
+                    for w in tqdm(vectorizer.get_feature_names()):
+                        # · Para cada una de las palabras más frecuentes, se miran las reviews que la contienen
+                        rvs_with_w = rvw_cpy.loc[rvw_cpy[self.CONFIG["text_column"]].apply(lambda x: w in x)]
+                        # · Para evitar sobrecarga, nos quedamos con 20 reviews como máximo
+                        rvs_with_w = rvs_with_w.sample(min(len(rvs_with_w), 20), random_state=self.CONFIG["seed"])
+                        # · Buscamos la posición concreta de la palabra dentro de la review
+                        rvs_with_w["w_loc"] = rvs_with_w[self.CONFIG["text_column"]].apply(lambda x: np.argwhere(np.asarray(x) == w).flatten()[0])
+                        # · Obtenemos un vector de POS para cada palabra de las reviews y nos quedamos con el POS de la que nos interesa
+                        rvs_with_w["w_pos"] = rvs_with_w.apply(lambda x: [n.pos_ for n in self.NLP(" ".join(x[self.CONFIG["text_column"]]))][x.w_loc],  1)
+                        # · Finalmente, como habrá varios POS, nos quedamos con el que aparezca en la mayoría de reviews
+                        poses, p_counts = np.unique(rvs_with_w.w_pos, return_counts=True)
+                        word_pos.append(poses[p_counts.argmax()])
+                    '''
+
+                    # Se alamacena todo en un DF para buscar X palabras más frecuentes que cumplan las exigencias
+                    word_data = pd.DataFrame(zip(features, word_freq, word_pos), columns=["feature", "freq", "pos"]).sort_values("freq", ascending=False).reset_index(drop=True)
+                    word_data.to_excel(self.DATASET_PATH+"all_features.xlsx")
+
+                    selected_words = word_data.loc[word_data.pos.isin(["ADJ", "NOUN"])]
+                    num_selected_words = int(len(selected_words)*(self.CONFIG["bow_pct_words"]/100))
+                    selected_words = selected_words.iloc[:num_selected_words].reset_index(drop=True)
+                    # Todas las que no sean seleccionadas, se consideran stopwords
+                    stop_words = word_data.loc[~word_data.feature.isin(selected_words.feature)].feature.tolist()
+                    vectorizer = CountVectorizer(stop_words=stop_words, min_df=self.CONFIG["min_df"], max_features=num_selected_words, binary=self.CONFIG["presencia"])
+                else:
+                    print_e("La selección automática de palabras requiere de lemmatización.")
+                    exit()
+
             bow = vectorizer.fit_transform(all_data[self.CONFIG["text_column"]])
 
-            # El vocabulary_ es un diccionario {palabra:idx_columna}. Se ordena para saber a que palabra corresponde cada columna de las <self.CONFIG["num_palabras"]>
-            features_name = sorted(vectorizer.vocabulary_)
+            # Cada palabra corresponde con cada columna de las <self.CONFIG["bow_pct_words"]>
+            features_name = vectorizer.get_feature_names()
+            np.savetxt(self.DATASET_PATH+"features.csv", features_name, fmt="%s")
 
             # Normalizar vector de cada review
-            normed_bow = normalize(bow.todense(), axis=1, norm='l1')
+            # normed_bow = normalize(bow.todense(), axis=1, norm='l1')
+            normed_bow = normalize(bow, axis=1, norm='l1')
 
             # Incroporar BOW en los datos
-            all_data["bow"] = normed_bow.tolist()
+            # all_data["bow"] = normed_bow.tolist()
+            all_data["bow"] = list(map(csc_matrix, normed_bow))
 
             # Tokenizar las palabras (Asociar cada palabra a un índice [WORD_INDEX])
             if self.CONFIG["n_max_words"] == 0:
@@ -128,6 +271,7 @@ class RSTVALdataset(TextDataset):
             to_pickle(self.DATASET_PATH, "VECTORIZER", vectorizer)
             to_pickle(self.DATASET_PATH, "FEATURES_NAME", features_name)
             to_pickle(self.DATASET_PATH, "N_RST", len(all_data["id_restaurant"].unique()))
+            to_pickle(self.DATASET_PATH, "STEMMING_DICT", stemming_dict)
 
             to_pickle(self.DATASET_PATH, "WORD_INDEX", word_index)
             to_pickle(self.DATASET_PATH, "VOCAB_SIZE", len(word_index) + 1)
@@ -138,3 +282,18 @@ class RSTVALdataset(TextDataset):
             to_pickle(self.DATASET_PATH, "TEST", test)
 
             return self.get_dict_data(self.DATASET_PATH, load)
+
+    def get_data_stats(self):
+        ALL = self.DATA["TRAIN_DEV"].append(self.DATA["TEST"])
+
+        n_revs = len(ALL["reviewId"].unique())
+        n_rests = len(ALL["id_restaurant"].unique())
+        
+        revs_per_res = ALL.groupby("id_restaurant").apply(lambda x: len(x.reviewId.unique()))
+        avg_revs_rest = revs_per_res.mean()
+        pctg_total_revs_rest_pop = revs_per_res.sort_values().iloc[-1]/n_revs
+
+        avg_rating = ALL.rating.mean()/10
+        std_rating = ALL.rating.std()/10
+
+        print("\n".join(map(str, [self.CONFIG["city"],n_revs, n_rests, avg_revs_rest, pctg_total_revs_rest_pop, avg_rating, std_rating])))

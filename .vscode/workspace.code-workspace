@@ -5,16 +5,30 @@
 		}
 	],
 	"settings": {
-		"python.pythonPath": "venv/bin/python3.6"
+		"python.pythonPath": "venv/bin/python3"
 	},
 	"launch": {
 		"version": "0.2.0",
 		"configurations": [
 			{
+				"name": "Python: Main",
+				"type": "python",
+				"request": "launch",
+				"program": "Main.py",
+				"console": "integratedTerminal"
+			},
+			{
 				"name": "Python: Current File",
 				"type": "python",
 				"request": "launch",
 				"program": "${file}",
+				"console": "integratedTerminal"
+			},
+			{
+				"name": "Python: Threading",
+				"type": "python",
+				"request": "launch",
+				"program": "Threading.py",
 				"console": "integratedTerminal"
 			}
 		]

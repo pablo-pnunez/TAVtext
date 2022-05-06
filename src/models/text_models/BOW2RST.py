@@ -5,6 +5,7 @@ from src.Common import print_g
 
 import numpy as np
 import tensorflow as tf
+from sklearn.preprocessing import normalize
 from sklearn.preprocessing import MultiLabelBinarizer
 
 
@@ -17,7 +18,7 @@ class BOW2RST(RSTModel):
 
         mv = self.CONFIG["model"]["model_version"]
         model = tf.keras.models.Sequential()
-        model.add(tf.keras.layers.Input(shape=(self.DATASET.CONFIG["num_palabras"],), name="input_bow"))
+        model.add(tf.keras.layers.Input(shape=(len(self.DATASET.DATA["FEATURES_NAME"]),), name="input_bow"))
 
         if mv == "0":
             model.add(tf.keras.layers.Dense(self.DATASET.DATA["N_RST"], name="bow_2_rst", kernel_initializer=tf.keras.initializers.Ones()))
@@ -42,6 +43,7 @@ class BOW2RST(RSTModel):
 
         model.add(tf.keras.layers.Activation("softmax", name="output_rst"))
         metrics = ['accuracy', tf.keras.metrics.TopKCategoricalAccuracy(k=5, name='top_5'), tf.keras.metrics.TopKCategoricalAccuracy(k=10, name='top_10')]
+        model.build(self.CONFIG["model"]["batch_size"])
         model.compile(optimizer=tf.keras.optimizers.Adam(self.CONFIG["model"]["learning_rate"]), loss=tf.keras.losses.CategoricalCrossentropy(), metrics=metrics)
 
         return model
@@ -66,6 +68,42 @@ class BOW2RST(RSTModel):
                
         return ret
 
+    def eval_custom_text(self, text_src):
+
+        text = self.DATASET.prerpocess_text(text_src)
+        bow = self.DATASET.DATA["VECTORIZER"].transform([text])
+        normed_bow = normalize(bow.todense(), axis=1, norm='l1')
+        bow_words = np.asarray(self.DATASET.DATA["FEATURES_NAME"])[np.argwhere(normed_bow[0] > 0)[:, 0]]
+
+        # Obtener el modelo que predice restaurantes, junto con la matriz de pesos relevante
+        rst_model = self.MODEL
+        rst_model_weights = rst_model.get_layer("bow_2_rst").get_weights()[0]
+
+        # Predecir 5 restaurantes con la parte correspondiente del modelo
+        rev_rst_pred = rst_model.predict(normed_bow)
+        rev_rst_pred = np.apply_along_axis(lambda x: (-x).argsort()[:3], 1, rev_rst_pred)
+        recommended_rests = rev_rst_pred.flatten()
+
+        print("\n")
+        print_g("\'%s\'" % text_src)
+        print("\LEMM: %s" % (text))
+        print("\tBOW: %s" % (",".join(bow_words)))
+
+        for rst in recommended_rests:
+            print("\t- %s" % (self.DATASET.DATA["TEST"].loc[self.DATASET.DATA["TEST"].id_restaurant == rst]["name"].values[0]))
+
+            # X Palabras más relevantes para predecir el restaurante seleccionado
+            word_weights = rst_model_weights[:, rst]  # + rst_model_weights_bias
+            word_ids = np.argsort(-word_weights)[:20]
+            most_relevant_w = np.asarray(self.DATASET.DATA["FEATURES_NAME"])[word_ids]
+
+            # Intersección entre palabras del usuario y del restaurante
+            usr_rst_intr = list(set(np.where(word_weights > 0)[0]).intersection(set(np.argwhere(normed_bow[0] > 0)[:, 0])))
+            usr_rst_intr = np.asarray(self.DATASET.DATA["FEATURES_NAME"])[usr_rst_intr]
+
+            print("\t\t▲ %s" % (",".join(most_relevant_w)))
+            print("\t\t∩ %s" % (",".join(usr_rst_intr)))
+
 
 class BOW2RSTsequence(BaseSequence):
 
@@ -84,7 +122,8 @@ class BOW2RSTsequence(BaseSequence):
         return ret
 
     def preprocess_input(self, batch_data):
-        return np.row_stack(batch_data.bow)
+        # return np.row_stack(batch_data.bow)
+        return np.row_stack(batch_data.bow.apply(lambda x: x.todense().tolist()[0]))
 
     def preprocess_output(self, batch_data):
         return self.KHOT.fit_transform(np.expand_dims(batch_data.id_restaurant.values, -1))

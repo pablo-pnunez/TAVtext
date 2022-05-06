@@ -1,50 +1,66 @@
 #!/bin/bash
 
-MAXTSTS=4
+MAXTSTS=6
 STAGE=0 # GRIDSEARCH o TRAIN
 i=0
+GPU=0
 
 declare -a CITIES=( "gijon" )
 
-declare -a MODELS=( "0" "1" )
-declare -a LRATES=( 5e-4 1e-3 5e-3 )
-declare -a BATCHES=( 128 256 512 )
+#declare -a MODELS=( "0" "1" "2")
+declare -a MODELS=( "0")
+#declare -a BATCHES=( 512 256 128 )
+declare -a BATCHES=( 128 256 512 1024 2048 4096 )
+#declare -a LRATES=( 5e-4 1e-3 5e-3 )
+declare -a LRATES=( 1e-2 5e-2 1e-1 5e-1 )
+
+declare -a BOWNWORDS=( 10 )
+
+# declare -a BOWNWORDS=( 400 )
 
 for CITY in "${CITIES[@]}" ;do
   echo "$CITY"
 
-  for MODEL in "${MODELS[@]}" ;do
-    echo "-$MODEL"
+  for BATCH in "${BATCHES[@]}" ;do
+    echo "-$BATCH"
 
     for LRATE in "${LRATES[@]}" ;do
       echo "--$LRATE"
 
-      for BATCH in "${BATCHES[@]}" ;do
-        echo "---$BATCH"
+      for BOWWRDS in "${BOWNWORDS[@]}" ;do
+        echo "---$BOWWRDS"
 
-        #MANUAL GPU
-        nohup venv/bin/python3.6 -u  Main.py  -stg $STAGE -ct $CITY -mv $MODEL -bs $BATCH -lr $LRATE > "scripts/out/"$CITY"/model_"$MODEL"_"$BATCH"_["$LRATE"].txt" &
+        for MODEL in "${MODELS[@]}" ;do
+          echo "----$MODEL"
 
-        # Almacenar los PID en una lista hasta alcanzar el máximo de procesos
-        pids[${i}]=$!
-        i+=1
+          #MANUAL GPU
+          nohup venv/bin/python3 -u  Main.py  -gpu $GPU -stg $STAGE -ct $CITY -mv $MODEL -bs $BATCH -lr $LRATE -bownws $BOWWRDS > "scripts/out/"$CITY"/model_"$MODEL"_"$BATCH"_"$BOWWRDS"_["$LRATE"].txt" &
+          
+          GPU=$(($(($GPU+1%2))%2))
 
-        echo "   -[$!] $MODEL"
+          # Almacenar los PID en una lista hasta alcanzar el máximo de procesos
+          pids[${i}]=$!
+          i+=1
 
-        # Si se alcanza el máximo de procesos simultaneos, esperar
-        if [ "${#pids[@]}" -eq $MAXTSTS ];
-        then
+          echo "   -[$!] $MODEL"
 
-          # Esperar a que acaben los X
-          for pid in ${pids[*]}; do
-              wait $pid
-          done
-          pids=()
-          i=0
-        fi
+          # Si se alcanza el máximo de procesos simultaneos, esperar
+          if [ "${#pids[@]}" -eq $MAXTSTS ];
+          then
 
-        #Esperar X segundos entre pruebas para que le de tiempo a ocupar memoria en GPU
-        sleep 30
+            # Esperar a que acaben los X
+            for pid in ${pids[*]}; do
+                wait $pid
+                echo "DONE $pid"
+            done
+            pids=()
+            i=0
+          fi
+
+          #Esperar X segundos entre pruebas para que le de tiempo a ocupar memoria en GPU
+          sleep 10
+
+        done
 
       done
 
