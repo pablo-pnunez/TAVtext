@@ -26,7 +26,7 @@ from src.models.text_models.LSTMBOW2RSTVAL import LSTMBOW2RSTVAL
 
 args = parse_cmd_args()
 
-model = "LSTM2RST" if args.mn is None else args.mn
+model = "BOW2RST" if args.mn is None else args.mn
 city = "gijon".lower().replace(" ", "") if args.ct is None else args.ct
 
 stage = 1 if args.stg is None else args.stg
