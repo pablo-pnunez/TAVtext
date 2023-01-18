@@ -1,0 +1,348 @@
+Model: "ATT2ITM_1"
+__________________________________________________________________________________________________
+ Layer (type)                   Output Shape         Param #     Connected to                     
+==================================================================================================
+ input_1 (InputLayer)           [(None, 162)]        0           []                               
+                                                                                                  
+ input_2 (InputLayer)           [(None, 149)]        0           []                               
+                                                                                                  
+ embedding (Embedding)          (None, 162, 384)     926976      ['input_1[0][0]']                
+                                                                                                  
+ in_rsts (Embedding)            (None, 149, 384)     57216       ['input_2[0][0]']                
+                                                                                                  
+ dense (Dense)                  (None, 162, 256)     98560       ['embedding[0][0]']              
+                                                                                                  
+ dense_2 (Dense)                (None, 149, 256)     98560       ['in_rsts[0][0]']                
+                                                                                                  
+ tf.math.not_equal (TFOpLambda)  (None, 162)         0           ['input_1[0][0]']                
+                                                                                                  
+ dense_1 (Dense)                (None, 162, 128)     32896       ['dense[0][0]']                  
+                                                                                                  
+ dense_3 (Dense)                (None, 149, 128)     32896       ['dense_2[0][0]']                
+                                                                                                  
+ tf.cast (TFOpLambda)           (None, 162)          0           ['tf.math.not_equal[0][0]']      
+                                                                                                  
+ word_emb (Lambda)              (None, 162, 128)     0           ['dense_1[0][0]']                
+                                                                                                  
+ rest_emb (Lambda)              (None, 149, 128)     0           ['dense_3[0][0]']                
+                                                                                                  
+ tf.expand_dims (TFOpLambda)    (None, 162, 1)       0           ['tf.cast[0][0]']                
+                                                                                                  
+ lambda (Lambda)                (None, 162, 149)     0           ['word_emb[0][0]',               
+                                                                  'rest_emb[0][0]']               
+                                                                                                  
+ tf.tile (TFOpLambda)           (None, 162, 149)     0           ['tf.expand_dims[0][0]']         
+                                                                                                  
+ lambda_1 (Lambda)              (None, 162, 149)     0           ['lambda[0][0]',                 
+                                                                  'tf.tile[0][0]']                
+                                                                                                  
+ dotprod (Activation)           (None, 162, 149)     0           ['lambda_1[0][0]']               
+                                                                                                  
+ dropout (Dropout)              (None, 162, 149)     0           ['dotprod[0][0]']                
+                                                                                                  
+ sum (Lambda)                   (None, 149)          0           ['dropout[0][0]']                
+                                                                                                  
+ out (Activation)               (None, 149)          0           ['sum[0][0]']                    
+                                                                                                  
+==================================================================================================
+Total params: 1,247,104
+Trainable params: 1,247,104
+Non-trainable params: 0
+__________________________________________________________________________________________________
+None
+Epoch 1/1000
+63/63 - 4s - loss: 0.0306 - r1: 0.0424 - r5: 0.1232 - r10: 0.1906 - p5: 0.0246 - p10: 0.0191 - val_loss: 0.0180 - val_r1: 0.0760 - val_r5: 0.2127 - val_r10: 0.2841 - val_p5: 0.0425 - val_p10: 0.0284 - lr: 4.9951e-04 - 4s/epoch - 57ms/step
+Epoch 2/1000
+63/63 - 1s - loss: 0.0182 - r1: 0.0797 - r5: 0.1985 - r10: 0.2767 - p5: 0.0397 - p10: 0.0277 - val_loss: 0.0164 - val_r1: 0.1421 - val_r5: 0.2775 - val_r10: 0.3609 - val_p5: 0.0555 - val_p10: 0.0361 - lr: 4.9901e-04 - 1s/epoch - 17ms/step
+Epoch 3/1000
+63/63 - 1s - loss: 0.0166 - r1: 0.1403 - r5: 0.2801 - r10: 0.3648 - p5: 0.0560 - p10: 0.0365 - val_loss: 0.0147 - val_r1: 0.2097 - val_r5: 0.3964 - val_r10: 0.5019 - val_p5: 0.0793 - val_p10: 0.0502 - lr: 4.9852e-04 - 1s/epoch - 17ms/step
+Epoch 4/1000
+63/63 - 1s - loss: 0.0150 - r1: 0.1909 - r5: 0.3639 - r10: 0.4612 - p5: 0.0728 - p10: 0.0461 - val_loss: 0.0134 - val_r1: 0.2734 - val_r5: 0.4915 - val_r10: 0.5952 - val_p5: 0.0982 - val_p10: 0.0595 - lr: 4.9802e-04 - 1s/epoch - 17ms/step
+Epoch 5/1000
+63/63 - 1s - loss: 0.0139 - r1: 0.2303 - r5: 0.4292 - r10: 0.5355 - p5: 0.0859 - p10: 0.0536 - val_loss: 0.0126 - val_r1: 0.3085 - val_r5: 0.5255 - val_r10: 0.6417 - val_p5: 0.1051 - val_p10: 0.0642 - lr: 4.9753e-04 - 1s/epoch - 17ms/step
+Epoch 6/1000
+63/63 - 1s - loss: 0.0132 - r1: 0.2626 - r5: 0.4716 - r10: 0.5825 - p5: 0.0943 - p10: 0.0582 - val_loss: 0.0121 - val_r1: 0.3301 - val_r5: 0.5502 - val_r10: 0.6755 - val_p5: 0.1100 - val_p10: 0.0675 - lr: 4.9703e-04 - 1s/epoch - 17ms/step
+Epoch 7/1000
+63/63 - 1s - loss: 0.0126 - r1: 0.2861 - r5: 0.5051 - r10: 0.6149 - p5: 0.1010 - p10: 0.0615 - val_loss: 0.0119 - val_r1: 0.3410 - val_r5: 0.5726 - val_r10: 0.6897 - val_p5: 0.1146 - val_p10: 0.0690 - lr: 4.9654e-04 - 1s/epoch - 17ms/step
+Epoch 8/1000
+63/63 - 1s - loss: 0.0122 - r1: 0.3049 - r5: 0.5283 - r10: 0.6345 - p5: 0.1057 - p10: 0.0634 - val_loss: 0.0116 - val_r1: 0.3543 - val_r5: 0.5812 - val_r10: 0.6996 - val_p5: 0.1162 - val_p10: 0.0700 - lr: 4.9604e-04 - 1s/epoch - 17ms/step
+Epoch 9/1000
+63/63 - 1s - loss: 0.0118 - r1: 0.3209 - r5: 0.5506 - r10: 0.6587 - p5: 0.1101 - p10: 0.0659 - val_loss: 0.0115 - val_r1: 0.3598 - val_r5: 0.5982 - val_r10: 0.7116 - val_p5: 0.1196 - val_p10: 0.0712 - lr: 4.9555e-04 - 1s/epoch - 17ms/step
+Epoch 10/1000
+63/63 - 1s - loss: 0.0116 - r1: 0.3350 - r5: 0.5696 - r10: 0.6760 - p5: 0.1139 - p10: 0.0676 - val_loss: 0.0114 - val_r1: 0.3652 - val_r5: 0.6018 - val_r10: 0.7108 - val_p5: 0.1204 - val_p10: 0.0711 - lr: 4.9505e-04 - 1s/epoch - 17ms/step
+Epoch 11/1000
+63/63 - 1s - loss: 0.0113 - r1: 0.3435 - r5: 0.5811 - r10: 0.6895 - p5: 0.1163 - p10: 0.0690 - val_loss: 0.0114 - val_r1: 0.3654 - val_r5: 0.6056 - val_r10: 0.7090 - val_p5: 0.1211 - val_p10: 0.0709 - lr: 4.9456e-04 - 1s/epoch - 19ms/step
+Epoch 12/1000
+63/63 - 1s - loss: 0.0111 - r1: 0.3534 - r5: 0.5947 - r10: 0.7003 - p5: 0.1189 - p10: 0.0700 - val_loss: 0.0114 - val_r1: 0.3670 - val_r5: 0.6081 - val_r10: 0.7126 - val_p5: 0.1216 - val_p10: 0.0713 - lr: 4.9406e-04 - 1s/epoch - 17ms/step
+Epoch 13/1000
+63/63 - 1s - loss: 0.0109 - r1: 0.3627 - r5: 0.6029 - r10: 0.7084 - p5: 0.1206 - p10: 0.0708 - val_loss: 0.0113 - val_r1: 0.3759 - val_r5: 0.6114 - val_r10: 0.7144 - val_p5: 0.1223 - val_p10: 0.0714 - lr: 4.9357e-04 - 1s/epoch - 17ms/step
+Epoch 14/1000
+63/63 - 1s - loss: 0.0106 - r1: 0.3750 - r5: 0.6164 - r10: 0.7216 - p5: 0.1233 - p10: 0.0722 - val_loss: 0.0113 - val_r1: 0.3787 - val_r5: 0.6175 - val_r10: 0.7225 - val_p5: 0.1235 - val_p10: 0.0723 - lr: 4.9307e-04 - 1s/epoch - 17ms/step
+Epoch 15/1000
+63/63 - 1s - loss: 0.0105 - r1: 0.3770 - r5: 0.6226 - r10: 0.7257 - p5: 0.1245 - p10: 0.0726 - val_loss: 0.0114 - val_r1: 0.3738 - val_r5: 0.6173 - val_r10: 0.7210 - val_p5: 0.1235 - val_p10: 0.0721 - lr: 4.9258e-04 - 915ms/epoch - 15ms/step
+Epoch 16/1000
+63/63 - 1s - loss: 0.0103 - r1: 0.3865 - r5: 0.6352 - r10: 0.7377 - p5: 0.1271 - p10: 0.0738 - val_loss: 0.0113 - val_r1: 0.3883 - val_r5: 0.6165 - val_r10: 0.7222 - val_p5: 0.1233 - val_p10: 0.0722 - lr: 4.9208e-04 - 1s/epoch - 17ms/step
+Epoch 17/1000
+63/63 - 1s - loss: 0.0102 - r1: 0.3933 - r5: 0.6393 - r10: 0.7418 - p5: 0.1279 - p10: 0.0742 - val_loss: 0.0115 - val_r1: 0.3827 - val_r5: 0.6147 - val_r10: 0.7233 - val_p5: 0.1230 - val_p10: 0.0723 - lr: 4.9159e-04 - 916ms/epoch - 15ms/step
+Epoch 18/1000
+63/63 - 1s - loss: 0.0100 - r1: 0.3996 - r5: 0.6454 - r10: 0.7475 - p5: 0.1291 - p10: 0.0748 - val_loss: 0.0116 - val_r1: 0.3845 - val_r5: 0.6152 - val_r10: 0.7286 - val_p5: 0.1230 - val_p10: 0.0729 - lr: 4.9109e-04 - 909ms/epoch - 14ms/step
+Epoch 19/1000
+63/63 - 1s - loss: 0.0099 - r1: 0.4097 - r5: 0.6589 - r10: 0.7574 - p5: 0.1318 - p10: 0.0757 - val_loss: 0.0115 - val_r1: 0.3832 - val_r5: 0.6125 - val_r10: 0.7174 - val_p5: 0.1224 - val_p10: 0.0718 - lr: 4.9060e-04 - 917ms/epoch - 15ms/step
+Epoch 20/1000
+63/63 - 1s - loss: 0.0098 - r1: 0.4131 - r5: 0.6624 - r10: 0.7615 - p5: 0.1325 - p10: 0.0761 - val_loss: 0.0117 - val_r1: 0.3743 - val_r5: 0.6119 - val_r10: 0.7225 - val_p5: 0.1223 - val_p10: 0.0723 - lr: 4.9010e-04 - 915ms/epoch - 15ms/step
+Epoch 21/1000
+63/63 - 1s - loss: 0.0097 - r1: 0.4188 - r5: 0.6675 - r10: 0.7677 - p5: 0.1335 - p10: 0.0768 - val_loss: 0.0116 - val_r1: 0.3842 - val_r5: 0.6165 - val_r10: 0.7161 - val_p5: 0.1233 - val_p10: 0.0716 - lr: 4.8961e-04 - 907ms/epoch - 14ms/step
+Epoch 22/1000
+63/63 - 1s - loss: 0.0095 - r1: 0.4241 - r5: 0.6739 - r10: 0.7708 - p5: 0.1348 - p10: 0.0771 - val_loss: 0.0115 - val_r1: 0.3789 - val_r5: 0.6117 - val_r10: 0.7215 - val_p5: 0.1224 - val_p10: 0.0720 - lr: 4.8911e-04 - 911ms/epoch - 14ms/step
+Epoch 23/1000
+63/63 - 1s - loss: 0.0094 - r1: 0.4285 - r5: 0.6810 - r10: 0.7774 - p5: 0.1362 - p10: 0.0777 - val_loss: 0.0116 - val_r1: 0.3842 - val_r5: 0.6104 - val_r10: 0.7179 - val_p5: 0.1221 - val_p10: 0.0718 - lr: 4.8862e-04 - 908ms/epoch - 14ms/step
+Epoch 24/1000
+63/63 - 1s - loss: 0.0093 - r1: 0.4368 - r5: 0.6855 - r10: 0.7791 - p5: 0.1371 - p10: 0.0779 - val_loss: 0.0118 - val_r1: 0.3835 - val_r5: 0.6122 - val_r10: 0.7197 - val_p5: 0.1224 - val_p10: 0.0720 - lr: 4.8812e-04 - 917ms/epoch - 15ms/step
+Epoch 25/1000
+63/63 - 1s - loss: 0.0093 - r1: 0.4364 - r5: 0.6857 - r10: 0.7850 - p5: 0.1371 - p10: 0.0785 - val_loss: 0.0119 - val_r1: 0.3850 - val_r5: 0.6102 - val_r10: 0.7179 - val_p5: 0.1220 - val_p10: 0.0718 - lr: 4.8763e-04 - 912ms/epoch - 14ms/step
+Epoch 26/1000
+63/63 - 1s - loss: 0.0092 - r1: 0.4457 - r5: 0.6932 - r10: 0.7884 - p5: 0.1387 - p10: 0.0788 - val_loss: 0.0119 - val_r1: 0.3825 - val_r5: 0.6051 - val_r10: 0.7100 - val_p5: 0.1210 - val_p10: 0.0710 - lr: 4.8713e-04 - 909ms/epoch - 14ms/step
+Epoch 27/1000
+63/63 - 1s - loss: 0.0091 - r1: 0.4459 - r5: 0.6938 - r10: 0.7938 - p5: 0.1388 - p10: 0.0794 - val_loss: 0.0118 - val_r1: 0.3797 - val_r5: 0.6081 - val_r10: 0.7103 - val_p5: 0.1216 - val_p10: 0.0710 - lr: 4.8664e-04 - 890ms/epoch - 14ms/step
+Epoch 28/1000
+63/63 - 1s - loss: 0.0090 - r1: 0.4491 - r5: 0.7001 - r10: 0.7958 - p5: 0.1400 - p10: 0.0796 - val_loss: 0.0120 - val_r1: 0.3753 - val_r5: 0.6038 - val_r10: 0.7088 - val_p5: 0.1207 - val_p10: 0.0709 - lr: 4.8614e-04 - 895ms/epoch - 14ms/step
+Epoch 29/1000
+63/63 - 1s - loss: 0.0090 - r1: 0.4499 - r5: 0.7061 - r10: 0.8007 - p5: 0.1412 - p10: 0.0801 - val_loss: 0.0120 - val_r1: 0.3792 - val_r5: 0.6069 - val_r10: 0.7090 - val_p5: 0.1214 - val_p10: 0.0709 - lr: 4.8565e-04 - 906ms/epoch - 14ms/step
+Epoch 30/1000
+63/63 - 1s - loss: 0.0089 - r1: 0.4579 - r5: 0.7092 - r10: 0.8043 - p5: 0.1418 - p10: 0.0804 - val_loss: 0.0122 - val_r1: 0.3789 - val_r5: 0.6005 - val_r10: 0.7121 - val_p5: 0.1201 - val_p10: 0.0712 - lr: 4.8515e-04 - 914ms/epoch - 15ms/step
+Epoch 31/1000
+63/63 - 1s - loss: 0.0089 - r1: 0.4572 - r5: 0.7089 - r10: 0.8011 - p5: 0.1418 - p10: 0.0801 - val_loss: 0.0120 - val_r1: 0.3756 - val_r5: 0.6058 - val_r10: 0.7108 - val_p5: 0.1212 - val_p10: 0.0711 - lr: 4.8466e-04 - 913ms/epoch - 14ms/step
+Epoch 32/1000
+63/63 - 1s - loss: 0.0087 - r1: 0.4635 - r5: 0.7148 - r10: 0.8053 - p5: 0.1430 - p10: 0.0805 - val_loss: 0.0120 - val_r1: 0.3769 - val_r5: 0.6117 - val_r10: 0.7105 - val_p5: 0.1223 - val_p10: 0.0711 - lr: 4.8416e-04 - 909ms/epoch - 14ms/step
+Epoch 33/1000
+63/63 - 1s - loss: 0.0088 - r1: 0.4646 - r5: 0.7143 - r10: 0.8070 - p5: 0.1429 - p10: 0.0807 - val_loss: 0.0121 - val_r1: 0.3870 - val_r5: 0.6112 - val_r10: 0.7139 - val_p5: 0.1222 - val_p10: 0.0714 - lr: 4.8367e-04 - 911ms/epoch - 14ms/step
+Epoch 34/1000
+63/63 - 1s - loss: 0.0087 - r1: 0.4680 - r5: 0.7176 - r10: 0.8119 - p5: 0.1435 - p10: 0.0812 - val_loss: 0.0119 - val_r1: 0.3820 - val_r5: 0.6125 - val_r10: 0.7133 - val_p5: 0.1224 - val_p10: 0.0714 - lr: 4.8317e-04 - 911ms/epoch - 14ms/step
+Epoch 35/1000
+63/63 - 1s - loss: 0.0086 - r1: 0.4679 - r5: 0.7231 - r10: 0.8139 - p5: 0.1446 - p10: 0.0814 - val_loss: 0.0124 - val_r1: 0.3781 - val_r5: 0.6084 - val_r10: 0.7088 - val_p5: 0.1217 - val_p10: 0.0709 - lr: 4.8268e-04 - 914ms/epoch - 15ms/step
+Epoch 36/1000
+63/63 - 1s - loss: 0.0086 - r1: 0.4751 - r5: 0.7234 - r10: 0.8167 - p5: 0.1447 - p10: 0.0817 - val_loss: 0.0123 - val_r1: 0.3802 - val_r5: 0.6036 - val_r10: 0.7144 - val_p5: 0.1207 - val_p10: 0.0714 - lr: 4.8218e-04 - 919ms/epoch - 15ms/step
+Epoch 37/1000
+63/63 - 1s - loss: 0.0085 - r1: 0.4763 - r5: 0.7282 - r10: 0.8206 - p5: 0.1456 - p10: 0.0821 - val_loss: 0.0122 - val_r1: 0.3779 - val_r5: 0.6053 - val_r10: 0.7133 - val_p5: 0.1211 - val_p10: 0.0713 - lr: 4.8169e-04 - 919ms/epoch - 15ms/step
+Epoch 38/1000
+63/63 - 1s - loss: 0.0085 - r1: 0.4763 - r5: 0.7316 - r10: 0.8225 - p5: 0.1463 - p10: 0.0822 - val_loss: 0.0125 - val_r1: 0.3751 - val_r5: 0.6030 - val_r10: 0.7057 - val_p5: 0.1207 - val_p10: 0.0706 - lr: 4.8119e-04 - 921ms/epoch - 15ms/step
+Epoch 39/1000
+63/63 - 1s - loss: 0.0084 - r1: 0.4782 - r5: 0.7305 - r10: 0.8217 - p5: 0.1461 - p10: 0.0822 - val_loss: 0.0123 - val_r1: 0.3769 - val_r5: 0.6089 - val_r10: 0.7098 - val_p5: 0.1218 - val_p10: 0.0710 - lr: 4.8070e-04 - 918ms/epoch - 15ms/step
+Epoch 40/1000
+63/63 - 1s - loss: 0.0084 - r1: 0.4846 - r5: 0.7363 - r10: 0.8241 - p5: 0.1472 - p10: 0.0824 - val_loss: 0.0123 - val_r1: 0.3797 - val_r5: 0.6053 - val_r10: 0.7075 - val_p5: 0.1211 - val_p10: 0.0707 - lr: 4.8020e-04 - 904ms/epoch - 14ms/step
+Epoch 41/1000
+63/63 - 1s - loss: 0.0083 - r1: 0.4832 - r5: 0.7358 - r10: 0.8263 - p5: 0.1472 - p10: 0.0826 - val_loss: 0.0125 - val_r1: 0.3748 - val_r5: 0.6020 - val_r10: 0.7067 - val_p5: 0.1204 - val_p10: 0.0706 - lr: 4.7971e-04 - 909ms/epoch - 14ms/step
+Epoch 42/1000
+63/63 - 1s - loss: 0.0083 - r1: 0.4851 - r5: 0.7377 - r10: 0.8295 - p5: 0.1476 - p10: 0.0830 - val_loss: 0.0126 - val_r1: 0.3713 - val_r5: 0.6043 - val_r10: 0.7047 - val_p5: 0.1209 - val_p10: 0.0705 - lr: 4.7921e-04 - 919ms/epoch - 15ms/step
+Epoch 43/1000
+63/63 - 1s - loss: 0.0082 - r1: 0.4841 - r5: 0.7384 - r10: 0.8295 - p5: 0.1477 - p10: 0.0830 - val_loss: 0.0126 - val_r1: 0.3799 - val_r5: 0.6074 - val_r10: 0.6999 - val_p5: 0.1214 - val_p10: 0.0700 - lr: 4.7872e-04 - 917ms/epoch - 15ms/step
+Epoch 44/1000
+63/63 - 1s - loss: 0.0082 - r1: 0.4929 - r5: 0.7415 - r10: 0.8320 - p5: 0.1483 - p10: 0.0832 - val_loss: 0.0128 - val_r1: 0.3764 - val_r5: 0.6074 - val_r10: 0.7047 - val_p5: 0.1215 - val_p10: 0.0705 - lr: 4.7822e-04 - 913ms/epoch - 14ms/step
+Epoch 45/1000
+63/63 - 1s - loss: 0.0082 - r1: 0.4916 - r5: 0.7427 - r10: 0.8332 - p5: 0.1485 - p10: 0.0833 - val_loss: 0.0126 - val_r1: 0.3733 - val_r5: 0.6028 - val_r10: 0.7044 - val_p5: 0.1206 - val_p10: 0.0704 - lr: 4.7773e-04 - 916ms/epoch - 15ms/step
+Epoch 46/1000
+63/63 - 1s - loss: 0.0081 - r1: 0.4921 - r5: 0.7459 - r10: 0.8361 - p5: 0.1492 - p10: 0.0836 - val_loss: 0.0127 - val_r1: 0.3766 - val_r5: 0.6025 - val_r10: 0.7034 - val_p5: 0.1205 - val_p10: 0.0703 - lr: 4.7723e-04 - 919ms/epoch - 15ms/step
+Epoch 47/1000
+63/63 - 1s - loss: 0.0081 - r1: 0.4964 - r5: 0.7473 - r10: 0.8360 - p5: 0.1495 - p10: 0.0836 - val_loss: 0.0126 - val_r1: 0.3708 - val_r5: 0.6010 - val_r10: 0.7027 - val_p5: 0.1202 - val_p10: 0.0702 - lr: 4.7674e-04 - 914ms/epoch - 15ms/step
+Epoch 48/1000
+63/63 - 1s - loss: 0.0081 - r1: 0.4977 - r5: 0.7489 - r10: 0.8382 - p5: 0.1498 - p10: 0.0838 - val_loss: 0.0130 - val_r1: 0.3741 - val_r5: 0.5944 - val_r10: 0.6983 - val_p5: 0.1189 - val_p10: 0.0698 - lr: 4.7624e-04 - 923ms/epoch - 15ms/step
+Epoch 49/1000
+63/63 - 1s - loss: 0.0080 - r1: 0.5015 - r5: 0.7529 - r10: 0.8397 - p5: 0.1506 - p10: 0.0840 - val_loss: 0.0128 - val_r1: 0.3774 - val_r5: 0.6046 - val_r10: 0.7070 - val_p5: 0.1210 - val_p10: 0.0707 - lr: 4.7575e-04 - 913ms/epoch - 14ms/step
+Epoch 50/1000
+63/63 - 1s - loss: 0.0080 - r1: 0.4963 - r5: 0.7517 - r10: 0.8379 - p5: 0.1503 - p10: 0.0838 - val_loss: 0.0130 - val_r1: 0.3802 - val_r5: 0.5982 - val_r10: 0.7024 - val_p5: 0.1196 - val_p10: 0.0702 - lr: 4.7525e-04 - 914ms/epoch - 15ms/step
+Epoch 51/1000
+63/63 - 1s - loss: 0.0080 - r1: 0.4997 - r5: 0.7541 - r10: 0.8426 - p5: 0.1508 - p10: 0.0843 - val_loss: 0.0127 - val_r1: 0.3769 - val_r5: 0.6020 - val_r10: 0.7050 - val_p5: 0.1204 - val_p10: 0.0704 - lr: 4.7476e-04 - 914ms/epoch - 15ms/step
+Epoch 52/1000
+63/63 - 1s - loss: 0.0079 - r1: 0.5064 - r5: 0.7550 - r10: 0.8431 - p5: 0.1510 - p10: 0.0843 - val_loss: 0.0128 - val_r1: 0.3825 - val_r5: 0.6053 - val_r10: 0.7088 - val_p5: 0.1211 - val_p10: 0.0709 - lr: 4.7426e-04 - 909ms/epoch - 14ms/step
+Epoch 53/1000
+63/63 - 1s - loss: 0.0080 - r1: 0.5018 - r5: 0.7552 - r10: 0.8429 - p5: 0.1510 - p10: 0.0843 - val_loss: 0.0129 - val_r1: 0.3700 - val_r5: 0.6036 - val_r10: 0.6996 - val_p5: 0.1207 - val_p10: 0.0700 - lr: 4.7377e-04 - 916ms/epoch - 15ms/step
+Epoch 54/1000
+63/63 - 1s - loss: 0.0078 - r1: 0.5078 - r5: 0.7591 - r10: 0.8458 - p5: 0.1518 - p10: 0.0846 - val_loss: 0.0131 - val_r1: 0.3662 - val_r5: 0.5967 - val_r10: 0.7039 - val_p5: 0.1193 - val_p10: 0.0704 - lr: 4.7327e-04 - 923ms/epoch - 15ms/step
+Epoch 55/1000
+63/63 - 1s - loss: 0.0078 - r1: 0.5073 - r5: 0.7584 - r10: 0.8463 - p5: 0.1517 - p10: 0.0846 - val_loss: 0.0130 - val_r1: 0.3812 - val_r5: 0.6046 - val_r10: 0.7050 - val_p5: 0.1210 - val_p10: 0.0705 - lr: 4.7278e-04 - 914ms/epoch - 15ms/step
+Epoch 56/1000
+63/63 - 1s - loss: 0.0079 - r1: 0.5065 - r5: 0.7588 - r10: 0.8460 - p5: 0.1518 - p10: 0.0846 - val_loss: 0.0129 - val_r1: 0.3797 - val_r5: 0.6015 - val_r10: 0.7017 - val_p5: 0.1203 - val_p10: 0.0702 - lr: 4.7228e-04 - 919ms/epoch - 15ms/step
+Epoch 57/1000
+63/63 - 1s - loss: 0.0078 - r1: 0.5132 - r5: 0.7609 - r10: 0.8471 - p5: 0.1522 - p10: 0.0847 - val_loss: 0.0131 - val_r1: 0.3794 - val_r5: 0.5997 - val_r10: 0.7004 - val_p5: 0.1200 - val_p10: 0.0700 - lr: 4.7179e-04 - 917ms/epoch - 15ms/step
+Epoch 58/1000
+63/63 - 1s - loss: 0.0078 - r1: 0.5096 - r5: 0.7598 - r10: 0.8454 - p5: 0.1519 - p10: 0.0845 - val_loss: 0.0129 - val_r1: 0.3781 - val_r5: 0.6010 - val_r10: 0.7055 - val_p5: 0.1202 - val_p10: 0.0705 - lr: 4.7129e-04 - 914ms/epoch - 15ms/step
+Epoch 59/1000
+63/63 - 1s - loss: 0.0078 - r1: 0.5125 - r5: 0.7588 - r10: 0.8472 - p5: 0.1518 - p10: 0.0847 - val_loss: 0.0132 - val_r1: 0.3794 - val_r5: 0.5990 - val_r10: 0.6999 - val_p5: 0.1197 - val_p10: 0.0700 - lr: 4.7080e-04 - 913ms/epoch - 14ms/step
+Epoch 60/1000
+63/63 - 1s - loss: 0.0077 - r1: 0.5128 - r5: 0.7626 - r10: 0.8520 - p5: 0.1525 - p10: 0.0852 - val_loss: 0.0130 - val_r1: 0.3792 - val_r5: 0.5957 - val_r10: 0.7022 - val_p5: 0.1191 - val_p10: 0.0702 - lr: 4.7030e-04 - 921ms/epoch - 15ms/step
+Epoch 61/1000
+63/63 - 1s - loss: 0.0077 - r1: 0.5154 - r5: 0.7673 - r10: 0.8538 - p5: 0.1535 - p10: 0.0854 - val_loss: 0.0128 - val_r1: 0.3855 - val_r5: 0.6097 - val_r10: 0.7044 - val_p5: 0.1219 - val_p10: 0.0704 - lr: 4.6981e-04 - 919ms/epoch - 15ms/step
+Epoch 62/1000
+63/63 - 1s - loss: 0.0077 - r1: 0.5182 - r5: 0.7646 - r10: 0.8515 - p5: 0.1529 - p10: 0.0851 - val_loss: 0.0132 - val_r1: 0.3741 - val_r5: 0.6015 - val_r10: 0.7067 - val_p5: 0.1203 - val_p10: 0.0706 - lr: 4.6931e-04 - 922ms/epoch - 15ms/step
+Epoch 63/1000
+63/63 - 1s - loss: 0.0077 - r1: 0.5158 - r5: 0.7646 - r10: 0.8532 - p5: 0.1529 - p10: 0.0853 - val_loss: 0.0131 - val_r1: 0.3743 - val_r5: 0.6028 - val_r10: 0.6994 - val_p5: 0.1206 - val_p10: 0.0700 - lr: 4.6882e-04 - 919ms/epoch - 15ms/step
+Epoch 64/1000
+63/63 - 1s - loss: 0.0077 - r1: 0.5191 - r5: 0.7665 - r10: 0.8520 - p5: 0.1533 - p10: 0.0852 - val_loss: 0.0133 - val_r1: 0.3743 - val_r5: 0.6015 - val_r10: 0.7044 - val_p5: 0.1203 - val_p10: 0.0705 - lr: 4.6832e-04 - 915ms/epoch - 15ms/step
+Epoch 65/1000
+63/63 - 1s - loss: 0.0076 - r1: 0.5221 - r5: 0.7727 - r10: 0.8570 - p5: 0.1545 - p10: 0.0857 - val_loss: 0.0130 - val_r1: 0.3728 - val_r5: 0.6046 - val_r10: 0.7027 - val_p5: 0.1208 - val_p10: 0.0703 - lr: 4.6783e-04 - 914ms/epoch - 15ms/step
+Epoch 66/1000
+63/63 - 1s - loss: 0.0076 - r1: 0.5217 - r5: 0.7704 - r10: 0.8569 - p5: 0.1541 - p10: 0.0857 - val_loss: 0.0132 - val_r1: 0.3698 - val_r5: 0.6005 - val_r10: 0.7017 - val_p5: 0.1201 - val_p10: 0.0701 - lr: 4.6733e-04 - 914ms/epoch - 15ms/step
+Epoch 66: early stopping
+[92m[INFO] Loading best model...[0m
+[93m[WARNING] Model folder already exists...[0m
+Model: "ATT2ITM_1"
+__________________________________________________________________________________________________
+ Layer (type)                   Output Shape         Param #     Connected to                     
+==================================================================================================
+ input_1 (InputLayer)           [(None, 162)]        0           []                               
+                                                                                                  
+ input_2 (InputLayer)           [(None, 149)]        0           []                               
+                                                                                                  
+ embedding (Embedding)          (None, 162, 384)     926976      ['input_1[0][0]']                
+                                                                                                  
+ in_rsts (Embedding)            (None, 149, 384)     57216       ['input_2[0][0]']                
+                                                                                                  
+ dense (Dense)                  (None, 162, 256)     98560       ['embedding[0][0]']              
+                                                                                                  
+ dense_2 (Dense)                (None, 149, 256)     98560       ['in_rsts[0][0]']                
+                                                                                                  
+ tf.math.not_equal (TFOpLambda)  (None, 162)         0           ['input_1[0][0]']                
+                                                                                                  
+ dense_1 (Dense)                (None, 162, 128)     32896       ['dense[0][0]']                  
+                                                                                                  
+ dense_3 (Dense)                (None, 149, 128)     32896       ['dense_2[0][0]']                
+                                                                                                  
+ tf.cast (TFOpLambda)           (None, 162)          0           ['tf.math.not_equal[0][0]']      
+                                                                                                  
+ word_emb (Lambda)              (None, 162, 128)     0           ['dense_1[0][0]']                
+                                                                                                  
+ rest_emb (Lambda)              (None, 149, 128)     0           ['dense_3[0][0]']                
+                                                                                                  
+ tf.expand_dims (TFOpLambda)    (None, 162, 1)       0           ['tf.cast[0][0]']                
+                                                                                                  
+ lambda (Lambda)                (None, 162, 149)     0           ['word_emb[0][0]',               
+                                                                  'rest_emb[0][0]']               
+                                                                                                  
+ tf.tile (TFOpLambda)           (None, 162, 149)     0           ['tf.expand_dims[0][0]']         
+                                                                                                  
+ lambda_1 (Lambda)              (None, 162, 149)     0           ['lambda[0][0]',                 
+                                                                  'tf.tile[0][0]']                
+                                                                                                  
+ dotprod (Activation)           (None, 162, 149)     0           ['lambda_1[0][0]']               
+                                                                                                  
+ dropout (Dropout)              (None, 162, 149)     0           ['dotprod[0][0]']                
+                                                                                                  
+ sum (Lambda)                   (None, 149)          0           ['dropout[0][0]']                
+                                                                                                  
+ out (Activation)               (None, 149)          0           ['sum[0][0]']                    
+                                                                                                  
+==================================================================================================
+Total params: 1,247,104
+Trainable params: 1,247,104
+Non-trainable params: 0
+__________________________________________________________________________________________________
+None
+[92m[INFO] Model already trained. Loading weights...[0m
+[93m[WARNING] Model folder already exists...[0m
+Model: "ATT2ITM_1"
+__________________________________________________________________________________________________
+ Layer (type)                   Output Shape         Param #     Connected to                     
+==================================================================================================
+ input_1 (InputLayer)           [(None, 162)]        0           []                               
+                                                                                                  
+ input_2 (InputLayer)           [(None, 149)]        0           []                               
+                                                                                                  
+ embedding (Embedding)          (None, 162, 384)     926976      ['input_1[0][0]']                
+                                                                                                  
+ in_rsts (Embedding)            (None, 149, 384)     57216       ['input_2[0][0]']                
+                                                                                                  
+ dense (Dense)                  (None, 162, 256)     98560       ['embedding[0][0]']              
+                                                                                                  
+ dense_2 (Dense)                (None, 149, 256)     98560       ['in_rsts[0][0]']                
+                                                                                                  
+ tf.math.not_equal (TFOpLambda)  (None, 162)         0           ['input_1[0][0]']                
+                                                                                                  
+ dense_1 (Dense)                (None, 162, 128)     32896       ['dense[0][0]']                  
+                                                                                                  
+ dense_3 (Dense)                (None, 149, 128)     32896       ['dense_2[0][0]']                
+                                                                                                  
+ tf.cast (TFOpLambda)           (None, 162)          0           ['tf.math.not_equal[0][0]']      
+                                                                                                  
+ word_emb (Lambda)              (None, 162, 128)     0           ['dense_1[0][0]']                
+                                                                                                  
+ rest_emb (Lambda)              (None, 149, 128)     0           ['dense_3[0][0]']                
+                                                                                                  
+ tf.expand_dims (TFOpLambda)    (None, 162, 1)       0           ['tf.cast[0][0]']                
+                                                                                                  
+ lambda (Lambda)                (None, 162, 149)     0           ['word_emb[0][0]',               
+                                                                  'rest_emb[0][0]']               
+                                                                                                  
+ tf.tile (TFOpLambda)           (None, 162, 149)     0           ['tf.expand_dims[0][0]']         
+                                                                                                  
+ lambda_1 (Lambda)              (None, 162, 149)     0           ['lambda[0][0]',                 
+                                                                  'tf.tile[0][0]']                
+                                                                                                  
+ dotprod (Activation)           (None, 162, 149)     0           ['lambda_1[0][0]']               
+                                                                                                  
+ dropout (Dropout)              (None, 162, 149)     0           ['dotprod[0][0]']                
+                                                                                                  
+ sum (Lambda)                   (None, 149)          0           ['dropout[0][0]']                
+                                                                                                  
+ out (Activation)               (None, 149)          0           ['sum[0][0]']                    
+                                                                                                  
+==================================================================================================
+Total params: 1,247,104
+Trainable params: 1,247,104
+Non-trainable params: 0
+__________________________________________________________________________________________________
+None
+[92m[INFO] Model already trained. Loading weights...[0m
+[93m[WARNING] Model folder already exists...[0m
+Model: "ATT2ITM_1"
+__________________________________________________________________________________________________
+ Layer (type)                   Output Shape         Param #     Connected to                     
+==================================================================================================
+ input_1 (InputLayer)           [(None, 162)]        0           []                               
+                                                                                                  
+ input_2 (InputLayer)           [(None, 149)]        0           []                               
+                                                                                                  
+ embedding (Embedding)          (None, 162, 384)     926976      ['input_1[0][0]']                
+                                                                                                  
+ in_rsts (Embedding)            (None, 149, 384)     57216       ['input_2[0][0]']                
+                                                                                                  
+ dense (Dense)                  (None, 162, 256)     98560       ['embedding[0][0]']              
+                                                                                                  
+ dense_2 (Dense)                (None, 149, 256)     98560       ['in_rsts[0][0]']                
+                                                                                                  
+ tf.math.not_equal (TFOpLambda)  (None, 162)         0           ['input_1[0][0]']                
+                                                                                                  
+ dense_1 (Dense)                (None, 162, 128)     32896       ['dense[0][0]']                  
+                                                                                                  
+ dense_3 (Dense)                (None, 149, 128)     32896       ['dense_2[0][0]']                
+                                                                                                  
+ tf.cast (TFOpLambda)           (None, 162)          0           ['tf.math.not_equal[0][0]']      
+                                                                                                  
+ word_emb (Lambda)              (None, 162, 128)     0           ['dense_1[0][0]']                
+                                                                                                  
+ rest_emb (Lambda)              (None, 149, 128)     0           ['dense_3[0][0]']                
+                                                                                                  
+ tf.expand_dims (TFOpLambda)    (None, 162, 1)       0           ['tf.cast[0][0]']                
+                                                                                                  
+ lambda (Lambda)                (None, 162, 149)     0           ['word_emb[0][0]',               
+                                                                  'rest_emb[0][0]']               
+                                                                                                  
+ tf.tile (TFOpLambda)           (None, 162, 149)     0           ['tf.expand_dims[0][0]']         
+                                                                                                  
+ lambda_1 (Lambda)              (None, 162, 149)     0           ['lambda[0][0]',                 
+                                                                  'tf.tile[0][0]']                
+                                                                                                  
+ dotprod (Activation)           (None, 162, 149)     0           ['lambda_1[0][0]']               
+                                                                                                  
+ dropout (Dropout)              (None, 162, 149)     0           ['dotprod[0][0]']                
+                                                                                                  
+ sum (Lambda)                   (None, 149)          0           ['dropout[0][0]']                
+                                                                                                  
+ out (Activation)               (None, 149)          0           ['sum[0][0]']                    
+                                                                                                  
+==================================================================================================
+Total params: 1,247,104
+Trainable params: 1,247,104
+Non-trainable params: 0
+__________________________________________________________________________________________________
+None
+[92m[INFO] Model already trained. Loading weights...[0m

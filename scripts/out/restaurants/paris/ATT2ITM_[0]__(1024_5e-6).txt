@@ -1,0 +1,63 @@
+Model: "ATT2ITM_0"
+__________________________________________________________________________________________________
+ Layer (type)                   Output Shape         Param #     Connected to                     
+==================================================================================================
+ input_1 (InputLayer)           [(None, 178)]        0           []                               
+                                                                                                  
+ input_2 (InputLayer)           [(None, 3415)]       0           []                               
+                                                                                                  
+ embedding (Embedding)          (None, 178, 384)     5538048     ['input_1[0][0]']                
+                                                                                                  
+ in_rsts (Embedding)            (None, 3415, 384)    1311360     ['input_2[0][0]']                
+                                                                                                  
+ dense (Dense)                  (None, 178, 256)     98560       ['embedding[0][0]']              
+                                                                                                  
+ dense_2 (Dense)                (None, 3415, 256)    98560       ['in_rsts[0][0]']                
+                                                                                                  
+ tf.math.not_equal (TFOpLambda)  (None, 178)         0           ['input_1[0][0]']                
+                                                                                                  
+ dense_1 (Dense)                (None, 178, 128)     32896       ['dense[0][0]']                  
+                                                                                                  
+ dense_3 (Dense)                (None, 3415, 128)    32896       ['dense_2[0][0]']                
+                                                                                                  
+ tf.cast (TFOpLambda)           (None, 178)          0           ['tf.math.not_equal[0][0]']      
+                                                                                                  
+ word_emb (Lambda)              (None, 178, 128)     0           ['dense_1[0][0]']                
+                                                                                                  
+ rest_emb (Lambda)              (None, 3415, 128)    0           ['dense_3[0][0]']                
+                                                                                                  
+ tf.expand_dims (TFOpLambda)    (None, 178, 1)       0           ['tf.cast[0][0]']                
+                                                                                                  
+ lambda (Lambda)                (None, 178, 3415)    0           ['word_emb[0][0]',               
+                                                                  'rest_emb[0][0]']               
+                                                                                                  
+ tf.tile (TFOpLambda)           (None, 178, 3415)    0           ['tf.expand_dims[0][0]']         
+                                                                                                  
+ lambda_1 (Lambda)              (None, 178, 3415)    0           ['lambda[0][0]',                 
+                                                                  'tf.tile[0][0]']                
+                                                                                                  
+ dotprod (Activation)           (None, 178, 3415)    0           ['lambda_1[0][0]']               
+                                                                                                  
+ dropout (Dropout)              (None, 178, 3415)    0           ['dotprod[0][0]']                
+                                                                                                  
+ sum (Lambda)                   (None, 3415)         0           ['dropout[0][0]']                
+                                                                                                  
+ out (Activation)               (None, 3415)         0           ['sum[0][0]']                    
+                                                                                                  
+==================================================================================================
+Total params: 7,112,320
+Trainable params: 7,112,320
+Non-trainable params: 0
+__________________________________________________________________________________________________
+None
+Epoch 1/1000
+633/633 - 177s - loss: 8.1177 - r1: 0.0019 - r5: 0.0060 - r10: 0.0096 - p5: 0.0012 - p10: 9.6106e-04 - val_loss: 8.0506 - val_r1: 0.0083 - val_r5: 0.0184 - val_r10: 0.0263 - val_p5: 0.0037 - val_p10: 0.0026 - lr: 4.9950e-06 - e_time: 176.1952 - 177s/epoch - 280ms/step
+Epoch 2/1000
+633/633 - 175s - loss: 7.9938 - r1: 0.0078 - r5: 0.0194 - r10: 0.0289 - p5: 0.0039 - p10: 0.0029 - val_loss: 7.9302 - val_r1: 0.0105 - val_r5: 0.0238 - val_r10: 0.0344 - val_p5: 0.0048 - val_p10: 0.0034 - lr: 4.9901e-06 - e_time: 173.8480 - 175s/epoch - 276ms/step
+Epoch 3/1000
+633/633 - 175s - loss: 7.9152 - r1: 0.0097 - r5: 0.0234 - r10: 0.0344 - p5: 0.0047 - p10: 0.0034 - val_loss: 7.8759 - val_r1: 0.0115 - val_r5: 0.0286 - val_r10: 0.0404 - val_p5: 0.0057 - val_p10: 0.0040 - lr: 4.9852e-06 - e_time: 173.9817 - 175s/epoch - 276ms/step
+Epoch 4/1000
+633/633 - 175s - loss: 7.8689 - r1: 0.0111 - r5: 0.0269 - r10: 0.0394 - p5: 0.0054 - p10: 0.0039 - val_loss: 7.8321 - val_r1: 0.0132 - val_r5: 0.0323 - val_r10: 0.0471 - val_p5: 0.0065 - val_p10: 0.0047 - lr: 4.9802e-06 - e_time: 174.2040 - 175s/epoch - 277ms/step
+Epoch 5/1000
+633/633 - 176s - loss: 7.8264 - r1: 0.0124 - r5: 0.0299 - r10: 0.0441 - p5: 0.0060 - p10: 0.0044 - val_loss: 7.7869 - val_r1: 0.0154 - val_r5: 0.0366 - val_r10: 0.0536 - val_p5: 0.0073 - val_p10: 0.0054 - lr: 4.9753e-06 - e_time: 173.9829 - 176s/epoch - 277ms/step
+Epoch 6/1000

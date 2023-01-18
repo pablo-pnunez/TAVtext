@@ -2,6 +2,20 @@
 
 import numpy as np
 import tensorflow as tf
+import time
+
+
+class EpochTime(tf.keras.callbacks.Callback):
+
+    def __init__(self):
+        super().__init__()
+        self.time = 0
+
+    def on_epoch_end(self, epoch, logs):
+        logs['e_time'] = time.time()-self.time
+
+    def on_epoch_begin(self, epoch, logs):
+        self.time = time.time()
 
 
 class CustomStopper(tf.keras.callbacks.EarlyStopping):

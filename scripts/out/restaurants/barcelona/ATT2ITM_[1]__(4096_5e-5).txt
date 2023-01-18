@@ -1,0 +1,53 @@
+Model: "ATT2ITM_1"
+__________________________________________________________________________________________________
+ Layer (type)                   Output Shape         Param #     Connected to                     
+==================================================================================================
+ input_1 (InputLayer)           [(None, 172)]        0           []                               
+                                                                                                  
+ input_2 (InputLayer)           [(None, 1322)]       0           []                               
+                                                                                                  
+ embedding (Embedding)          (None, 172, 384)     3389952     ['input_1[0][0]']                
+                                                                                                  
+ in_rsts (Embedding)            (None, 1322, 384)    507648      ['input_2[0][0]']                
+                                                                                                  
+ dense (Dense)                  (None, 172, 256)     98560       ['embedding[0][0]']              
+                                                                                                  
+ dense_2 (Dense)                (None, 1322, 256)    98560       ['in_rsts[0][0]']                
+                                                                                                  
+ tf.math.not_equal (TFOpLambda)  (None, 172)         0           ['input_1[0][0]']                
+                                                                                                  
+ dense_1 (Dense)                (None, 172, 128)     32896       ['dense[0][0]']                  
+                                                                                                  
+ dense_3 (Dense)                (None, 1322, 128)    32896       ['dense_2[0][0]']                
+                                                                                                  
+ tf.cast (TFOpLambda)           (None, 172)          0           ['tf.math.not_equal[0][0]']      
+                                                                                                  
+ word_emb (Lambda)              (None, 172, 128)     0           ['dense_1[0][0]']                
+                                                                                                  
+ rest_emb (Lambda)              (None, 1322, 128)    0           ['dense_3[0][0]']                
+                                                                                                  
+ tf.expand_dims (TFOpLambda)    (None, 172, 1)       0           ['tf.cast[0][0]']                
+                                                                                                  
+ lambda (Lambda)                (None, 172, 1322)    0           ['word_emb[0][0]',               
+                                                                  'rest_emb[0][0]']               
+                                                                                                  
+ tf.tile (TFOpLambda)           (None, 172, 1322)    0           ['tf.expand_dims[0][0]']         
+                                                                                                  
+ lambda_1 (Lambda)              (None, 172, 1322)    0           ['lambda[0][0]',                 
+                                                                  'tf.tile[0][0]']                
+                                                                                                  
+ dotprod (Activation)           (None, 172, 1322)    0           ['lambda_1[0][0]']               
+                                                                                                  
+ dropout (Dropout)              (None, 172, 1322)    0           ['dotprod[0][0]']                
+                                                                                                  
+ sum (Lambda)                   (None, 1322)         0           ['dropout[0][0]']                
+                                                                                                  
+ out (Activation)               (None, 1322)         0           ['sum[0][0]']                    
+                                                                                                  
+==================================================================================================
+Total params: 4,160,512
+Trainable params: 4,160,512
+Non-trainable params: 0
+__________________________________________________________________________________________________
+None
+Epoch 1/1000

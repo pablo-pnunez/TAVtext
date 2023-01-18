@@ -17,6 +17,7 @@ def recall(y_true, y_pred):
 
 
 def f1(y_true, y_pred):
-    precision = precision(y_true, y_pred)
-    recall = recall(y_true, y_pred)
-    return 2 * ((precision * recall) / (precision + recall + kb.epsilon()))
+    prec = precision(y_true, y_pred)
+    rec = recall(y_true, y_pred)
+    return 2 * ((prec * rec) / (prec + rec + kb.epsilon()))
+

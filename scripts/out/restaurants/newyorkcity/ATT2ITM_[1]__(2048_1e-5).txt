@@ -1,0 +1,126 @@
+Model: "ATT2ITM_1"
+__________________________________________________________________________________________________
+ Layer (type)                   Output Shape         Param #     Connected to                     
+==================================================================================================
+ input_1 (InputLayer)           [(None, 200)]        0           []                               
+                                                                                                  
+ input_2 (InputLayer)           [(None, 1985)]       0           []                               
+                                                                                                  
+ embedding (Embedding)          (None, 200, 384)     4634112     ['input_1[0][0]']                
+                                                                                                  
+ in_rsts (Embedding)            (None, 1985, 384)    762240      ['input_2[0][0]']                
+                                                                                                  
+ dense (Dense)                  (None, 200, 256)     98560       ['embedding[0][0]']              
+                                                                                                  
+ dense_2 (Dense)                (None, 1985, 256)    98560       ['in_rsts[0][0]']                
+                                                                                                  
+ tf.math.not_equal (TFOpLambda)  (None, 200)         0           ['input_1[0][0]']                
+                                                                                                  
+ dense_1 (Dense)                (None, 200, 128)     32896       ['dense[0][0]']                  
+                                                                                                  
+ dense_3 (Dense)                (None, 1985, 128)    32896       ['dense_2[0][0]']                
+                                                                                                  
+ tf.cast (TFOpLambda)           (None, 200)          0           ['tf.math.not_equal[0][0]']      
+                                                                                                  
+ word_emb (Lambda)              (None, 200, 128)     0           ['dense_1[0][0]']                
+                                                                                                  
+ rest_emb (Lambda)              (None, 1985, 128)    0           ['dense_3[0][0]']                
+                                                                                                  
+ tf.expand_dims (TFOpLambda)    (None, 200, 1)       0           ['tf.cast[0][0]']                
+                                                                                                  
+ lambda (Lambda)                (None, 200, 1985)    0           ['word_emb[0][0]',               
+                                                                  'rest_emb[0][0]']               
+                                                                                                  
+ tf.tile (TFOpLambda)           (None, 200, 1985)    0           ['tf.expand_dims[0][0]']         
+                                                                                                  
+ lambda_1 (Lambda)              (None, 200, 1985)    0           ['lambda[0][0]',                 
+                                                                  'tf.tile[0][0]']                
+                                                                                                  
+ dotprod (Activation)           (None, 200, 1985)    0           ['lambda_1[0][0]']               
+                                                                                                  
+ dropout (Dropout)              (None, 200, 1985)    0           ['dotprod[0][0]']                
+                                                                                                  
+ sum (Lambda)                   (None, 1985)         0           ['dropout[0][0]']                
+                                                                                                  
+ out (Activation)               (None, 1985)         0           ['sum[0][0]']                    
+                                                                                                  
+==================================================================================================
+Total params: 5,659,264
+Trainable params: 5,659,264
+Non-trainable params: 0
+__________________________________________________________________________________________________
+None
+Epoch 1/1000
+323/323 - 92s - loss: 0.0661 - r1: 3.1455e-04 - r5: 0.0019 - r10: 0.0040 - p5: 3.7777e-04 - p10: 3.9849e-04 - val_loss: 0.0073 - val_r1: 2.2078e-04 - val_r5: 0.0015 - val_r10: 0.0034 - val_p5: 2.9438e-04 - val_p10: 3.3976e-04 - lr: 9.9901e-06 - 92s/epoch - 286ms/step
+Epoch 2/1000
+323/323 - 90s - loss: 0.0055 - r1: 0.0070 - r5: 0.0186 - r10: 0.0266 - p5: 0.0037 - p10: 0.0027 - val_loss: 0.0041 - val_r1: 0.0189 - val_r5: 0.0497 - val_r10: 0.0727 - val_p5: 0.0099 - val_p10: 0.0073 - lr: 9.9802e-06 - 90s/epoch - 279ms/step
+Epoch 3/1000
+323/323 - 90s - loss: 0.0042 - r1: 0.0165 - r5: 0.0495 - r10: 0.0724 - p5: 0.0099 - p10: 0.0072 - val_loss: 0.0038 - val_r1: 0.0193 - val_r5: 0.0582 - val_r10: 0.0862 - val_p5: 0.0116 - val_p10: 0.0086 - lr: 9.9703e-06 - 90s/epoch - 279ms/step
+Epoch 4/1000
+323/323 - 90s - loss: 0.0040 - r1: 0.0168 - r5: 0.0516 - r10: 0.0782 - p5: 0.0103 - p10: 0.0078 - val_loss: 0.0036 - val_r1: 0.0196 - val_r5: 0.0585 - val_r10: 0.0864 - val_p5: 0.0117 - val_p10: 0.0086 - lr: 9.9604e-06 - 90s/epoch - 279ms/step
+Epoch 5/1000
+Model: "ATT2ITM_1"
+__________________________________________________________________________________________________
+ Layer (type)                   Output Shape         Param #     Connected to                     
+==================================================================================================
+ input_1 (InputLayer)           [(None, 200)]        0           []                               
+                                                                                                  
+ input_2 (InputLayer)           [(None, 1985)]       0           []                               
+                                                                                                  
+ embedding (Embedding)          (None, 200, 384)     4634112     ['input_1[0][0]']                
+                                                                                                  
+ in_rsts (Embedding)            (None, 1985, 384)    762240      ['input_2[0][0]']                
+                                                                                                  
+ dense (Dense)                  (None, 200, 256)     98560       ['embedding[0][0]']              
+                                                                                                  
+ dense_2 (Dense)                (None, 1985, 256)    98560       ['in_rsts[0][0]']                
+                                                                                                  
+ tf.math.not_equal (TFOpLambda)  (None, 200)         0           ['input_1[0][0]']                
+                                                                                                  
+ dense_1 (Dense)                (None, 200, 128)     32896       ['dense[0][0]']                  
+                                                                                                  
+ dense_3 (Dense)                (None, 1985, 128)    32896       ['dense_2[0][0]']                
+                                                                                                  
+ tf.cast (TFOpLambda)           (None, 200)          0           ['tf.math.not_equal[0][0]']      
+                                                                                                  
+ word_emb (Lambda)              (None, 200, 128)     0           ['dense_1[0][0]']                
+                                                                                                  
+ rest_emb (Lambda)              (None, 1985, 128)    0           ['dense_3[0][0]']                
+                                                                                                  
+ tf.expand_dims (TFOpLambda)    (None, 200, 1)       0           ['tf.cast[0][0]']                
+                                                                                                  
+ lambda (Lambda)                (None, 200, 1985)    0           ['word_emb[0][0]',               
+                                                                  'rest_emb[0][0]']               
+                                                                                                  
+ tf.tile (TFOpLambda)           (None, 200, 1985)    0           ['tf.expand_dims[0][0]']         
+                                                                                                  
+ lambda_1 (Lambda)              (None, 200, 1985)    0           ['lambda[0][0]',                 
+                                                                  'tf.tile[0][0]']                
+                                                                                                  
+ dotprod (Activation)           (None, 200, 1985)    0           ['lambda_1[0][0]']               
+                                                                                                  
+ dropout (Dropout)              (None, 200, 1985)    0           ['dotprod[0][0]']                
+                                                                                                  
+ sum (Lambda)                   (None, 1985)         0           ['dropout[0][0]']                
+                                                                                                  
+ out (Activation)               (None, 1985)         0           ['sum[0][0]']                    
+                                                                                                  
+==================================================================================================
+Total params: 5,659,264
+Trainable params: 5,659,264
+Non-trainable params: 0
+__________________________________________________________________________________________________
+None
+Epoch 1/1000
+323/323 - 92s - loss: 0.0661 - r1: 3.1304e-04 - r5: 0.0019 - r10: 0.0040 - p5: 3.7716e-04 - p10: 3.9849e-04 - val_loss: 0.0073 - val_r1: 2.2078e-04 - val_r5: 0.0015 - val_r10: 0.0034 - val_p5: 2.9438e-04 - val_p10: 3.4221e-04 - lr: 9.9901e-06 - 92s/epoch - 284ms/step
+Epoch 2/1000
+323/323 - 90s - loss: 0.0055 - r1: 0.0070 - r5: 0.0186 - r10: 0.0266 - p5: 0.0037 - p10: 0.0027 - val_loss: 0.0041 - val_r1: 0.0189 - val_r5: 0.0497 - val_r10: 0.0726 - val_p5: 0.0100 - val_p10: 0.0073 - lr: 9.9802e-06 - 90s/epoch - 277ms/step
+Epoch 3/1000
+323/323 - 90s - loss: 0.0042 - r1: 0.0165 - r5: 0.0495 - r10: 0.0724 - p5: 0.0099 - p10: 0.0072 - val_loss: 0.0038 - val_r1: 0.0193 - val_r5: 0.0582 - val_r10: 0.0861 - val_p5: 0.0116 - val_p10: 0.0086 - lr: 9.9703e-06 - 90s/epoch - 278ms/step
+Epoch 4/1000
+323/323 - 90s - loss: 0.0040 - r1: 0.0168 - r5: 0.0516 - r10: 0.0782 - p5: 0.0103 - p10: 0.0078 - val_loss: 0.0036 - val_r1: 0.0196 - val_r5: 0.0585 - val_r10: 0.0864 - val_p5: 0.0117 - val_p10: 0.0086 - lr: 9.9604e-06 - 90s/epoch - 278ms/step
+Epoch 5/1000
+323/323 - 90s - loss: 0.0038 - r1: 0.0170 - r5: 0.0522 - r10: 0.0788 - p5: 0.0104 - p10: 0.0079 - val_loss: 0.0035 - val_r1: 0.0203 - val_r5: 0.0592 - val_r10: 0.0871 - val_p5: 0.0118 - val_p10: 0.0087 - lr: 9.9505e-06 - 90s/epoch - 278ms/step
+Epoch 6/1000
+323/323 - 90s - loss: 0.0037 - r1: 0.0173 - r5: 0.0521 - r10: 0.0791 - p5: 0.0104 - p10: 0.0079 - val_loss: 0.0034 - val_r1: 0.0209 - val_r5: 0.0600 - val_r10: 0.0879 - val_p5: 0.0120 - val_p10: 0.0088 - lr: 9.9406e-06 - 90s/epoch - 278ms/step
+Epoch 7/1000

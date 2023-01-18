@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 from src.Common import print_w
 
-import random
 import os
 import json
+import random
 import hashlib
+import warnings
 import numpy as np
 
 
@@ -19,7 +20,8 @@ class ModelClass:
 
         # El MD5 sin el gpu para que no cambie
         self.MD5, cfg_save_data = self.__get_md5__()
-        self.CUSTOM_PATH = self.MODEL_NAME+"/"+self.DATASET.CONFIG["city"]+"/"+self.MD5+"/"
+
+        self.CUSTOM_PATH = self.MODEL_NAME+"/"+self.DATASET.CONFIG["dataset"]+"/"+self.DATASET.CONFIG["subset"]+"/"+self.MD5+"/"
 
         self.MODEL_PATH = "models/"+self.CUSTOM_PATH
         self.LOG_PATH = "logs/"+self.CUSTOM_PATH
@@ -39,7 +41,7 @@ class ModelClass:
         self.__fix_seeds__()
 
         # Seleccionar la GPU más adecuada y limitar el uso de memoria
-        self.__config_session__()
+        self.__config_session__(mixed_precision=self.CONFIG["session"]["mixed_precision"])
 
         # Crear el modelo
         self.MODEL = self.get_model()
@@ -52,7 +54,7 @@ class ModelClass:
                 res[k] = self.CONFIG[k]
         return hashlib.md5(str(res).encode()).hexdigest(), res
 
-    def __config_session__(self):
+    def __config_session__(self, mixed_precision):
         # Selecciona una de las gpu dispobiles
         os.environ["CUDA_VISIBLE_DEVICES"] = str(self.CONFIG["session"]["gpu"])
 
