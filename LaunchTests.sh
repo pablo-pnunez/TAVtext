@@ -5,13 +5,14 @@ STAGE=0 # GRIDSEARCH o TRAIN
 GPU=0
 
 declare -A DATASETS
-# DATASETS["restaurants"]="gijon barcelona madrid newyorkcity paris"
+
+DATASETS["restaurants"]="gijon barcelona madrid newyorkcity paris"
 # DATASETS["pois"]="barcelona madrid newyorkcity paris london"
 # DATASETS["amazon"]="digital_music" # "fashion"
 
 # DATASETS["restaurants"]="madrid newyorkcity paris"
 # DATASETS["amazon"]="digital_music fashion"
-DATASETS["pois"]="barcelona madrid newyorkcity paris london"
+# DATASETS["pois"]="barcelona madrid newyorkcity paris london"
 
 declare -A MODELS
 declare -A BATCHES
@@ -29,9 +30,14 @@ declare -A LRATES
 # BATCHES["ATT2ITM"]="256 512 1024 2048 4096"
 # LRATES["ATT2ITM"]="5e-6 1e-5 5e-5 1e-4 5e-4" 
 
-MODELS["USEM2ITM"]="0" 
-BATCHES["USEM2ITM"]="512 1024 2048"
-LRATES["USEM2ITM"]="1e-5 5e-5 1e-4 5e-4 1e-3 5e-3" 
+MODELS["ATT2ITM"]="2" 
+BATCHES["ATT2ITM"]="256 512 1024"
+LRATES["ATT2ITM"]="5e-5 1e-4 5e-4" 
+
+
+# MODELS["USEM2ITM"]="0" 
+# BATCHES["USEM2ITM"]="512 1024 2048"
+# LRATES["USEM2ITM"]="1e-5 5e-5 1e-4 5e-4 1e-3 5e-3" 
 
 for DATASET_NAME in ${!DATASETS[@]}; do 
   for SUBSET_NAME in ${DATASETS[$DATASET_NAME]}; do

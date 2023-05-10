@@ -47,3 +47,6 @@ class RSTModel(KerasModelClass):
         res = dict(zip(["ACCURACY", "TOP5ACC", "TOP10ACC"], [m1.result().numpy(), m2.result().numpy(), m3.result().numpy()]))
         print_g(res)
         return res
+
+    def explain_test_sample(self, data_row):
+        raise NotImplementedError

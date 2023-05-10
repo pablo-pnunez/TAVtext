@@ -130,6 +130,28 @@ class BOW2ITM(RSTModel):
             print("\t\t▲ %s" % (",".join(most_relevant_w)))
             print("\t\t∩ %s" % (",".join(usr_rst_intr)))
 
+    def explain_test_sample(self, test_real_sample):
+        # Obtener el texto de la fila dataframe y codificar en formato adecuado (al ser un caso real, ya se ha codificado).
+        bow_encoding = self.DATASET.DATA["BOW_SEQUENCES"][test_real_sample["bow"]].todense()
+
+        # Datos del rastaurante real
+        restaurant_name = test_real_sample["name"]
+
+        # Obtener la matriz de pesos relevante
+        rst_model = self.MODEL
+        rst_model_weights = rst_model.get_layer("bow_2_rst").get_weights()[0]
+        
+        # Importancia de todas las palabras del vocabulario en este restaurante
+        rst_word_weights = rst_model_weights[:, test_real_sample.id_item]
+
+        # Palabras de la reseña (el único filtrado que se hace es el POS)
+        rvw_words = np.array(list(np.argwhere(bow_encoding[0] > 0)[:, 1]))
+        rvw_word_names = np.asarray(self.DATASET.DATA["FEATURES_NAME"])[rvw_words]
+
+        print({w_nm: rst_word_weights[w_id] for w_id, w_nm in zip(rvw_words, rvw_word_names)})
+
+        return {"max": rst_model_weights.max(), "min": rst_model_weights.min(), "values": {w_nm: rst_word_weights[w_id] for w_id, w_nm in zip(rvw_words, rvw_word_names)}}
+
 
 class BOW2RSTsequence(BaseSequence):
 

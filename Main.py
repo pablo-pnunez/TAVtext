@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from src.Common import parse_cmd_args
+from src.Common import parse_cmd_args, print_b
 from src.datasets.text_datasets.RestaurantDataset import RestaurantDataset
 from src.datasets.text_datasets.AmazonDataset import AmazonDataset
 from src.datasets.text_datasets.POIDataset import POIDataset
@@ -8,65 +8,81 @@ from src.models.text_models.ATT2ITM import ATT2ITM
 from src.models.text_models.BOW2ITM import BOW2ITM
 from src.models.text_models.USEM2ITM import USEM2ITM
 
+from src.models.text_models.baselines.NCF.GMF import GMF
+
 import pandas as pd
 import numpy as np
 import nvgpu
+import json
 
 
 # #######################################################################################################################
 
 args = parse_cmd_args()
+gpu = int(np.argmin(list(map(lambda x: x["mem_used_percent"], nvgpu.gpu_info())))) if args.gpu is None else args.gpu
 
 model = "ATT2ITM" if args.mn is None else args.mn
-dataset = "amazon".lower().replace(" ", "") if args.dst is None else args.dst
-subset = "fashion".lower().replace(" ", "") if args.sst is None else args.sst
+dataset = "restaurants".lower().replace(" ", "") if args.dst is None else args.dst
+subset = "newyorkcity".lower().replace(" ", "") if args.sst is None else args.sst
 
 stage = -2 if args.stg is None else args.stg
-model_v = "0" if args.mv is None else args.mv
-neg_rate = 10
+use_best = False
 
-gpu = int(np.argmin(list(map(lambda x: x["mem_used_percent"], nvgpu.gpu_info())))) if args.gpu is None else args.gpu
-seed = 100 if args.sd is None else args.sd
-l_rate = 1e-5 if args.lr is None else args.lr
-n_epochs = 1000 if args.ep is None else args.eps
-b_size = 512 if args.bs is None else args.bs
+if use_best:  # Usar la mejor configuración conocida?
+    best_model = pd.read_csv("explanation/best_models.csv")
+    best_model = best_model.loc[(best_model.dataset == dataset) & (best_model.subset == subset) & (best_model.model == model)]["md5"].values[0]
+    model_path = f"models/{model}/{dataset}/{subset}/{best_model}"
+    with open(f'{model_path}/cfg.json') as f: model_config = json.load(f)
+    dts_cfg = model_config["dataset_config"]
+    with open(f'{model_path}/cfg.json') as f: model_config = json.load(f)
+    mdl_cfg = {"model": model_config["model"], "session": {"gpu": gpu, "mixed_precision": False, "in_md5": False}}
 
-# if city=="london": b_size = 512
+    print_b(f"Loading best model:{best_model}")
 
-min_reviews_rst = 100
-min_reviews_usr = 1
-bow_pct_words = 10 if args.bownws is None else args.bownws
-w2v_dimen = 512  # 300
+else:
+    model_v = "2" if args.mv is None else args.mv
+    neg_rate = 10
 
-remove_stopwords = 2  # 0, 1 o 2 (No quitar, quitar manual, quitar automático)
-lemmatization = True
-remove_accents = True
-remove_numbers = True
-truncate_padding = True
+    seed = 100 if args.sd is None else args.sd
+    l_rate = 5e-4 if args.lr is None else args.lr
+    n_epochs = 1000 if args.ep is None else args.eps
+    b_size = 256 if args.bs is None else args.bs
 
-language = "es" if subset in ["gijon", "madrid", "barcelona"] else "fr" if subset in ["paris"] else "en"
+    # if city=="london": b_size = 512
 
-if dataset == "restaurants":
-    base_path = "/media/nas/datasets/tripadvisor/restaurants/"
-elif dataset == "pois":
-    base_path = "/media/nas/datasets/tripadvisor/pois/"
-    language = "es"  # Están todas en español
-elif dataset == "amazon":
-    base_path = "/media/nas/datasets/amazon/"
+    min_reviews_rst = 100
+    min_reviews_usr = 1
+    bow_pct_words = 10 if args.bownws is None else args.bownws
+    w2v_dimen = 512  # 300
 
+    remove_stopwords = 2  # 0, 1 o 2 (No quitar, quitar manual, quitar automático)
+    lemmatization = True
+    remove_accents = True
+    remove_numbers = True
+    truncate_padding = True
 
-# FIXME: NO SE JUNTA TRAIN+DEV PARA EL MODELO FINAL!!!
-# FIXME: TENSORFLOW DATA PARA BOW
-# TODO: SELECCIÓN AUTOMÄTICA DEL MEJOR MODELO DE GRIDSEARCH
+    language = "es" if subset in ["gijon", "madrid", "barcelona"] else "fr" if subset in ["paris"] else "en"
 
-# DATASET CONFIG #######################################################################################################
+    if dataset == "restaurants":
+        base_path = "/media/nas/datasets/tripadvisor/restaurants/"
+    elif dataset == "pois":
+        base_path = "/media/nas/datasets/tripadvisor/pois/"
+        language = "es"  # Están todas en español
+    elif dataset == "amazon":
+        base_path = "/media/nas/datasets/amazon/"
 
-dts_cfg = {"dataset": dataset, "subset": subset, "language": language, "seed": seed, "data_path": base_path, "save_path": "data/",  # base_path + "Datasets/",
-           "remove_stopwords": remove_stopwords, "remove_accents": remove_accents, "remove_numbers": remove_numbers,
-           "lemmatization": lemmatization,
-           "min_reviews_rst": min_reviews_rst, "min_reviews_usr": min_reviews_usr,
-           "min_df": 5, "bow_pct_words": bow_pct_words, "presencia": False, "text_column": "text",  # BOW
-           "n_max_words": -50, "test_dev_split": .1, "truncate_padding": truncate_padding}
+    #  FIXME: NO SE JUNTA TRAIN+DEV PARA EL MODELO FINAL!!!
+    #  FIXME: TENSORFLOW DATA PARA BOW
+    #  TODO: SELECCIÓN AUTOMÁTICA DEL MEJOR MODELO DE GRIDSEARCH
+
+    # DATASET CONFIG #######################################################################################################
+
+    dts_cfg = {"dataset": dataset, "subset": subset, "language": language, "seed": seed, "data_path": base_path, "save_path": "data/",  # base_path + "Datasets/",
+               "remove_stopwords": remove_stopwords, "remove_accents": remove_accents, "remove_numbers": remove_numbers,
+               "lemmatization": lemmatization,
+               "min_reviews_rst": min_reviews_rst, "min_reviews_usr": min_reviews_usr,
+               "min_df": 5, "bow_pct_words": bow_pct_words, "presencia": False, "text_column": "text",  # BOW
+               "n_max_words": -50, "test_dev_split": .1, "truncate_padding": truncate_padding}
 
 
 if dataset == "restaurants":
@@ -76,12 +92,18 @@ elif dataset == "pois":
     text_dataset = POIDataset(dts_cfg)
 elif dataset == "amazon":
     text_dataset = AmazonDataset(dts_cfg)
+else:
+    raise ValueError
 
 if "ATT2ITM" == model:
 
-    att2itm_mdl_cfg = {"model": {"model_version": model_v, "learning_rate": l_rate, "final_learning_rate": l_rate/100, "epochs": n_epochs, "batch_size": b_size, "seed": seed,
-                                 "early_st_first_epoch": 0, "early_st_monitor": "val_loss", "early_st_monitor_mode": "min", "early_st_patience": 50},
-                       "session": {"gpu": gpu, "mixed_precision": False, "in_md5": False}}
+    if use_best:
+        att2itm_mdl_cfg = mdl_cfg
+    else:
+        att2itm_mdl_cfg = {"model": {"model_version": model_v, "learning_rate": l_rate, "final_learning_rate": l_rate/100, "epochs": n_epochs, "batch_size": b_size, "seed": seed,
+                                     "early_st_first_epoch": 0, "early_st_monitor": "val_loss", "early_st_monitor_mode": "min", "early_st_patience": 50},
+                           "session": {"gpu": gpu, "mixed_precision": True, "in_md5": False}}
+
 
     if stage == 0:
         att2itm_mdl = ATT2ITM(att2itm_mdl_cfg, text_dataset)
@@ -92,18 +114,24 @@ if "ATT2ITM" == model:
         att2itm_mdl.train(dev=True, save_model=False)
         att2itm_mdl.evaluate_text("Quiero comer un arroz con bogavante y con buenas vistas")
         # att2itm_mdl.evaluate_text("imagino que me interesa profundamente la definitivas")
-        att2itm_mdl.all_words_analysis()
-        att2itm_mdl.emb_tsne()
+        # att2itm_mdl.all_words_analysis()
+        # att2itm_mdl.emb_tsne()
 
     if stage == -2:
         att2itm_mdl = ATT2ITM(att2itm_mdl_cfg, text_dataset)
         att2itm_mdl.train(dev=True, save_model=True)
         # att2itm_mdl.evaluate()
 
-        att2itm_mdl.emb_tsne()
+        att2itm_mdl.evaluate_text("I want good fresh pizza with pepperoni and tasty cheese close to the sea")
 
+        # att2itm_mdl.evaluate_text("Quiero comer un buen arroz con bogavante y con buenas vistas")
+        # att2itm_mdl.evaluate_text("Quiero arroz con bogavante con nutella")
+        # att2itm_mdl.evaluate_text("Je veux manger du riz avec du homard et avec une belle vue")
+        # att2itm_mdl.evaluate_text("I want a black and red and also white leather wallet for my kid")
         # att2itm_mdl.all_words_analysis()
-   
+        # att2itm_mdl.emb_tsne()
+        exit()
+
         # att2itm_mdl.evaluate_text("Quiero arroz con bogavante y nutella")
 
         # OJO: SELECCIONAR PALABRAS DE QUERY EN FUNCIÓN DE TODAS LAS PALABRAS DEL VOACABULARIO (NO SOLO LAS DE LA CONSULTA)
@@ -112,7 +140,6 @@ if "ATT2ITM" == model:
 
         att2itm_mdl.evaluate_text("Quiero ir al kausa")
         att2itm_mdl.evaluate_text("Estrella michelin con vistas al mar")
-
 
         # att2itm_mdl.evaluate_text("cheap pizza")
         # att2itm_mdl.evaluate_text("I want the last album of ed sheeran")

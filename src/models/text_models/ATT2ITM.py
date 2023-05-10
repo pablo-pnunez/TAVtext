@@ -4,15 +4,19 @@ from scipy.spatial.distance import cdist, pdist, squareform
 from bokeh.models import LinearColorMapper
 from sklearn.manifold import TSNE
 import tensorflow_ranking as tfr
+import tensorflow_addons as tfa
 import matplotlib.pyplot as plt
 from bokeh.models import Span
+from scipy.stats import skew
 import tensorflow as tf
 import seaborn as sns
+import pickle as pkl
 import pandas as pd
 import numpy as np
+import re
 
-from src.Common import print_g
-from src.Metrics import precision, recall, f1
+from src.Common import print_g, print_e
+from src.Metrics import f1 as f1_score
 from src.models.Common import create_weighted_binary_crossentropy, weighted_binary_crossentropy
 from src.models.text_models.RSTModel import RSTModel
 from src.sequences.BaseSequence import BaseSequence
@@ -29,6 +33,7 @@ class ATT2ITM(RSTModel):
         return model
 
     def get_sub_model(self):
+
 
         mv = self.CONFIG["model"]["model_version"]
         self.MODEL_VERSION = mv
@@ -52,23 +57,23 @@ class ATT2ITM(RSTModel):
             
             # word_importance = tf.keras.layers.Embedding(vocab_size, 1, name="word_importance", embeddings_initializer="ones", mask_zero=True)(text_in)
 
-            query_emb = tf.keras.layers.Embedding(vocab_size, emb_size*3, mask_zero=True)
+            query_emb = tf.keras.layers.Embedding(vocab_size, emb_size * 3, mask_zero=True)
             mask_query = query_emb.compute_mask(text_in)
             mask_query = tf.expand_dims(tf.cast(mask_query, dtype=tf.float32), -1)
             mask_query = tf.tile(mask_query, [1, 1, rst_no])
             ht_emb = query_emb(text_in)
             # ht_emb = tf.keras.layers.Activation("tanh")(ht_emb)
-            ht_emb = tf.keras.layers.Dense(emb_size*2, use_bias=use_bias)(ht_emb)
+            ht_emb = tf.keras.layers.Dense(emb_size * 2, use_bias=use_bias)(ht_emb)
             # ht_emb = tf.keras.layers.Activation("tanh")(ht_emb)
             ht_emb = tf.keras.layers.Dense(emb_size, use_bias=use_bias)(ht_emb)
 
             # ht_emb = tf.keras.layers.Activation("tanh")(ht_emb)
             ht_emb = tf.keras.layers.Lambda(lambda x: x, name="word_emb")(ht_emb)
 
-            rests_emb = tf.keras.layers.Embedding(rst_no, emb_size*3, name=f"in_rsts")
+            rests_emb = tf.keras.layers.Embedding(rst_no, emb_size * 3, name=f"in_rsts")
             hr_emb = rests_emb(rest_in)
             # hr_emb = tf.keras.layers.Activation("tanh")(hr_emb)
-            hr_emb = tf.keras.layers.Dense(emb_size*2, use_bias=use_bias)(hr_emb)
+            hr_emb = tf.keras.layers.Dense(emb_size * 2, use_bias=use_bias)(hr_emb)
             # hr_emb = tf.keras.layers.Activation("tanh")(hr_emb)
             hr_emb = tf.keras.layers.Dense(emb_size, use_bias=use_bias)(hr_emb)
             # hr_emb = tf.keras.layers.Activation("tanh")(hr_emb)
@@ -85,22 +90,67 @@ class ATT2ITM(RSTModel):
 
             model = tf.keras.layers.Dropout(.4)(model)
 
-            model = tf.keras.layers.Lambda(lambda x: tf.math.reduce_sum(x, 1),  name="sum")(model)
+            model = tf.keras.layers.Lambda(lambda x: tf.math.reduce_sum(x, 1), name="sum")(model)
+            
+            # model = tf.keras.layers.Dropout(.1)(model)
+
             model_out = tf.keras.layers.Activation("sigmoid", name="out", dtype='float32')(model)
-        
+
             model = tf.keras.models.Model(inputs=[text_in, rest_in], outputs=[model_out], name=f"{self.MODEL_NAME}_{self.MODEL_VERSION}")
 
-            optimizer = tf.keras.optimizers.Adam(self.CONFIG["model"]["learning_rate"])
+            optimizer = tf.keras.optimizers.legacy.Adam(self.CONFIG["model"]["learning_rate"])
 
-            metrics = [tfr.keras.metrics.RecallMetric(topn=1, name='r1'), tfr.keras.metrics.RecallMetric(topn=5, name='r5'), tfr.keras.metrics.RecallMetric(topn=10, name='r10'),
-                       tfr.keras.metrics.PrecisionMetric(topn=5, name='p5'), tfr.keras.metrics.PrecisionMetric(topn=10, name='p10')]
+            metrics = [tfr.keras.metrics.NDCGMetric(topn=10, name="NDCG10"), tfr.keras.metrics.RecallMetric(topn=1, name='r1'), tfr.keras.metrics.RecallMetric(topn=5, name='r5'), tfr.keras.metrics.RecallMetric(topn=10, name='r10'),
+                       tfr.keras.metrics.PrecisionMetric(topn=5, name='p5'), tfr.keras.metrics.PrecisionMetric(topn=10, name='p10'), f1_score]
 
-            if  mv == "0":
+            if mv == "0":
                 loss = tf.keras.losses.CategoricalCrossentropy()  # Prueba
-
-            elif  mv == "1":
+            elif mv == "1":
                 loss = tf.keras.losses.BinaryFocalCrossentropy()
+
+        if mv == "2": # Se añade la estandarización a la salida y se simplifica el modelo
+            emb_size = 64  # 128
+
+            use_bias = True
+            
+            query_emb = tf.keras.layers.Embedding(vocab_size, emb_size, mask_zero=True)
+            mask_query = query_emb.compute_mask(text_in)
+            mask_query = tf.expand_dims(tf.cast(mask_query, dtype=tf.float32), -1)
+            mask_query = tf.tile(mask_query, [1, 1, rst_no])
+            ht_emb = query_emb(text_in)
+            # ht_emb = tf.keras.layers.Activation("relu")(ht_emb)
+            # ht_emb = tf.keras.layers.Dense(emb_size, use_bias=use_bias)(ht_emb)
+            ht_emb = tf.keras.layers.Lambda(lambda x: x, name="word_emb")(ht_emb)
+            ht_emb = tf.keras.layers.Dropout(.05)(ht_emb)
+
+            rests_emb = tf.keras.layers.Embedding(rst_no, emb_size, name=f"in_rsts")
+            hr_emb = rests_emb(rest_in)
+            # hr_emb = tf.keras.layers.Activation("relu")(hr_emb)
+            # hr_emb = tf.keras.layers.Dense(emb_size, use_bias=use_bias)(hr_emb)
+            hr_emb = tf.keras.layers.Lambda(lambda x: x, name="rest_emb")(hr_emb)
+            hr_emb = tf.keras.layers.Dropout(.05)(hr_emb)
+
+            model = tf.keras.layers.Lambda(lambda x: tf.matmul(x[0], x[1], transpose_b=True))([ht_emb, hr_emb])
+            
+            model = tf.keras.layers.Lambda(lambda x: x[0] * x[1])([model, mask_query])
+            model = tf.keras.layers.Activation("tanh", name="dotprod")(model)
+
+            model = tf.keras.layers.Lambda(lambda x: tf.math.reduce_sum(x, 1), name="sum")(model)
+            # model = tfa.layers.InstanceNormalization(axis=-1)(model)
+            model = tf.keras.layers.Normalization()(model)
+            # model = tf.keras.layers.LayerNormalization()(model)  # mean 0 std 1
+            # model = tf.keras.layers.BatchNormalization()(model)
         
+            model_out = tf.keras.layers.Activation("sigmoid", name="out", dtype='float32')(model)
+            model = tf.keras.models.Model(inputs=[text_in, rest_in], outputs=[model_out], name=f"{self.MODEL_NAME}_{self.MODEL_VERSION}")
+
+            optimizer = tf.keras.optimizers.legacy.Adam(self.CONFIG["model"]["learning_rate"])
+
+            metrics = [tfr.keras.metrics.NDCGMetric(topn=10, name="NDCG10"), tf.keras.metrics.AUC(name="AUC"), tfr.keras.metrics.RecallMetric(topn=1, name='r1'), 
+                       tfr.keras.metrics.PrecisionMetric(topn=1, name='p1'), tfa.metrics.F1Score(num_classes=rst_no, name="F1")]
+
+            loss = tf.keras.losses.CategoricalCrossentropy()
+ 
         model.compile(loss=loss, metrics=metrics, optimizer=optimizer)
 
 
@@ -417,6 +467,32 @@ class ATT2ITM(RSTModel):
         word_names = np.array(["UNK"]+list(self.DATASET.DATA["WORD_INDEX"].keys()))
         wrd_embs = wrd_embs.predict(list(range(self.DATASET.DATA["VOCAB_SIZE"])), verbose=0).squeeze()
         
+        ''' 
+        # BUSCAR PALABRAS CERCANAS USANDO DISTANCIA COSENO
+        wrd = "barbecue" 
+        emb = wrd_embs[np.where(word_names==wrd)[0][0]]
+        dists = pd.DataFrame(zip(word_names,cdist([emb], wrd_embs, "cosine")[0]), columns=["word", "dist"])
+        print(dists.sort_values("dist").head(10))
+
+        # BUSCAR ITEMS CERCANOS USANDO DISTANCIA COSENO
+        itm = "McDonald's" 
+        emb = rst_embs[np.where(np.array(rest_names)==itm)[0][0]]
+        dists = pd.DataFrame(zip(rest_names,cdist([emb], rst_embs, "cosine")[0]), columns=["rest", "dist"])
+        print(dists.sort_values("dist").head(10))
+
+        # BUSCAR ITEMS CERCANOS A UNA PALABRA (COSENO)
+        wrd = "pizza" 
+        emb = wrd_embs[np.where(word_names==wrd)[0][0]]
+        dists = pd.DataFrame(zip(rest_names,cdist([emb], rst_embs, "cosine")[0]), columns=["rest", "dist"])
+        print(dists.sort_values("dist").head(10))
+        
+        # BUSCAR ITEMS CERCANOS A UNA PALABRA (DOT)
+        wrd = "pizza" 
+        emb = wrd_embs[np.where(word_names==wrd)[0][0]]
+        dists = pd.DataFrame(zip(rest_names,cdist([emb], rst_embs, lambda x,y: -np.dot(x,y))[0]), columns=["rest", "dist"])
+        print(dists.sort_values("dist").head(10))
+        '''
+
         if wrd_embs.shape[1] > 2:
             tsne_r = TSNE(n_components=2, learning_rate="auto", init="pca")
             tsne_w = TSNE(n_components=2, learning_rate="auto", init="pca")
@@ -520,6 +596,11 @@ class ATT2ITM(RSTModel):
 
         # Obtenemos la matriz de attention entera
         all_att, itm_names, word_names, itm_embs, word_embs = self.get_item_word_att()
+
+        with open(self.MODEL_PATH + 'all_att.pkl', 'wb') as f: pkl.dump(all_att, f)
+        with open(self.MODEL_PATH + 'itm_names.pkl', 'wb') as f: pkl.dump(itm_names, f)
+        with open(self.MODEL_PATH + 'word_names.pkl', 'wb') as f: pkl.dump(word_names, f)
+
         att_std = np.std(all_att, -1)
         att_mean = np.mean(all_att, -1)
         att_mean_std = np.abs(att_mean) + att_std
@@ -544,7 +625,7 @@ class ATT2ITM(RSTModel):
             vlineh = Span(location=0.5, dimension='height', line_color='gray', line_width=1)
             hlineh = Span(location=-0.5, dimension='width', line_color='gray', line_width=1)
             p.renderers.extend([vline, hline, vlineh, hlineh])
-            output_file(filename=self.MODEL_PATH + "all_words.html", title="All word analysis")  
+            output_file(filename=self.MODEL_PATH + "all_words.html", title="All word analysis")
             save(p)
 
             # Versión estática
@@ -559,9 +640,9 @@ class ATT2ITM(RSTModel):
             sp.set_ylabel("STD")
             # sp.set_xlim([-1, 1])
             plt.tight_layout()
-            plt.legend('',frameon=False)
+            plt.legend('', frameon=False)
             plt.grid()
-            plt.savefig(self.MODEL_PATH + "all_words..pdf")
+            plt.savefig(self.MODEL_PATH + "all_words.pdf")
             plt.close()
 
         ret = {}
@@ -603,6 +684,8 @@ class ATT2ITM(RSTModel):
 
             # Mostrar solo X elementos
             closest = rst_words_names[:words_shown]
+            # print(list(zip(rst_words_names,np.sort(att_rst_words)[::-1]))[:words_shown])
+
             # most_relevant_words.extend(closest)
 
             # farthest = rst_words_names[-show_items:]
@@ -630,15 +713,24 @@ class ATT2ITM(RSTModel):
         :param str text: Texto
         '''
 
-        print("\n")
         print(f"\033[92m[QUERY] '{text}'\033[0m")
 
-        n_rsts = 10
+        n_rsts = 4
 
         # Preprocesar y limpiar el texto de la consulta
         text_prepro = self.DATASET.prerpocess_text(text)
-        # lstm_text = self.DATASET.DATA["TEXT_TOKENIZER"].texts_to_sequences([text_prepro]) 
-        lstm_text = [list(map(lambda x: self.DATASET.DATA["TEXT_TOKENIZER"].word_index[x], text_prepro.split(" ")))]
+
+        # Esta opción solo incluye las palabras frecuentes y no siempre coincide con la longitud de la frase
+        lstm_text = self.DATASET.DATA["TEXT_TOKENIZER"].texts_to_sequences([text_prepro]) 
+        # Esta opción incluye todas las palabras
+        lstm_text_complete = [list(map(lambda x: self.DATASET.DATA["TEXT_TOKENIZER"].word_index[x], text_prepro.split(" ")))] 
+
+        # Not included
+        not_included_words = list(set(lstm_text_complete[0]) - set(lstm_text[0]))
+        if len(not_included_words) > 0:
+            not_included_words = list(map(lambda x: self.DATASET.DATA["TEXT_TOKENIZER"].index_word[x], not_included_words))
+            print_g(f"No se incluyen las palabras (poco frecuentes): {not_included_words}")
+
         # Añadir el padding para obtener una predicción de items
         lstm_text_pad = tf.keras.preprocessing.sequence.pad_sequences(lstm_text, maxlen=self.DATASET.DATA["MAX_LEN_PADDING"])
         print(f"{'[PREPR]':15s} [{text_prepro}]")
@@ -660,7 +752,7 @@ class ATT2ITM(RSTModel):
         for wid, word in enumerate(att_query_df["text"].values):
             hp = sns.kdeplot(att_query[wid, :], fill=True, label=word)
         hp.set_title(text)
-        hp.set_xlim([-1, 1])
+        hp.set_xlim([all_att.min(), all_att.max()])
         plt.tight_layout()
         plt.legend()
         plt.savefig(f"{self.MODEL_PATH}dist_text.pdf")
@@ -675,10 +767,30 @@ class ATT2ITM(RSTModel):
         all_att_mean_std = np.abs(all_att_mean) + all_att_std
 
         # Determinar que palabras son relevantes en función de su "mean_std"
+        '''
         global_filter = True
         if not global_filter: pct = np.percentile(att_query_df["mean_std"], 60)  # Utilizando solo palabras query
         else: pct = np.percentile(all_att_mean_std, 10)  # Utilizando todas las palabras
         relevant_query_words = att_query_df[att_query_df["mean_std"] > pct]["text"]
+        '''
+        # Determinar que palabras son relevantes en función del porcentaje de valores que tenga en región [-.3, .3]
+        
+        n_bins = 3 + 1
+        bins = [-1,-0.15,0.15,1] if self.CONFIG["model"]["model_version"]=="2" else np.linspace(-1, 1, n_bins)
+        histograms = np.apply_along_axis(lambda x: np.histogram(x, bins=bins)[0], 1, all_att)
+        histograms = histograms/all_att.shape[1]
+        att_query_df.insert(1, "pct_0", np.array(histograms[:, n_bins//2-1])[lstm_text[0]])
+        relevant_query_words = att_query_df[(att_query_df["pct_0"] < .95)]["text"]
+        """
+        # Usar el rango?
+        att_query_df.insert(1, "range", np.ptp(att_query, -1))
+        all_ranges = np.ptp(all_att, -1)
+        threshold =  np.mean(all_ranges) - 2 * np.std(all_ranges)  # np.percentile(all_ranges, 10)
+        relevant_query_words = att_query_df[(att_query_df["range"] > threshold)]["text"]
+        print(list(zip(att_query_df["text"], att_query_df["range"])), threshold )
+        """
+
+        print_e("Reparar y unificar la parte de selección de palabras relevantes")
 
         # Obtener, para la review al completo, el top "n_rsts" de items predichos por el modelo
         preds_rst = self.MODEL.predict([lstm_text_pad, np.arange(self.DATASET.DATA["N_ITEMS"])[None, :]], verbose=0)
@@ -692,7 +804,9 @@ class ATT2ITM(RSTModel):
         for i, itm_idx in enumerate(preds_rst_arg):
             itm_data = item_relevant_words[itm_idx]
             print(f"\t[{-preds_rst_vls[i]:0.2f}] {itm_data['name']:{longest_rest_name}s} {itm_data['words']}")
-            query_item_relevance = list(zip(relevant_query_words.values, att_query_df.iloc[:, itm_idx + 1][relevant_query_words.index]))
+            itm_query_att = att_query_df.iloc[:, itm_idx + 2]
+            assert itm_query_att.name == itm_data['name']
+            query_item_relevance = list(zip(relevant_query_words.values, itm_query_att[relevant_query_words.index]))
             for qit, qtir in query_item_relevance:
                 print(f"\t\t{qit} {qtir:0.2f}")
 
@@ -718,6 +832,9 @@ class ATT2ITM(RSTModel):
         itm_embs = tf.keras.models.Model(inputs=[self.MODEL.input[1]], outputs=[self.MODEL.get_layer("rest_emb").output])
         wrd_embs = tf.keras.models.Model(inputs=[self.MODEL.input[0]], outputs=[self.MODEL.get_layer("word_emb").output])
 
+        # Obtener la función de activación que se aplica a la attention
+        act_function = self.MODEL.get_layer("dotprod").activation._tf_decorator._decorated_target._keras_api_names[0].split(".")[-1]
+
         # Obtener embeddings y nombres de los items "ids"
         itm_embs = itm_embs.predict([items], verbose=0).squeeze()
         itm_names = self.DATASET.DATA["TRAIN_DEV"][["id_item", "name"]].sort_values("id_item").drop_duplicates().set_index("id_item").loc[items].name.values.tolist()
@@ -730,7 +847,10 @@ class ATT2ITM(RSTModel):
         # wrd_embs_std_pct = np.argsort(-wrd_embs_std)[:int(len(wrd_embs_std)*.10)]
 
         # Obtener compatibilidad de todas las palabras con todos los items
-        all_att = np.tanh(np.dot(wrd_embs, itm_embs.T))
+        all_att = np.dot(wrd_embs, itm_embs.T)
+        if act_function == "tanh": all_att = np.tanh(all_att)
+        elif act_function == "sigmoid": all_att = tf.math.sigmoid(all_att).numpy()
+        else: raise ValueError
         # att_std = np.std(all_att, -1)
         # att_mean = np.mean(all_att, -1)
         # att_mean_std = np.abs(np.mean(all_att, -1))+np.std(all_att, -1)
@@ -742,3 +862,51 @@ class ATT2ITM(RSTModel):
         # print(att.T[0, 0])  # Ver si la máscara funciona
 
         return all_att, itm_names, word_names, itm_embs, wrd_embs
+
+    def explain_test_sample(self, test_real_sample):
+        # Obtenemos TODA la matriz de attention (no solo la del texto)
+        all_att, itm_names, word_names, _, _ = self.get_item_word_att()
+
+        # Obtener el texto de la fila dataframe y codificar en formato adecuado (al ser un caso real, ya se ha codificado).
+        seq_encoding = self.DATASET.DATA["TEXT_SEQUENCES"][test_real_sample["seq"]]
+        seq_encoding_nopad = seq_encoding[seq_encoding > 0]
+
+        # Datos del rastaurante real
+        restaurant_name = test_real_sample["name"]
+
+        # De la matriz de attention, nos quedamos con las palabras del texto y el restaurante
+        att_query = all_att[seq_encoding_nopad]
+        att_query_df = pd.DataFrame(att_query, columns=itm_names)
+        att_query_df.insert(0, "text", np.array(word_names)[seq_encoding_nopad])
+
+        # Obtener la abs(mean)+ str para cada palabra de la query y de todas las palabras
+        # att_query_df["mean_std"] = np.abs(att_query.mean(1)) + att_query.std(1)
+        att_query_df["std"] = att_query.std(1)
+        att_query_df["skew"] = skew(att_query, 1)
+
+        # all_att_mean_std = np.abs(all_att.mean(1)) + all_att.std(1)
+        all_att_std = all_att.std(1)
+        all_att_skew = skew(all_att, 1)
+
+        # Obtener cual es el percentil 10 de todas las palabras que existen y quedarse con mayores de ese valor
+        # pct = np.percentile(all_att_mean_std, 10)
+        # relevant_query_words = att_query_df[att_query_df["mean_std"] > pct][["text", restaurant_name]]
+
+        pct_std = np.percentile(all_att_std, 10)
+        pct_skew = np.percentile(all_att_skew, 80)
+        
+        relevant_query_words = att_query_df[(att_query_df["std"] >= pct_std) | (att_query_df["skew"] >= pct_skew)][["text", restaurant_name]]
+
+        # Eliminando aquellas palabras cuya totalidad de valores se encuentren en la zona central de la distribución (3 rangos, entre -0.333 y 0.333 )
+        """
+        n_bins = 3 + 1
+        bins = [-1, -0.4, 0.4, 1]  # np.linspace(-1, 1, n_bins)
+        histograms = np.apply_along_axis(lambda x: np.histogram(x, bins=bins)[0], 1, all_att)
+        histograms = histograms/all_att.shape[1]
+        att_query_df["pct_0"] = np.array(histograms[:, n_bins//2-1])[seq_encoding_nopad]
+        relevant_query_words = att_query_df[(att_query_df["pct_0"] < .95)][["text", restaurant_name]]
+        """
+        
+        print({it[0]: it[1] for it in relevant_query_words.values})
+
+        return {"max": all_att.max(), "min": all_att.min(), "values": {it[0]: it[1] for it in relevant_query_words.values}}

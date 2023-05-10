@@ -90,7 +90,7 @@ class AmazonDataset(TextDataset):
 
         # Quedarse con columnas relevantes y casting de algunas
         rev = rev[['reviewId', 'userId', 'itemId', 'rating', 'date', 'text', 'title']]
-        rev["rating"] = rev.rating*10
+        rev["rating"] = rev.rating * 10
         rev = rev.astype({'reviewId': 'int64', 'rating': 'int64'})
 
         # Concatenar items y reviews

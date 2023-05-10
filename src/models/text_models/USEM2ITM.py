@@ -3,6 +3,9 @@ from src.Common import print_g
 from src.models.text_models.RSTModel import RSTModel
 from src.sequences.BaseSequence import BaseSequence
 
+from lime.lime_text import LimeTextExplainer
+
+import re
 import numpy as np
 import pandas as pd
 import tensorflow as tf
@@ -102,21 +105,52 @@ class USEM2ITM(RSTModel):
         print("\n")
         print_g("\'%s\'" % text)
 
-        n_rsts = 3
-        lstm_text = self.DATASET.DATA["TEXT_TOKENIZER"].texts_to_sequences([self.DATASET.prerpocess_text(text)])
-        lstm_text_pad = tf.keras.preprocessing.sequence.pad_sequences(lstm_text, maxlen=self.DATASET.DATA["MAX_LEN_PADDING"])
+        n_rsts = 4
+        # lstm_text = self.DATASET.DATA["TEXT_TOKENIZER"].texts_to_sequences([self.DATASET.prerpocess_text(text)])
+        # lstm_text_pad = tf.keras.preprocessing.sequence.pad_sequences(lstm_text, maxlen=self.DATASET.DATA["MAX_LEN_PADDING"])
 
         # Obtener para la review al completo, el top 3 de restaurantes predichos por el modelo
-        preds_rst = self.MODEL.predict(lstm_text_pad)
-        preds_rst = np.argsort(-preds_rst.flatten())[:n_rsts]
-        for rst in preds_rst:
-            print("\t- %s" % (self.DATASET.DATA["TRAIN_DEV"].loc[self.DATASET.DATA["TRAIN_DEV"].id_restaurant == rst]["name"].values[0]))
+        # preds_rst = self.MODEL.predict(lstm_text_pad)
+        preds_rst = self.MODEL.predict([text], verbose=0).flatten()
+        preds_rst_best = np.argsort(-preds_rst)[:n_rsts]
 
-        print("\t-------------")
+        for rst in preds_rst_best:
+            rst_name = self.DATASET.DATA["TRAIN_DEV"].loc[self.DATASET.DATA["TRAIN_DEV"].id_item == rst]["name"].values[0]
+            print(f"\t[{preds_rst[rst]:0.2f}] {rst_name}")
 
         # Para cada una de las palabras de la review, obtener el restaurante que más importancia le da
-        for w in lstm_text[0]:
-            preds_wrd = self.MODEL.predict(tf.keras.preprocessing.sequence.pad_sequences([[w]], maxlen=self.DATASET.DATA["MAX_LEN_PADDING"])).flatten()
-            restr_wrd = np.argsort(-preds_wrd.flatten())[:3]
-            restr_wrd = self.DATASET.DATA["TRAIN_DEV"].loc[self.DATASET.DATA["TRAIN_DEV"].id_restaurant.isin(restr_wrd)]["name"].unique().tolist()
-            print("\t ·%s => %s " % (list(self.DATASET.DATA["WORD_INDEX"].keys())[w-1], ", ".join(restr_wrd)))
+        for w in text.split(" "):
+            preds_wrd = self.MODEL.predict([w], verbose=0).flatten()
+            preds_wrd_best = np.argsort(-preds_wrd)[:1][0]
+            rst_word_name = self.DATASET.DATA["TRAIN_DEV"].loc[self.DATASET.DATA["TRAIN_DEV"].id_item == preds_wrd_best]["name"].values[0]
+            print(f"\t ·{w} [{preds_wrd.max():0.2f}] => {rst_word_name}")
+
+    def explain_test_sample(self, test_real_sample):
+        '''Extraer con LIME las palabras relevantes del texto que se pasa como parámetro'''
+
+        # Obtenemos la lista de resutanrantes disponibles y creamos el explainer de LIME
+        class_names = self.DATASET.DATA["TRAIN_DEV"][["id_item", "name"]].sort_values("id_item").drop_duplicates().reset_index(drop=True)
+        explainer = LimeTextExplainer(class_names=class_names.name.values)
+
+        # Función que llama LIME cada vez
+        def classifier(d):
+            # takes a list of d strings and outputs a (d, k) numpy array with prediction probabilities, where k is the number of classes. For ScikitClassifiers , this is classifier.predict_proba.
+            ret = []
+            for text in d:
+                text = re.sub(r"\s+", " ", text, 0, re.MULTILINE)
+                if len(text.strip()) > 0:
+                    preds_rst = self.MODEL.predict([text], verbose=0)
+                    ret.append(preds_rst.flatten())
+                else:
+                    ret.append(np.zeros(len(class_names)))
+
+            return np.row_stack(ret)
+
+        # El texto de la review y el id del restaurante
+        text_instance = test_real_sample.text
+        restaurant_id = test_real_sample.id_item
+
+        exp = explainer.explain_instance(text_instance, classifier, num_samples=500, num_features=10, labels=[restaurant_id])  # ftrs = 10 es el valor por defecto y samples = 5000
+        exp = dict(exp.as_list(label=restaurant_id))
+
+        return {"max": max(exp.values()), "min": min(exp.values()), "values": exp}
