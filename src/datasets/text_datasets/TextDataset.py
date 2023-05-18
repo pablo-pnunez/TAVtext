@@ -384,16 +384,21 @@ class TextDataset(DatasetClass):
             return self.get_dict_data(self.DATASET_PATH, load)
 
     def get_data_stats(self):
-        ALL = self.DATA["TRAIN_DEV"].append(self.DATA["TEST"])
+        all_data = pd.read_pickle(self.DATASET_PATH + "ALL_DATA")
 
-        n_revs = len(ALL["reviewId"].unique())
-        n_rests = len(ALL["id_item"].unique())
-        
-        revs_per_res = ALL.groupby("id_item").apply(lambda x: len(x.reviewId.unique()))
-        avg_revs_rest = revs_per_res.mean()
-        pctg_total_revs_rest_pop = revs_per_res.sort_values().iloc[-1]/n_revs
+        n_revs = len(all_data["reviewId"].unique())
+        n_items = len(all_data["id_item"].unique())
+        n_usrs = len(all_data["userId"].unique())
 
-        avg_rating = ALL.rating.mean()/10
-        std_rating = ALL.rating.std()/10
+        revs_per_itm = all_data.groupby("id_item").apply(lambda x: len(x.reviewId.unique()))
+        avg_revs_itm = revs_per_itm.mean()
+        pctg_total_revs_itm_pop = revs_per_itm.sort_values().iloc[-1] / n_revs
 
-        print("\n".join(map(str, [self.CONFIG["subset"], n_revs, n_rests, avg_revs_rest, pctg_total_revs_rest_pop, avg_rating, std_rating])))
+        revs_per_usr = all_data.groupby("userId").apply(lambda x: len(x.reviewId.unique()))
+        avg_revs_usr = revs_per_usr.mean()
+        pctg_total_revs_usr_pop = revs_per_usr.sort_values().iloc[-1] / n_revs
+
+        avg_rating = all_data["rating"].mean() / 10
+        std_rating = all_data["rating"].std() / 10
+
+        print("\n".join(map(str, [self.CONFIG["subset"], n_revs, n_items, avg_revs_itm, pctg_total_revs_itm_pop, n_usrs, avg_revs_usr, pctg_total_revs_usr_pop, avg_rating, std_rating])))

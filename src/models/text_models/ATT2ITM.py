@@ -109,7 +109,7 @@ class ATT2ITM(RSTModel):
                 loss = tf.keras.losses.BinaryFocalCrossentropy()
 
         if mv == "2": # Se añade la estandarización a la salida y se simplifica el modelo
-            emb_size = 64  # 128
+            emb_size = 45  # 128
 
             use_bias = True
             
@@ -121,14 +121,14 @@ class ATT2ITM(RSTModel):
             # ht_emb = tf.keras.layers.Activation("relu")(ht_emb)
             # ht_emb = tf.keras.layers.Dense(emb_size, use_bias=use_bias)(ht_emb)
             ht_emb = tf.keras.layers.Lambda(lambda x: x, name="word_emb")(ht_emb)
-            ht_emb = tf.keras.layers.Dropout(.05)(ht_emb)
+            ht_emb = tf.keras.layers.Dropout(.1)(ht_emb)
 
             rests_emb = tf.keras.layers.Embedding(rst_no, emb_size, name=f"in_rsts")
             hr_emb = rests_emb(rest_in)
             # hr_emb = tf.keras.layers.Activation("relu")(hr_emb)
             # hr_emb = tf.keras.layers.Dense(emb_size, use_bias=use_bias)(hr_emb)
             hr_emb = tf.keras.layers.Lambda(lambda x: x, name="rest_emb")(hr_emb)
-            hr_emb = tf.keras.layers.Dropout(.05)(hr_emb)
+            hr_emb = tf.keras.layers.Dropout(.1)(hr_emb)
 
             model = tf.keras.layers.Lambda(lambda x: tf.matmul(x[0], x[1], transpose_b=True))([ht_emb, hr_emb])
             
@@ -494,8 +494,8 @@ class ATT2ITM(RSTModel):
         '''
 
         if wrd_embs.shape[1] > 2:
-            tsne_r = TSNE(n_components=2, learning_rate="auto", init="pca")
-            tsne_w = TSNE(n_components=2, learning_rate="auto", init="pca")
+            tsne_r = TSNE(n_components=2, learning_rate="auto", init="pca", metric="cosine")
+            tsne_w = TSNE(n_components=2, learning_rate="auto", init="pca", metric="cosine")
             rst_tsne = tsne_r.fit_transform(rst_embs)
             wrd_tsne = tsne_w.fit_transform(wrd_embs)
         else:

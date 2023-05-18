@@ -25,18 +25,20 @@ sets = {"restaurants": ["gijon", "barcelona", "madrid", "paris", "newyorkcity", 
         "pois": ["barcelona", "madrid", "paris", "newyorkcity", "london"],
         "amazon": ["fashion", "digital_music"]}
 
+
 dev = True
+best_models = []
 
 # Para cada modelo/conjunto/ciudad, mirar si se acabó la ejecución
 for model in models:
     for dataset in sets.keys():
 
-        writer = pd.ExcelWriter(f"{model}_{dataset}_GS.xlsx", engine="xlsxwriter")
+        writer = pd.ExcelWriter(f"models/{model}_{dataset}_GS.xlsx", engine="xlsxwriter")
 
         for subset in sets[dataset]:
 
             if "RSTVAL" in model:
-                columns = {"val_loss": "min", "val_valor_model_mean_absolute_error": "min",  "val_output_rst_top_5": "max", "val_output_rst_top_10": "max"}  # adaptar al nuevo modo
+                columns = {"val_loss": "min", "val_valor_model_mean_absolute_error": "min", "val_output_rst_top_5": "max", "val_output_rst_top_10": "max"}  # adaptar al nuevo modo
                 raise NotImplemented
             elif "RST" in model:
                 columns = {"val_accuracy": "max", "val_top_5": "max", "val_top_10": "max"}  # adaptar al nuevo modo
@@ -45,7 +47,8 @@ for model in models:
                 columns = {"val_mean_absolute_error": "min"}  # adaptar al nuevo modo
                 raise NotImplemented
             elif "ITM" in model:
-                columns = {"val_r1": {"best": "max", "others": ["val_r5", "val_r10", "epoch", "model_md5"]}}
+                # columns = {"val_r1": {"best": "max", "others": ["val_loss", "epoch", "model_md5"]}}  # ["val_5", "val_r10", "epoch", "model_md5"]}}
+                columns = {"val_r1": {"best": "max", "format": "pct"}, "val_loss": {"format": "pct"}, "epoch": {"format": "pct"}, "model_md5": {"format": "pct"}}  # ["val_5", "val_r10", "epoch", "model_md5"]}}
 
             path = f"models/{model}/{dataset}/{subset}/"
 
@@ -53,8 +56,8 @@ for model in models:
 
             # Obtener nombres de columnas y como obtener el mejor valors
             column_name = list(columns.keys())[0]
-            column_best = columns[column_name]["best"]
-            column_others = columns[column_name]["others"]
+            column_best = [columns[c]["best"] for c in columns.keys() if "best" in columns[c].keys()][0]
+            column_others = [c for c in columns.keys() if "best" not in columns[c].keys()]
             column_best_name = column_best + "_" + column_name
 
             ret = []
@@ -115,6 +118,7 @@ for model in models:
             if "model_version" not in best_result.keys(): best_result["model_version"] = 0
             line_best_result = [dataset, subset, model, best_result["model_version"], best_result["learning_rate"], best_result["batch_size"], best_result[column_best_name]]
             for othc in column_others: line_best_result.append(best_result[othc])
+            best_models.append(line_best_result)
             print("\t".join(map(str, line_best_result)))
 
             res_table.to_excel(writer, sheet_name=subset, startrow=1+mrg, startcol=mrg)
@@ -122,25 +126,23 @@ for model in models:
             # md5_table.to_excel(writer, sheet_name=subset, startrow=1+mrg, startcol=2*mrg + n_cols)
 
             # FORMATEAR EL FICHERO EXCEL ###################################################################################################
+
             perc_format = writer.book.add_format({'num_format': '0.00%', 'align': 'center', 'valign': 'vcenter'})
             center_format = writer.book.add_format({'align': 'center', 'valign': 'vcenter'})
+            border_format = writer.book.add_format({'border': 1})
 
             worksheet = writer.sheets[subset]
 
             # Títulos
-            # title_format = writer.book.add_format({ 'bold': 1, 'border': 1, 'align': 'center', 'valign': 'vcenter', 'fg_color': 'gray'})
-            # worksheet.merge_range(mrg, mrg, mrg, mrg+n_cols-1, column_best_name.title(), title_format)
-            # worksheet.merge_range(2*mrg+2+n_rows, mrg, 2*mrg+2+n_rows, mrg+n_cols-1, column_best_name_epoch.title(), title_format)
-            # worksheet.merge_range(mrg, 2*mrg+n_cols, mrg, 2*mrg+2*n_cols-1, 'Model MD5', title_format)
+            title_format = writer.book.add_format({'bold': 1, 'border': 1, 'align': 'center', 'valign': 'vcenter', 'fg_color': 'gray'})
+            worksheet.merge_range(mrg, mrg, mrg, mrg+n_cols-1, column_best_name.title(), title_format)
+            worksheet.set_column(mrg, mrg+n_cols-1, 15, center_format)
 
-            # worksheet.set_column(mrg, mrg+n_cols_dif-1, 15, center_format)
-            # worksheet.set_column(2*mrg+n_cols, 2*mrg+n_cols+n_cols_dif-1, 15, center_format)
-            # worksheet.set_column(2*mrg + n_cols + n_cols_dif, 2*mrg + 2*n_cols-1, 33, center_format)
+            # Aplicar bordes a todas las filas de la tabla
+            worksheet.conditional_format(mrg, mrg, mrg+n_rows+3, mrg+n_cols-1, {'type': 'formula', 'criteria': 'TRUE', 'format': border_format})
 
-            # worksheet.conditional_format(2+mrg, mrg+n_cols_dif, 2+mrg+n_rows-1, mrg+n_cols-1, {'type': '3_color_scale'})
-            # worksheet.conditional_format(2*mrg+4+n_rows, mrg+n_cols_dif, 2*mrg+4+n_rows+n_rows-1, mrg+n_cols-1, {'type': '3_color_scale'})
-
-            # format_range(worksheet, 2+mrg, mrg+n_cols_dif, 2+mrg+n_rows-1, mrg+n_cols-1, perc_format)
-            # format_range(worksheet, 2*mrg+4+n_rows, mrg+n_cols_dif, 2*mrg+4+n_rows+n_rows-1, mrg+n_cols-1, center_format)
+        best_models_columns = ["dataset", "subset", "model", "model_version", "learning_rate", "batch_size", column_best_name]
+        best_models_columns.extend(column_others)
+        pd.DataFrame(best_models, columns=best_models_columns).to_csv("models/best_models.csv")
 
         writer.save()

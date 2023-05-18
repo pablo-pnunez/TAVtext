@@ -53,6 +53,7 @@ def parse_cmd_args():
     parser.add_argument('-sst', type=str, help="Subset")
 
     parser.add_argument('-gpu', type=int, help="GPU")
+    parser.add_argument('-esp', type=int, help="Early stop patience")
     parser.add_argument('-sd', type=int, help="Seed")
     parser.add_argument('-ep', type=int, help="Epoch number")
     parser.add_argument('-lr', type=float, help="Learning rate")

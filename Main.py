@@ -8,8 +8,6 @@ from src.models.text_models.ATT2ITM import ATT2ITM
 from src.models.text_models.BOW2ITM import BOW2ITM
 from src.models.text_models.USEM2ITM import USEM2ITM
 
-from src.models.text_models.baselines.NCF.GMF import GMF
-
 import pandas as pd
 import numpy as np
 import nvgpu
@@ -21,21 +19,22 @@ import json
 args = parse_cmd_args()
 gpu = int(np.argmin(list(map(lambda x: x["mem_used_percent"], nvgpu.gpu_info())))) if args.gpu is None else args.gpu
 
-model = "ATT2ITM" if args.mn is None else args.mn
-dataset = "restaurants".lower().replace(" ", "") if args.dst is None else args.dst
-subset = "newyorkcity".lower().replace(" ", "") if args.sst is None else args.sst
+model = "USEM2ITM" if args.mn is None else args.mn
+dataset = "amazon".lower().replace(" ", "") if args.dst is None else args.dst
+subset = "fashion".lower().replace(" ", "") if args.sst is None else args.sst
 
-stage = -2 if args.stg is None else args.stg
+stage = -1 if args.stg is None else args.stg
 use_best = False
 
 if use_best:  # Usar la mejor configuración conocida?
-    best_model = pd.read_csv("explanation/best_models.csv")
-    best_model = best_model.loc[(best_model.dataset == dataset) & (best_model.subset == subset) & (best_model.model == model)]["md5"].values[0]
+    best_model = pd.read_csv("models/best_models.csv")
+    best_model = best_model.loc[(best_model.dataset == dataset) & (best_model.subset == subset) & (best_model.model == model)]["model_md5"].values[0]
+    # best_model = "1badd2185814e515e43609bc6b2c13ae"
     model_path = f"models/{model}/{dataset}/{subset}/{best_model}"
     with open(f'{model_path}/cfg.json') as f: model_config = json.load(f)
     dts_cfg = model_config["dataset_config"]
     with open(f'{model_path}/cfg.json') as f: model_config = json.load(f)
-    mdl_cfg = {"model": model_config["model"], "session": {"gpu": gpu, "mixed_precision": False, "in_md5": False}}
+    mdl_cfg = {"model": model_config["model"], "session": {"gpu": gpu, "mixed_precision": True if model_config["model"]["model_version"]=="2" else False, "in_md5": False}}
 
     print_b(f"Loading best model:{best_model}")
 
@@ -47,6 +46,7 @@ else:
     l_rate = 5e-4 if args.lr is None else args.lr
     n_epochs = 1000 if args.ep is None else args.eps
     b_size = 256 if args.bs is None else args.bs
+    early_stop_patience = 50 if args.esp is None else args.esp
 
     # if city=="london": b_size = 512
 
@@ -95,13 +95,15 @@ elif dataset == "amazon":
 else:
     raise ValueError
 
+
+
 if "ATT2ITM" == model:
 
     if use_best:
         att2itm_mdl_cfg = mdl_cfg
     else:
         att2itm_mdl_cfg = {"model": {"model_version": model_v, "learning_rate": l_rate, "final_learning_rate": l_rate/100, "epochs": n_epochs, "batch_size": b_size, "seed": seed,
-                                     "early_st_first_epoch": 0, "early_st_monitor": "val_loss", "early_st_monitor_mode": "min", "early_st_patience": 50},
+                                     "early_st_first_epoch": 0, "early_st_monitor": "val_loss", "early_st_monitor_mode": "min", "early_st_patience": early_stop_patience},
                            "session": {"gpu": gpu, "mixed_precision": True, "in_md5": False}}
 
 
@@ -122,14 +124,12 @@ if "ATT2ITM" == model:
         att2itm_mdl.train(dev=True, save_model=True)
         # att2itm_mdl.evaluate()
 
-        att2itm_mdl.evaluate_text("I want good fresh pizza with pepperoni and tasty cheese close to the sea")
-
         # att2itm_mdl.evaluate_text("Quiero comer un buen arroz con bogavante y con buenas vistas")
         # att2itm_mdl.evaluate_text("Quiero arroz con bogavante con nutella")
         # att2itm_mdl.evaluate_text("Je veux manger du riz avec du homard et avec une belle vue")
-        # att2itm_mdl.evaluate_text("I want a black and red and also white leather wallet for my kid")
-        # att2itm_mdl.all_words_analysis()
-        # att2itm_mdl.emb_tsne()
+        att2itm_mdl.evaluate_text("I want a black and red and also white leather wallet for my kid")
+        att2itm_mdl.all_words_analysis()
+        att2itm_mdl.emb_tsne()
         exit()
 
         # att2itm_mdl.evaluate_text("Quiero arroz con bogavante y nutella")

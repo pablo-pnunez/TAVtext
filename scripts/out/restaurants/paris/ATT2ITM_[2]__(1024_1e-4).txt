@@ -1,0 +1,51 @@
+Model: "ATT2ITM_2"
+__________________________________________________________________________________________________
+ Layer (type)                   Output Shape         Param #     Connected to                     
+==================================================================================================
+ input_1 (InputLayer)           [(None, 178)]        0           []                               
+                                                                                                  
+ input_2 (InputLayer)           [(None, 3415)]       0           []                               
+                                                                                                  
+ embedding (Embedding)          (None, 178, 64)      923008      ['input_1[0][0]']                
+                                                                                                  
+ in_rsts (Embedding)            (None, 3415, 64)     218560      ['input_2[0][0]']                
+                                                                                                  
+ tf.math.not_equal (TFOpLambda)  (None, 178)         0           ['input_1[0][0]']                
+                                                                                                  
+ word_emb (Lambda)              (None, 178, 64)      0           ['embedding[0][0]']              
+                                                                                                  
+ rest_emb (Lambda)              (None, 3415, 64)     0           ['in_rsts[0][0]']                
+                                                                                                  
+ tf.cast (TFOpLambda)           (None, 178)          0           ['tf.math.not_equal[0][0]']      
+                                                                                                  
+ dropout (Dropout)              (None, 178, 64)      0           ['word_emb[0][0]']               
+                                                                                                  
+ dropout_1 (Dropout)            (None, 3415, 64)     0           ['rest_emb[0][0]']               
+                                                                                                  
+ tf.expand_dims (TFOpLambda)    (None, 178, 1)       0           ['tf.cast[0][0]']                
+                                                                                                  
+ lambda (Lambda)                (None, 178, 3415)    0           ['dropout[0][0]',                
+                                                                  'dropout_1[0][0]']              
+                                                                                                  
+ tf.tile (TFOpLambda)           (None, 178, 3415)    0           ['tf.expand_dims[0][0]']         
+                                                                                                  
+ lambda_1 (Lambda)              (None, 178, 3415)    0           ['lambda[0][0]',                 
+                                                                  'tf.tile[0][0]']                
+                                                                                                  
+ dotprod (Activation)           (None, 178, 3415)    0           ['lambda_1[0][0]']               
+                                                                                                  
+ sum (Lambda)                   (None, 3415)         0           ['dotprod[0][0]']                
+                                                                                                  
+ normalization (Normalization)  (None, 3415)         6831        ['sum[0][0]']                    
+                                                                                                  
+ out (Activation)               (None, 3415)         0           ['normalization[0][0]']          
+                                                                                                  
+==================================================================================================
+Total params: 1,148,399
+Trainable params: 1,141,568
+Non-trainable params: 6,831
+__________________________________________________________________________________________________
+None
+Epoch 1/1000
+633/633 - 51s - loss: 7.9633 - NDCG10: 0.0166 - AUC: 0.6431 - r1: 0.0075 - p1: 0.0075 - F1: 1.6076e-04 - val_loss: 7.8422 - val_NDCG10: 0.0258 - val_AUC: 0.6830 - val_r1: 0.0129 - val_p1: 0.0130 - val_F1: 6.0758e-04 - lr: 9.9901e-05 - e_time: 50.4001 - 51s/epoch - 80ms/step
+Epoch 2/1000
