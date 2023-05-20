@@ -3,11 +3,12 @@ from src.models.text_models.RSTModel import RSTModel
 from src.sequences.BaseSequence import BaseSequence
 from src.Common import print_g
 
-import numpy as np
-import tensorflow as tf
-import tensorflow_ranking as tfr
-from sklearn.preprocessing import normalize
 from sklearn.preprocessing import MultiLabelBinarizer
+from sklearn.preprocessing import normalize
+import tensorflow_ranking as tfr
+import tensorflow as tf
+import pandas as pd
+import numpy as np
 
 
 class BOW2ITM(RSTModel):
@@ -65,7 +66,7 @@ class BOW2ITM(RSTModel):
 
         model.build(self.CONFIG["model"]["batch_size"])
 
-        optimizer = tf.keras.optimizers.Adam(self.CONFIG["model"]["learning_rate"])
+        optimizer = tf.keras.optimizers.legacy.Adam(self.CONFIG["model"]["learning_rate"])
         model.compile(optimizer=optimizer, loss=loss, metrics=metrics)
 
         return model
@@ -87,10 +88,32 @@ class BOW2ITM(RSTModel):
         else:
             test_set = BOW2RSTsequence(self, is_dev=1)
 
-        ret = self.MODEL.evaluate(test_set, verbose=0)
+        metrics = [
+            tf.keras.metrics.Precision(top_k=1, name="Precision@1"),
+            tf.keras.metrics.Precision(top_k=5, name="Precision@5"),
+            tf.keras.metrics.Precision(top_k=10, name="Precision@10"),
+            tf.keras.metrics.Recall(top_k=1, name="Recall@1"),
+            tf.keras.metrics.Recall(top_k=5, name="Recall@5"),
+            tf.keras.metrics.Recall(top_k=10, name="Recall@10")]
 
+        self.MODEL.compile(loss=self.MODEL.loss, optimizer=self.MODEL.optimizer, metrics=metrics)
+        ret = self.MODEL.evaluate(test_set, verbose=0)
         ret = dict(zip(self.MODEL.metrics_names, ret))
-        print_g(ret)
+        
+        for r in [1, 5, 10]:
+            r_at = ret[f"Recall@{r}"]
+            p_at = ret[f"Precision@{r}"]
+            f1_at = 2 * ((r_at * p_at) / (r_at + p_at))
+            ret[f"F1@{r}"] = f1_at
+
+        ret = pd.DataFrame([ret.values()], columns=ret.keys())
+        print_g(ret, title=False)
+
+        return ret  
+
+        # ret = self.MODEL.evaluate(test_set, verbose=0)
+        # ret = dict(zip(self.MODEL.metrics_names, ret))
+        # print_g(ret)
                
         return ret
 

@@ -452,9 +452,28 @@ class ATT2ITM(RSTModel):
 
         test_gn = self.__create_dataset(test_data)
 
+        metrics = [
+            tf.keras.metrics.Precision(top_k=1, name="Precision@1"),
+            tf.keras.metrics.Precision(top_k=5, name="Precision@5"),
+            tf.keras.metrics.Precision(top_k=10, name="Precision@10"),
+            tf.keras.metrics.Recall(top_k=1, name="Recall@1"),
+            tf.keras.metrics.Recall(top_k=5, name="Recall@5"),
+            tf.keras.metrics.Recall(top_k=10, name="Recall@10")]
+        
+        self.MODEL.compile(loss=self.MODEL.loss, optimizer=self.MODEL.optimizer, metrics=metrics)
         ret = self.MODEL.evaluate(test_gn.cache().batch(self.CONFIG["model"]['batch_size']).prefetch(tf.data.AUTOTUNE), verbose=0)
+        ret = dict(zip(self.MODEL.metrics_names, ret))
+        
+        for r in [1, 5, 10]:
+            r_at = ret[f"Recall@{r}"]
+            p_at = ret[f"Precision@{r}"]
+            f1_at = 2 * ((r_at * p_at) / (r_at + p_at))
+            ret[f"F1@{r}"] = f1_at
 
-        print_g(dict(zip(self.MODEL.metrics_names, ret)))
+        ret = pd.DataFrame([ret.values()], columns=ret.keys())
+        print_g(ret, title=False)
+
+        return ret
 
     def emb_tsne(self):
 

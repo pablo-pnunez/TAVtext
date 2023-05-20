@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from src.Common import parse_cmd_args, print_b
+from src.Common import parse_cmd_args, print_b, print_e
 from src.datasets.text_datasets.RestaurantDataset import RestaurantDataset
 from src.datasets.text_datasets.AmazonDataset import AmazonDataset
 from src.datasets.text_datasets.POIDataset import POIDataset
@@ -19,12 +19,12 @@ import json
 args = parse_cmd_args()
 gpu = int(np.argmin(list(map(lambda x: x["mem_used_percent"], nvgpu.gpu_info())))) if args.gpu is None else args.gpu
 
-model = "USEM2ITM" if args.mn is None else args.mn
+model = "ATT2ITM" if args.mn is None else args.mn
 dataset = "amazon".lower().replace(" ", "") if args.dst is None else args.dst
-subset = "fashion".lower().replace(" ", "") if args.sst is None else args.sst
+subset = "digital_music".lower().replace(" ", "") if args.sst is None else args.sst
 
-stage = -1 if args.stg is None else args.stg
-use_best = False
+stage = -2 if args.stg is None else args.stg
+use_best = True
 
 if use_best:  # Usar la mejor configuración conocida?
     best_model = pd.read_csv("models/best_models.csv")
@@ -39,7 +39,7 @@ if use_best:  # Usar la mejor configuración conocida?
     print_b(f"Loading best model:{best_model}")
 
 else:
-    model_v = "2" if args.mv is None else args.mv
+    model_v = "0" if args.mv is None else args.mv
     neg_rate = 10
 
     seed = 100 if args.sd is None else args.sd
@@ -84,7 +84,6 @@ else:
                "min_df": 5, "bow_pct_words": bow_pct_words, "presencia": False, "text_column": "text",  # BOW
                "n_max_words": -50, "test_dev_split": .1, "truncate_padding": truncate_padding}
 
-
 if dataset == "restaurants":
     # text_dataset = RestaurantDataset(dts_cfg, load=["TRAIN_DEV", "TEXT_TOKENIZER", "TEXT_SEQUENCES", "WORD_INDEX", "VOCAB_SIZE", "MAX_LEN_PADDING", "N_ITEMS", "FEATURES_NAME", "BOW_SEQUENCES"])
     text_dataset = RestaurantDataset(dts_cfg)
@@ -95,7 +94,15 @@ elif dataset == "amazon":
 else:
     raise ValueError
 
+known_users = True
 
+if known_users is True:
+    print_e("Se eliminan los usuarios desconocidos de VAL/TEST y las combinaciones USR, ITM repetidas de test")
+    # Se buscan los usuarios de train y se eliminan de dev y test
+    train_users = text_dataset.DATA["TRAIN_DEV"][text_dataset.DATA["TRAIN_DEV"]["dev"] == 0].userId.unique()
+    text_dataset.DATA["TRAIN_DEV"] = text_dataset.DATA["TRAIN_DEV"][text_dataset.DATA["TRAIN_DEV"]["userId"].isin(train_users)]
+    text_dataset.DATA["TEST"] = text_dataset.DATA["TEST"][text_dataset.DATA["TEST"]["userId"].isin(train_users)]
+    text_dataset.DATA["TEST"] = text_dataset.DATA["TEST"].drop_duplicates(subset=["userId", "id_item"], keep='last', inplace=False)
 
 if "ATT2ITM" == model:
 
@@ -123,13 +130,14 @@ if "ATT2ITM" == model:
         att2itm_mdl = ATT2ITM(att2itm_mdl_cfg, text_dataset)
         att2itm_mdl.train(dev=True, save_model=True)
         # att2itm_mdl.evaluate()
+        att2itm_mdl.evaluate(test=True)
 
         # att2itm_mdl.evaluate_text("Quiero comer un buen arroz con bogavante y con buenas vistas")
         # att2itm_mdl.evaluate_text("Quiero arroz con bogavante con nutella")
         # att2itm_mdl.evaluate_text("Je veux manger du riz avec du homard et avec une belle vue")
-        att2itm_mdl.evaluate_text("I want a black and red and also white leather wallet for my kid")
-        att2itm_mdl.all_words_analysis()
-        att2itm_mdl.emb_tsne()
+        # att2itm_mdl.evaluate_text("I want a black and red and also white leather wallet for my kid")
+        # att2itm_mdl.all_words_analysis()
+        # att2itm_mdl.emb_tsne()
         exit()
 
         # att2itm_mdl.evaluate_text("Quiero arroz con bogavante y nutella")
