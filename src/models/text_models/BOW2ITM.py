@@ -71,22 +71,38 @@ class BOW2ITM(RSTModel):
 
         return model
 
-    def get_train_dev_sequences(self, dev):
+    def __create_dataset(self, dataframe):
+
+        txt_data = self.DATASET.DATA["BOW_SEQUENCES"][dataframe.bow.values].todense()
+        rst_data = dataframe.id_item.values
         
+        data_x = tf.data.Dataset.from_tensor_slices(txt_data)
+        data_y = tf.data.Dataset.from_tensor_slices(rst_data)
+        data_y = data_y.map(lambda x: tf.one_hot(x, self.DATASET.DATA["N_ITEMS"]), num_parallel_calls=tf.data.AUTOTUNE)
+
+        return tf.data.Dataset.zip((data_x, data_y))
+    
+    def get_train_dev_sequences(self, dev):
+        all_data = self.DATASET.DATA["TRAIN_DEV"]
+
         if dev:
-            train = BOW2RSTsequence(self, is_dev=0)
-            dev = BOW2RSTsequence(self, is_dev=1)
+            train_data = all_data[all_data["dev"] == 0]
+            dev_data = all_data[all_data["dev"] == 1]
+            train_gn = self.__create_dataset(train_data)
+            dev_gn = self.__create_dataset(dev_data)
+            return train_gn, dev_gn
         else:
-            raise NotImplemented
-
-        return train, dev
-
+            train_dev_gn = self.__create_dataset(all_data)
+            return train_dev_gn
+        
     def evaluate(self, test=False):
 
         if test:
-            test_set = BOW2RSTsequence(self, set_name="TEST")
+            test_data = self.DATASET.DATA["TEST"]
         else:
-            test_set = BOW2RSTsequence(self, is_dev=1)
+            test_data = self.DATASET.DATA["TRAIN_DEV"][self.DATASET.DATA["TRAIN_DEV"]["dev"] == 1]
+
+        test_gn = self.__create_dataset(test_data)
 
         metrics = [
             tf.keras.metrics.Precision(top_k=1, name="Precision@1"),
@@ -97,7 +113,7 @@ class BOW2ITM(RSTModel):
             tf.keras.metrics.Recall(top_k=10, name="Recall@10")]
 
         self.MODEL.compile(loss=self.MODEL.loss, optimizer=self.MODEL.optimizer, metrics=metrics)
-        ret = self.MODEL.evaluate(test_set, verbose=0)
+        ret = self.MODEL.evaluate(test_gn.cache().batch(self.CONFIG["model"]['batch_size']).prefetch(tf.data.AUTOTUNE), verbose=0)
         ret = dict(zip(self.MODEL.metrics_names, ret))
         
         for r in [1, 5, 10]:
@@ -174,28 +190,3 @@ class BOW2ITM(RSTModel):
         print({w_nm: rst_word_weights[w_id] for w_id, w_nm in zip(rvw_words, rvw_word_names)})
 
         return {"max": rst_model_weights.max(), "min": rst_model_weights.min(), "values": {w_nm: rst_word_weights[w_id] for w_id, w_nm in zip(rvw_words, rvw_word_names)}}
-
-
-class BOW2RSTsequence(BaseSequence):
-
-    def __init__(self, model, set_name="TRAIN_DEV", is_dev=-1):
-        self.IS_DEV = is_dev
-        self.SET_NAME = set_name
-        BaseSequence.__init__(self, parent_model=model)
-        self.KHOT = MultiLabelBinarizer(classes=list(range(self.MODEL.DATASET.DATA["N_ITEMS"])))
-
-    def init_data(self):
-        ret = self.MODEL.DATASET.DATA[self.SET_NAME]
-
-        if self.IS_DEV >= 0:
-            ret = ret.loc[ret["dev"] == self.IS_DEV]
-
-        return ret
-
-    def preprocess_input(self, batch_data):
-        # return np.row_stack(batch_data.bow)
-        # return np.row_stack(batch_data.bow.apply(lambda x: x.todense().tolist()[0]))
-        return self.MODEL.DATASET.DATA["BOW_SEQUENCES"][batch_data.bow].todense()
-
-    def preprocess_output(self, batch_data):
-        return self.KHOT.fit_transform(np.expand_dims(batch_data.id_item.values, -1))

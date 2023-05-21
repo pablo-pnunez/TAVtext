@@ -19,11 +19,11 @@ import json
 args = parse_cmd_args()
 gpu = int(np.argmin(list(map(lambda x: x["mem_used_percent"], nvgpu.gpu_info())))) if args.gpu is None else args.gpu
 
-model = "ATT2ITM" if args.mn is None else args.mn
-dataset = "amazon".lower().replace(" ", "") if args.dst is None else args.dst
-subset = "digital_music".lower().replace(" ", "") if args.sst is None else args.sst
+model = "BOW2ITM" if args.mn is None else args.mn
+dataset = "restaurants".lower().replace(" ", "") if args.dst is None else args.dst
+subset = "gijon".lower().replace(" ", "") if args.sst is None else args.sst
 
-stage = -2 if args.stg is None else args.stg
+stage = -1 if args.stg is None else args.stg
 use_best = True
 
 if use_best:  # Usar la mejor configuración conocida?
@@ -196,9 +196,12 @@ if "ATT2ITM" == model:
 
 elif "BOW2ITM" == model:
 
-    bow2itm_mdl_cfg = {"model": {"model_version": model_v, "learning_rate": l_rate, "final_learning_rate": l_rate/100, "epochs": n_epochs, "batch_size": b_size, "seed": seed,
-                                 "early_st_first_epoch": 0, "early_st_monitor": "val_loss", "early_st_monitor_mode": "min", "early_st_patience": 50},
-                       "session": {"gpu": gpu, "mixed_precision": False, "in_md5": False}}
+    if use_best:
+        bow2itm_mdl_cfg = mdl_cfg
+    else:
+        bow2itm_mdl_cfg = {"model": {"model_version": model_v, "learning_rate": l_rate, "final_learning_rate": l_rate/100, "epochs": n_epochs, "batch_size": b_size, "seed": seed,
+                                    "early_st_first_epoch": 0, "early_st_monitor": "val_loss", "early_st_monitor_mode": "min", "early_st_patience": 50},
+                        "session": {"gpu": gpu, "mixed_precision": False, "in_md5": False}}
 
     if stage == 0:
         bow2itm_mdl = BOW2ITM(bow2itm_mdl_cfg, text_dataset)
@@ -214,7 +217,10 @@ elif "BOW2ITM" == model:
 
 elif "USEM2ITM" == model:
 
-    usem2itm_mdl_cfg = {"model": {"model_version": model_v, "learning_rate": l_rate, "final_learning_rate": l_rate/100, "epochs": n_epochs, "batch_size": b_size, "seed": seed,
+    if use_best:
+        usem2itm_mdl_cfg = mdl_cfg
+    else:
+        usem2itm_mdl_cfg = {"model": {"model_version": model_v, "learning_rate": l_rate, "final_learning_rate": l_rate/100, "epochs": n_epochs, "batch_size": b_size, "seed": seed,
                                   "early_st_first_epoch": 0, "early_st_monitor": "val_loss", "early_st_monitor_mode": "min", "early_st_patience": 50},
                         "session": {"gpu": gpu, "mixed_precision": True, "in_md5": False}}
 

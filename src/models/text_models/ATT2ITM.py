@@ -34,7 +34,6 @@ class ATT2ITM(RSTModel):
 
     def get_sub_model(self):
 
-
         mv = self.CONFIG["model"]["model_version"]
         self.MODEL_VERSION = mv
 
