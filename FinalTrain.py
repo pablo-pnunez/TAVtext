@@ -11,6 +11,7 @@ import nvgpu
 import argparse
 import numpy as np
 import pandas as pd
+from src.Common import print_b
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-dataset', type=str, help="Dataset", required=True)
@@ -20,9 +21,11 @@ args = parser.parse_args()
 
 gpu = int(np.argmin(list(map(lambda x: x["mem_used_percent"], nvgpu.gpu_info()))))
 
-experiment_data = pd.read_csv("explanation/best_models.csv")
+experiment_data = pd.read_csv("models/best_models.csv")
 experiment_data = experiment_data.loc[(experiment_data.dataset == args.dataset) & (experiment_data.subset == args.subset) & (experiment_data.model == args.model)]
-MD5 = experiment_data.md5.values[0]
+MD5 = experiment_data["model_md5"].values[0]
+print_b(f"Loading best model: {MD5}")
+
 
 # Se carga el dataset del modelo
 model_path = f"models/{args.model}/{args.dataset}/{args.subset}/{MD5}"

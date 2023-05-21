@@ -1,0 +1,23 @@
+2023-05-21 13:16:33.655451: I tensorflow/core/platform/cpu_feature_guard.cc:193] This TensorFlow binary is optimized with oneAPI Deep Neural Network Library (oneDNN) to use the following CPU instructions in performance-critical operations:  SSE3 SSE4.1 SSE4.2 AVX AVX2 FMA
+To enable them in other operations, rebuild TensorFlow with the appropriate compiler flags.
+/media/nas/pperez/miniconda3/envs/TAV_text/lib/python3.8/site-packages/tensorflow_addons/utils/tfa_eol_msg.py:23: UserWarning: 
+
+TensorFlow Addons (TFA) has ended development and introduction of new features.
+TFA has entered a minimal maintenance and release mode until a planned end of life in May 2024.
+Please modify downstream libraries to take dependencies from other repositories in our TensorFlow community (e.g. Keras, Keras-CV, and Keras-NLP). 
+
+For more information see: https://github.com/tensorflow/addons/issues/2807 
+
+  warnings.warn(
+Traceback (most recent call last):
+  File "FinalTrain.py", line 5, in <module>
+    from src.models.text_models.ATT2ITM import ATT2ITM
+  File "/media/nas/pperez/code/TAVtext/src/models/text_models/ATT2ITM.py", line 7, in <module>
+    import tensorflow_addons as tfa
+  File "/media/nas/pperez/miniconda3/envs/TAV_text/lib/python3.8/site-packages/tensorflow_addons/__init__.py", line 24, in <module>
+    from tensorflow_addons import callbacks
+  File "/media/nas/pperez/miniconda3/envs/TAV_text/lib/python3.8/site-packages/tensorflow_addons/callbacks/__init__.py", line 17, in <module>
+    from tensorflow_addons.callbacks.average_model_checkpoint import AverageModelCheckpoint
+  File "/media/nas/pperez/miniconda3/envs/TAV_text/lib/python3.8/site-packages/tensorflow_addons/callbacks/average_model_checkpoint.py", line 17, in <module>
+    from typeguard import typechecked
+ImportError: cannot import name 'typechecked' from 'typeguard' (unknown location)
