@@ -1,3 +1,10 @@
+import numpy as np
+import nvgpu
+import os
+
+gpu = int(np.argmin(list(map(lambda x: x["mem_used_percent"], nvgpu.gpu_info())))) 
+os.environ["CUDA_VISIBLE_DEVICES"] = str(gpu)
+
 from src.Common import print_b, print_e
 from src.datasets.text_datasets.RestaurantDataset import RestaurantDataset
 from src.datasets.text_datasets.AmazonDataset import AmazonDataset
@@ -17,14 +24,11 @@ import cornac
 
 import tensorflow as tf
 import pandas as pd
-import numpy as np
 import argparse
-import nvgpu
 import json
 
 
 def load_set(dataset, subset):
-    gpu = int(np.argmin(list(map(lambda x: x["mem_used_percent"], nvgpu.gpu_info())))) 
 
     models = ["USEM2ITM","ATT2ITM", "BOW2ITM"]
     eval_data = {}
@@ -97,6 +101,7 @@ def load_set(dataset, subset):
 
 
 seed = 2048
+base_path = "models/Baselines"
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-dst', type=str, help="Dataset")
@@ -148,7 +153,7 @@ experiment = Experiment(
     show_validation=False,
     models=models,
     metrics=metrics,
-    save_dir=f"models/ColdStart/{dataset}/{subset}",
+    save_dir=f"{base_path}/{dataset}/{subset}",
     verbose=True
 )
 
@@ -169,6 +174,6 @@ for result in experiment.result:
 final_res = pd.DataFrame(final_res, columns=metric_names)
 final_res.insert(0, "Model", model_names)
 final_res = final_res.sort_values("Model")
-final_res.to_csv(f"models/ColdStart/{dataset}/{subset}/results.csv", index=False)
+final_res.to_csv(f"{base_path}/{dataset}/{subset}/results.csv", index=False)
 
 print(final_res.to_string())
