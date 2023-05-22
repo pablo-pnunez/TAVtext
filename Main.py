@@ -20,11 +20,11 @@ from src.models.text_models.USEM2ITM import USEM2ITM
 
 # #######################################################################################################################
 
-model = "BOW2ITM" if args.mn is None else args.mn
+model = "ATT2ITM" if args.mn is None else args.mn
 dataset = "restaurants".lower().replace(" ", "") if args.dst is None else args.dst
 subset = "gijon".lower().replace(" ", "") if args.sst is None else args.sst
 
-stage = -1 if args.stg is None else args.stg
+stage = 3 if args.stg is None else args.stg
 use_best = True
 
 if use_best:  # Usar la mejor configuración conocida?
@@ -97,12 +97,11 @@ else:
 
 known_users = True
 
-if known_users is True:
-    print_e("Se eliminan los usuarios desconocidos de VAL/TEST y las combinaciones USR, ITM repetidas de test")
-    # Se buscan los usuarios de train y se eliminan de dev y test
-    train_users = text_dataset.DATA["TRAIN_DEV"][text_dataset.DATA["TRAIN_DEV"]["dev"] == 0].userId.unique()
-    text_dataset.DATA["TRAIN_DEV"] = text_dataset.DATA["TRAIN_DEV"][text_dataset.DATA["TRAIN_DEV"]["userId"].isin(train_users)]
-    text_dataset.DATA["TEST"] = text_dataset.DATA["TEST"][text_dataset.DATA["TEST"]["userId"].isin(train_users)]
+if known_users is False:
+    print_e("Se dejan solo usuarios desconocidos!!")
+    # Se buscan los usuarios de train+dev y se eliminan de test
+    train_dev_users = text_dataset.DATA["TRAIN_DEV"].userId.unique()
+    text_dataset.DATA["TEST"] = text_dataset.DATA["TEST"][~text_dataset.DATA["TEST"]["userId"].isin(train_dev_users)]
     text_dataset.DATA["TEST"] = text_dataset.DATA["TEST"].drop_duplicates(subset=["userId", "id_item"], keep='last', inplace=False)
 
 if "ATT2ITM" == model:
@@ -114,13 +113,12 @@ if "ATT2ITM" == model:
                                      "early_st_first_epoch": 0, "early_st_monitor": "val_loss", "early_st_monitor_mode": "min", "early_st_patience": early_stop_patience},
                            "session": {"gpu": gpu, "mixed_precision": True, "in_md5": False}}
 
+    att2itm_mdl = ATT2ITM(att2itm_mdl_cfg, text_dataset)
 
     if stage == 0:
-        att2itm_mdl = ATT2ITM(att2itm_mdl_cfg, text_dataset)
         att2itm_mdl.train(dev=True, save_model=True)
 
     if stage == -1:
-        att2itm_mdl = ATT2ITM(att2itm_mdl_cfg, text_dataset)
         att2itm_mdl.train(dev=True, save_model=False)
         att2itm_mdl.evaluate_text("Quiero comer un arroz con bogavante y con buenas vistas")
         # att2itm_mdl.evaluate_text("imagino que me interesa profundamente la definitivas")
@@ -128,7 +126,6 @@ if "ATT2ITM" == model:
         # att2itm_mdl.emb_tsne()
 
     if stage == -2:
-        att2itm_mdl = ATT2ITM(att2itm_mdl_cfg, text_dataset)
         att2itm_mdl.train(dev=True, save_model=True)
         # att2itm_mdl.evaluate()
         att2itm_mdl.evaluate(test=True)
@@ -195,6 +192,10 @@ if "ATT2ITM" == model:
             # att2itm_mdl.evaluate_text("Where can i eat the typical pastrami sandwich")
             att2itm_mdl.evaluate_text("I want the cheapest digital keyboard")
 
+    if stage == 3:
+        att2itm_mdl.train(dev=False, save_model=True)
+        att2itm_mdl.evaluate(test=True)
+
 elif "BOW2ITM" == model:
 
     if use_best:
@@ -204,17 +205,20 @@ elif "BOW2ITM" == model:
                                     "early_st_first_epoch": 0, "early_st_monitor": "val_loss", "early_st_monitor_mode": "min", "early_st_patience": 50},
                         "session": {"gpu": gpu, "mixed_precision": False, "in_md5": False}}
 
+    bow2itm_mdl = BOW2ITM(bow2itm_mdl_cfg, text_dataset)
+
     if stage == 0:
-        bow2itm_mdl = BOW2ITM(bow2itm_mdl_cfg, text_dataset)
         bow2itm_mdl.train(dev=True, save_model=True)
 
     if stage == -1:
-        bow2itm_mdl = BOW2ITM(bow2itm_mdl_cfg, text_dataset)
         bow2itm_mdl.train(dev=True, save_model=False)
 
     if stage == -2:
-        bow2itm_mdl = BOW2ITM(bow2itm_mdl_cfg, text_dataset)
         bow2itm_mdl.train(dev=True, save_model=True)
+
+    if stage == 3:
+        bow2itm_mdl.train(dev=False, save_model=True)
+        bow2itm_mdl.evaluate(test=True)
 
 elif "USEM2ITM" == model:
 

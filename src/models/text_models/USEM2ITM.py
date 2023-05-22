@@ -60,7 +60,7 @@ class USEM2ITM(RSTModel):
 
         return model
 
-    def __create_dataset(self, dataframe):
+    def __create_tfdata__(self, dataframe):
         
         # Seleccionar del conjunto donde están todos los textos, los pertenecientes al cojunto "dataframe"
         all_data = pd.read_pickle(self.DATASET.DATASET_PATH+"ALL_DATA")[["reviewId", "text"]]
@@ -74,52 +74,6 @@ class USEM2ITM(RSTModel):
         data_y = data_y.map(lambda x: tf.one_hot(x, self.DATASET.DATA["N_ITEMS"]), num_parallel_calls=tf.data.AUTOTUNE)
         
         return tf.data.Dataset.zip((data_x, data_y))
-
-    def get_train_dev_sequences(self, dev):
-
-        all_data = self.DATASET.DATA["TRAIN_DEV"]
-
-        if dev:
-            train_data = all_data[all_data["dev"] == 0]
-            dev_data = all_data[all_data["dev"] == 1]
-            train_gn = self.__create_dataset(train_data)
-            dev_gn = self.__create_dataset(dev_data)
-            return train_gn, dev_gn
-        else:
-            train_dev_gn = self.__create_dataset(all_data)
-            return train_dev_gn
-
-    def evaluate(self, test=False):
-
-        if test:
-            test_data = self.DATASET.DATA["TEST"]
-        else:
-            test_data = self.DATASET.DATA["TRAIN_DEV"][self.DATASET.DATA["TRAIN_DEV"]["dev"] == 1]
-
-        test_gn = self.__create_dataset(test_data)
-
-        metrics = [
-            tf.keras.metrics.Precision(top_k=1, name="Precision@1"),
-            tf.keras.metrics.Precision(top_k=5, name="Precision@5"),
-            tf.keras.metrics.Precision(top_k=10, name="Precision@10"),
-            tf.keras.metrics.Recall(top_k=1, name="Recall@1"),
-            tf.keras.metrics.Recall(top_k=5, name="Recall@5"),
-            tf.keras.metrics.Recall(top_k=10, name="Recall@10")]
-        
-        self.MODEL.compile(loss=self.MODEL.loss, optimizer=self.MODEL.optimizer, metrics=metrics)
-        ret = self.MODEL.evaluate(test_gn.cache().batch(self.CONFIG["model"]['batch_size']).prefetch(tf.data.AUTOTUNE), verbose=0)
-        ret = dict(zip(self.MODEL.metrics_names, ret))
-        
-        for r in [1, 5, 10]:
-            r_at = ret[f"Recall@{r}"]
-            p_at = ret[f"Precision@{r}"]
-            f1_at = 2 * ((r_at * p_at) / (r_at + p_at))
-            ret[f"F1@{r}"] = f1_at
-
-        ret = pd.DataFrame([ret.values()], columns=ret.keys())
-        print_g(ret, title=False)
-
-        return ret
 
     def evaluate_text(self, text):
 

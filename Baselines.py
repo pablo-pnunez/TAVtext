@@ -14,7 +14,7 @@ from src.models.text_models.USEM2ITM import USEM2ITM
 from src.models.text_models.ATT2ITM import ATT2ITM
 from src.models.text_models.BOW2ITM import BOW2ITM
 
-from cornac.metrics import Recall, Precision, FMeasure
+from cornac.metrics import Recall, Precision, FMeasure, NDCG
 from cornac.hyperopt import GridSearch, Discrete
 from cornac.eval_methods import BaseMethod
 from cornac.data.text import BaseTokenizer
@@ -118,7 +118,9 @@ eval_data, eval_method = load_set(dataset, subset)
 metrics = [
     FMeasure(k=1), FMeasure(k=5), FMeasure(k=10),
     Recall(k=1), Recall(k=5), Recall(k=10),
-    Precision(k=1), Precision(k=5), Precision(k=10)]
+    Precision(k=1), Precision(k=5), Precision(k=10),
+    NDCG(), NDCG(k=1), NDCG(k=10),
+    ]
 
 md_bpr = cornac.models.BPR(seed=seed, verbose=True)
 md_ease = cornac.models.EASE(seed=seed, verbose=True)
@@ -159,7 +161,7 @@ experiment = Experiment(
 
 experiment.run()
 
-metric_names = ['F1@1', 'F1@5', 'F1@10', 'Precision@1', 'Precision@5', 'Precision@10', 'Recall@1', 'Recall@5', 'Recall@10']
+metric_names = ['NDCG@-1','NDCG@1','NDCG@10','F1@1', 'F1@5', 'F1@10', 'Precision@1', 'Precision@5', 'Precision@10', 'Recall@1', 'Recall@5', 'Recall@10']
 model_names = []
 final_res = []
 

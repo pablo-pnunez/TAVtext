@@ -4,10 +4,12 @@ from src.models.KerasModelClass import KerasModelClass
 from src.sequences.BaseSequence import BaseSequence
 
 import numpy as np
+import pandas as pd
+from tqdm import tqdm
 import tensorflow as tf
+import tensorflow_ranking as tfr
 from sklearn.preprocessing import MultiLabelBinarizer
 from gensim.models import KeyedVectors
-
 
 class RSTModel(KerasModelClass):
     """ Métodos comunes para todos los modelos VAL """
@@ -50,3 +52,67 @@ class RSTModel(KerasModelClass):
 
     def explain_test_sample(self, data_row):
         raise NotImplementedError
+
+    def __create_tfdata__(self, data):
+        raise NotImplementedError
+
+    def get_train_dev_sequences(self, dev):
+        all_data = self.DATASET.DATA["TRAIN_DEV"]
+
+        if dev:
+            train_data = all_data[all_data["dev"] == 0]
+            dev_data = all_data[all_data["dev"] == 1]
+            train_gn = self.__create_tfdata__(train_data)
+            dev_gn = self.__create_tfdata__(dev_data)
+            return train_gn, dev_gn
+        else:
+            train_dev_gn = self.__create_tfdata__(all_data)
+            return train_dev_gn
+
+    def evaluate(self, test=False):
+        if test:
+            test_data = self.DATASET.DATA["TEST"]
+        else:
+            test_data = self.DATASET.DATA["TRAIN_DEV"][self.DATASET.DATA["TRAIN_DEV"]["dev"] == 1]
+
+        test_gn = self.__create_tfdata__(test_data)
+
+        metrics = [
+            tfr.keras.metrics.NDCGMetric(topn=1, name="NDCG@1"),
+            tfr.keras.metrics.NDCGMetric(topn=10, name="NDCG@10"),
+            tfr.keras.metrics.NDCGMetric(name="NDCG@-1"),
+            tf.keras.metrics.Precision(top_k=1, name="Precision@1"),
+            tf.keras.metrics.Precision(top_k=5, name="Precision@5"),
+            tf.keras.metrics.Precision(top_k=10, name="Precision@10"),
+            tf.keras.metrics.Recall(top_k=1, name="Recall@1"),
+            tf.keras.metrics.Recall(top_k=5, name="Recall@5"),
+            tf.keras.metrics.Recall(top_k=10, name="Recall@10")]
+
+        print_g(f"There are {len(test_data)} evaluation examples.")
+
+        self.MODEL.compile(loss=self.MODEL.loss, optimizer=self.MODEL.optimizer, metrics=metrics)
+        ret = self.MODEL.evaluate(test_gn.cache().batch(self.CONFIG["model"]['batch_size']).prefetch(tf.data.AUTOTUNE), verbose=0, return_dict=True)
+        
+        preds = self.MODEL.predict(test_gn.cache().batch(self.CONFIG["model"]['batch_size']).prefetch(tf.data.AUTOTUNE), verbose=0)
+        sm_all = []
+        # metrics = [tfr.keras.metrics.NDCGMetric(name="NDCG@-1")]
+        for idx in tqdm(range(len(preds))):
+            y_pred = preds[idx]
+            y_true = np.zeros(len(y_pred))
+            y_true[test_data.iloc[idx].id_item] = 1
+            ndcg = tfr.keras.metrics.NDCGMetric()
+            sm_all.append([metric([y_true], [y_pred]).numpy() for metric in metrics])
+
+        sm_all = pd.DataFrame(sm_all, columns=[f.name for f in metrics])
+        sm_all = pd.concat([test_data.reset_index(drop=True), sm_all], axis=1)
+
+        for r in [1, 5, 10]:
+            r_at = ret[f"Recall@{r}"]
+            p_at = ret[f"Precision@{r}"]
+            f1_at = 2 * ((r_at * p_at) / (r_at + p_at))
+            ret[f"F1@{r}"] = f1_at
+
+        ret = pd.DataFrame([ret.values()], columns=ret.keys())
+        print_g(ret, title=False)
+
+        return ret  
