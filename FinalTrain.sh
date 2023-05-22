@@ -5,15 +5,11 @@ GPU=0
 
 declare -A DATASETS
 declare -A MODELS
-# DATASETS["restaurants"]="gijon barcelona madrid newyorkcity paris"
-# DATASETS["pois"]="barcelona madrid newyorkcity paris london"
-# DATASETS["amazon"]="digital_music" # "fashion"
-
 DATASETS["restaurants"]="gijon barcelona madrid newyorkcity paris"
+DATASETS["pois"]="barcelona madrid newyorkcity paris london"
+DATASETS["amazon"]="digital_music fashion"
 
 # MODELS["BOW2ITM"]="" 
-# PARA LOS ANTEIORES REVISAR SI SE JUNTA TRAIN Y DEV BIEN!!!!!
-
 # MODELS["ATT2ITM"]="" 
 MODELS["USEM2ITM"]="" 
 
@@ -26,7 +22,7 @@ for DATASET_NAME in ${!DATASETS[@]}; do
       TXT_PATH="scripts/out/"$DATASET_NAME"/$SUBSET_NAME/final/"
       mkdir -p $TXT_PATH
 
-      nohup /media/nas/pperez/miniconda3/envs/TAV_text/bin/python -u FinalTrain.py -model $MODEL_NAME -dataset $DATASET_NAME -subset $SUBSET_NAME > "$TXT_PATH"$MODEL_NAME".txt" &
+      nohup /media/nas/pperez/miniconda3/envs/TAVtext/bin/python -u FinalTrain.py -model $MODEL_NAME -dataset $DATASET_NAME -subset $SUBSET_NAME > "$TXT_PATH"$MODEL_NAME".txt" &
 
       echo "═══════ [$!] $MODEL_NAME ══════"
 
@@ -37,7 +33,7 @@ for DATASET_NAME in ${!DATASETS[@]}; do
       done
 
       #Esperar X segundos entre pruebas para que le de tiempo a ocupar memoria en GPU
-      sleep 30
+      sleep 10
 
     done  
   done

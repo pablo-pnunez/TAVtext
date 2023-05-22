@@ -1,3 +1,14 @@
+# -*- coding: utf-8 -*-
+import os
+import json
+import nvgpu
+import argparse
+import numpy as np
+import pandas as pd
+
+gpu = np.argmin([g["mem_used_percent"] for g in nvgpu.gpu_info()])
+os.environ["CUDA_VISIBLE_DEVICES"] = str(gpu)
+
 from src.datasets.text_datasets.RestaurantDataset import RestaurantDataset
 from src.datasets.text_datasets.AmazonDataset import AmazonDataset
 from src.datasets.text_datasets.POIDataset import POIDataset
@@ -6,11 +17,6 @@ from src.models.text_models.ATT2ITM import ATT2ITM
 from src.models.text_models.BOW2ITM import BOW2ITM
 from src.models.text_models.USEM2ITM import USEM2ITM
 
-import json
-import nvgpu
-import argparse
-import numpy as np
-import pandas as pd
 from src.Common import print_b
 
 parser = argparse.ArgumentParser()
@@ -18,8 +24,6 @@ parser.add_argument('-dataset', type=str, help="Dataset", required=True)
 parser.add_argument('-subset', type=str, help="Subset", required=True)
 parser.add_argument('-model', type=str, help="Model name", required=True)
 args = parser.parse_args()
-
-gpu = int(np.argmin(list(map(lambda x: x["mem_used_percent"], nvgpu.gpu_info()))))
 
 experiment_data = pd.read_csv("models/best_models.csv")
 experiment_data = experiment_data.loc[(experiment_data.dataset == args.dataset) & (experiment_data.subset == args.subset) & (experiment_data.model == args.model)]

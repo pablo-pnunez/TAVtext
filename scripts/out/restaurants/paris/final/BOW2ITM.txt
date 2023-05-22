@@ -1,0 +1,138 @@
+2023-05-21 20:25:42.624390: I tensorflow/core/platform/cpu_feature_guard.cc:193] This TensorFlow binary is optimized with oneAPI Deep Neural Network Library (oneDNN) to use the following CPU instructions in performance-critical operations:  SSE3 SSE4.1 SSE4.2 AVX AVX2 FMA
+To enable them in other operations, rebuild TensorFlow with the appropriate compiler flags.
+/media/nas/pperez/miniconda3/envs/TAVtext/lib/python3.8/site-packages/tensorflow_addons/utils/tfa_eol_msg.py:23: UserWarning: 
+
+TensorFlow Addons (TFA) has ended development and introduction of new features.
+TFA has entered a minimal maintenance and release mode until a planned end of life in May 2024.
+Please modify downstream libraries to take dependencies from other repositories in our TensorFlow community (e.g. Keras, Keras-CV, and Keras-NLP). 
+
+For more information see: https://github.com/tensorflow/addons/issues/2807 
+
+  warnings.warn(
+[94mLoading best model: 6aea4232acc6d6e60e572d5e8bd9103f[0m
+[nltk_data] Downloading package stopwords to /home/pperez/nltk_data...
+[nltk_data]   Package stopwords is already up-to-date!
+/media/nas/pperez/miniconda3/envs/TAVtext/lib/python3.8/site-packages/sklearn/base.py:318: UserWarning: Trying to unpickle estimator CountVectorizer from version 1.1.0 when using version 1.2.2. This might lead to breaking code or invalid results. Use at your own risk. For more info please refer to:
+https://scikit-learn.org/stable/model_persistence.html#security-maintainability-limitations
+  warnings.warn(
+[93m[WARNING] Model folder already exists...[0m
+2023-05-21 20:26:00.629508: W tensorflow/tsl/framework/cpu_allocator_impl.cc:82] Allocation of 14868832264 exceeds 10% of free system memory.
+2023-05-21 20:26:07.295617: W tensorflow/tsl/framework/cpu_allocator_impl.cc:82] Allocation of 14868832264 exceeds 10% of free system memory.
+WARNING:tensorflow:From /media/nas/pperez/miniconda3/envs/TAVtext/lib/python3.8/site-packages/tensorflow/python/autograph/pyct/static_analysis/liveness.py:83: Analyzer.lamba_check (from tensorflow.python.autograph.pyct.static_analysis.liveness) is deprecated and will be removed after 2023-09-23.
+Instructions for updating:
+Lambda fuctions will be no more assumed to be used in the statement where they are used, or at least in the same block. https://github.com/tensorflow/tensorflow/issues/56089
+[92m[INFO] Best epoch number: 56[0m
+2023-05-21 20:26:11.435920: W tensorflow/tsl/framework/cpu_allocator_impl.cc:82] Allocation of 14868832264 exceeds 10% of free system memory.
+Epoch 1/56
+89/89 - 13s - loss: inf - r1: 0.0403 - r5: 0.0842 - r10: 0.1106 - p5: 0.0169 - p10: 0.0111 - lr: 4.9951e-04 - e_time: 13.3724 - 13s/epoch - 150ms/step
+Epoch 2/56
+89/89 - 12s - loss: inf - r1: 0.0719 - r5: 0.1466 - r10: 0.1872 - p5: 0.0293 - p10: 0.0187 - lr: 4.9901e-04 - e_time: 11.5618 - 12s/epoch - 130ms/step
+Epoch 3/56
+89/89 - 12s - loss: inf - r1: 0.0690 - r5: 0.1484 - r10: 0.1908 - p5: 0.0297 - p10: 0.0191 - lr: 4.9852e-04 - e_time: 11.5594 - 12s/epoch - 130ms/step
+Epoch 4/56
+89/89 - 12s - loss: inf - r1: 0.0648 - r5: 0.1451 - r10: 0.1897 - p5: 0.0290 - p10: 0.0190 - lr: 4.9802e-04 - e_time: 11.6375 - 12s/epoch - 131ms/step
+Epoch 5/56
+89/89 - 11s - loss: inf - r1: 0.0602 - r5: 0.1403 - r10: 0.1867 - p5: 0.0281 - p10: 0.0187 - lr: 4.9753e-04 - e_time: 11.3875 - 11s/epoch - 128ms/step
+Epoch 6/56
+89/89 - 12s - loss: inf - r1: 0.0567 - r5: 0.1355 - r10: 0.1833 - p5: 0.0271 - p10: 0.0183 - lr: 4.9703e-04 - e_time: 11.7108 - 12s/epoch - 132ms/step
+Epoch 7/56
+89/89 - 12s - loss: 7.9125 - r1: 0.0551 - r5: 0.1320 - r10: 0.1810 - p5: 0.0264 - p10: 0.0181 - lr: 4.9654e-04 - e_time: 11.6616 - 12s/epoch - 131ms/step
+Epoch 8/56
+89/89 - 11s - loss: 7.7582 - r1: 0.0573 - r5: 0.1311 - r10: 0.1808 - p5: 0.0262 - p10: 0.0181 - lr: 4.9604e-04 - e_time: 11.3823 - 11s/epoch - 128ms/step
+Epoch 9/56
+89/89 - 11s - loss: 7.5482 - r1: 0.0670 - r5: 0.1397 - r10: 0.1887 - p5: 0.0279 - p10: 0.0189 - lr: 4.9555e-04 - e_time: 11.3074 - 11s/epoch - 127ms/step
+Epoch 10/56
+89/89 - 12s - loss: 7.2849 - r1: 0.0863 - r5: 0.1636 - r10: 0.2101 - p5: 0.0327 - p10: 0.0210 - lr: 4.9505e-04 - e_time: 11.5327 - 12s/epoch - 130ms/step
+Epoch 11/56
+89/89 - 12s - loss: 6.9682 - r1: 0.1171 - r5: 0.2038 - r10: 0.2494 - p5: 0.0408 - p10: 0.0249 - lr: 4.9456e-04 - e_time: 11.5343 - 12s/epoch - 130ms/step
+Epoch 12/56
+89/89 - 12s - loss: 6.6230 - r1: 0.1545 - r5: 0.2555 - r10: 0.3036 - p5: 0.0511 - p10: 0.0304 - lr: 4.9406e-04 - e_time: 11.5657 - 12s/epoch - 130ms/step
+Epoch 13/56
+89/89 - 12s - loss: 6.2722 - r1: 0.1912 - r5: 0.3116 - r10: 0.3640 - p5: 0.0623 - p10: 0.0364 - lr: 4.9357e-04 - e_time: 11.8203 - 12s/epoch - 133ms/step
+Epoch 14/56
+89/89 - 12s - loss: 5.9347 - r1: 0.2238 - r5: 0.3633 - r10: 0.4215 - p5: 0.0727 - p10: 0.0422 - lr: 4.9307e-04 - e_time: 11.6394 - 12s/epoch - 131ms/step
+Epoch 15/56
+89/89 - 12s - loss: 5.6280 - r1: 0.2509 - r5: 0.4081 - r10: 0.4742 - p5: 0.0816 - p10: 0.0474 - lr: 4.9258e-04 - e_time: 11.5844 - 12s/epoch - 130ms/step
+Epoch 16/56
+89/89 - 12s - loss: 5.3587 - r1: 0.2730 - r5: 0.4467 - r10: 0.5194 - p5: 0.0893 - p10: 0.0519 - lr: 4.9208e-04 - e_time: 11.6048 - 12s/epoch - 130ms/step
+Epoch 17/56
+89/89 - 11s - loss: 5.1331 - r1: 0.2927 - r5: 0.4781 - r10: 0.5554 - p5: 0.0956 - p10: 0.0555 - lr: 4.9159e-04 - e_time: 11.4178 - 11s/epoch - 128ms/step
+Epoch 18/56
+89/89 - 11s - loss: 4.9515 - r1: 0.3098 - r5: 0.5038 - r10: 0.5839 - p5: 0.1008 - p10: 0.0584 - lr: 4.9109e-04 - e_time: 11.3659 - 11s/epoch - 128ms/step
+Epoch 19/56
+89/89 - 11s - loss: 4.8007 - r1: 0.3248 - r5: 0.5250 - r10: 0.6061 - p5: 0.1050 - p10: 0.0606 - lr: 4.9060e-04 - e_time: 11.3057 - 11s/epoch - 127ms/step
+Epoch 20/56
+89/89 - 11s - loss: 4.6833 - r1: 0.3373 - r5: 0.5420 - r10: 0.6227 - p5: 0.1084 - p10: 0.0623 - lr: 4.9010e-04 - e_time: 11.4075 - 11s/epoch - 128ms/step
+Epoch 21/56
+89/89 - 12s - loss: 4.5791 - r1: 0.3486 - r5: 0.5569 - r10: 0.6365 - p5: 0.1114 - p10: 0.0636 - lr: 4.8961e-04 - e_time: 11.6157 - 12s/epoch - 131ms/step
+Epoch 22/56
+89/89 - 12s - loss: 4.4906 - r1: 0.3589 - r5: 0.5688 - r10: 0.6471 - p5: 0.1137 - p10: 0.0647 - lr: 4.8911e-04 - e_time: 11.6681 - 12s/epoch - 131ms/step
+Epoch 23/56
+89/89 - 11s - loss: 4.4028 - r1: 0.3675 - r5: 0.5795 - r10: 0.6573 - p5: 0.1159 - p10: 0.0657 - lr: 4.8862e-04 - e_time: 11.3693 - 11s/epoch - 128ms/step
+Epoch 24/56
+89/89 - 11s - loss: 4.3315 - r1: 0.3750 - r5: 0.5884 - r10: 0.6652 - p5: 0.1177 - p10: 0.0665 - lr: 4.8812e-04 - e_time: 11.3786 - 11s/epoch - 128ms/step
+Epoch 25/56
+89/89 - 12s - loss: 4.2591 - r1: 0.3814 - r5: 0.5962 - r10: 0.6720 - p5: 0.1192 - p10: 0.0672 - lr: 4.8763e-04 - e_time: 11.6051 - 12s/epoch - 130ms/step
+Epoch 26/56
+89/89 - 12s - loss: 4.1975 - r1: 0.3874 - r5: 0.6026 - r10: 0.6776 - p5: 0.1204 - p10: 0.0678 - lr: 4.8713e-04 - e_time: 11.6101 - 12s/epoch - 130ms/step
+Epoch 27/56
+89/89 - 12s - loss: 4.1358 - r1: 0.3923 - r5: 0.6081 - r10: 0.6829 - p5: 0.1217 - p10: 0.0683 - lr: 4.8664e-04 - e_time: 11.6921 - 12s/epoch - 131ms/step
+Epoch 28/56
+89/89 - 12s - loss: 4.0787 - r1: 0.3970 - r5: 0.6137 - r10: 0.6877 - p5: 0.1227 - p10: 0.0688 - lr: 4.8614e-04 - e_time: 11.6438 - 12s/epoch - 131ms/step
+Epoch 29/56
+89/89 - 12s - loss: 4.0236 - r1: 0.4009 - r5: 0.6182 - r10: 0.6913 - p5: 0.1236 - p10: 0.0691 - lr: 4.8565e-04 - e_time: 11.5633 - 12s/epoch - 130ms/step
+Epoch 30/56
+89/89 - 12s - loss: 3.9731 - r1: 0.4041 - r5: 0.6218 - r10: 0.6947 - p5: 0.1244 - p10: 0.0695 - lr: 4.8515e-04 - e_time: 11.5636 - 12s/epoch - 130ms/step
+Epoch 31/56
+89/89 - 12s - loss: 3.9270 - r1: 0.4077 - r5: 0.6251 - r10: 0.6981 - p5: 0.1251 - p10: 0.0698 - lr: 4.8466e-04 - e_time: 11.6828 - 12s/epoch - 131ms/step
+Epoch 32/56
+89/89 - 12s - loss: 3.8864 - r1: 0.4090 - r5: 0.6279 - r10: 0.7000 - p5: 0.1256 - p10: 0.0700 - lr: 4.8416e-04 - e_time: 11.6209 - 12s/epoch - 131ms/step
+Epoch 33/56
+89/89 - 11s - loss: 3.8404 - r1: 0.4114 - r5: 0.6306 - r10: 0.7029 - p5: 0.1261 - p10: 0.0703 - lr: 4.8367e-04 - e_time: 11.3814 - 11s/epoch - 128ms/step
+Epoch 34/56
+89/89 - 11s - loss: 3.7984 - r1: 0.4134 - r5: 0.6327 - r10: 0.7049 - p5: 0.1266 - p10: 0.0705 - lr: 4.8317e-04 - e_time: 11.3147 - 11s/epoch - 127ms/step
+Epoch 35/56
+89/89 - 11s - loss: 3.7611 - r1: 0.4147 - r5: 0.6352 - r10: 0.7072 - p5: 0.1270 - p10: 0.0707 - lr: 4.8268e-04 - e_time: 11.3667 - 11s/epoch - 128ms/step
+Epoch 36/56
+89/89 - 12s - loss: 3.7257 - r1: 0.4158 - r5: 0.6357 - r10: 0.7082 - p5: 0.1272 - p10: 0.0708 - lr: 4.8218e-04 - e_time: 11.6422 - 12s/epoch - 131ms/step
+Epoch 37/56
+89/89 - 11s - loss: 3.6859 - r1: 0.4173 - r5: 0.6385 - r10: 0.7108 - p5: 0.1277 - p10: 0.0711 - lr: 4.8169e-04 - e_time: 11.4167 - 11s/epoch - 128ms/step
+Epoch 38/56
+89/89 - 11s - loss: 3.6543 - r1: 0.4173 - r5: 0.6395 - r10: 0.7117 - p5: 0.1279 - p10: 0.0712 - lr: 4.8119e-04 - e_time: 11.4810 - 11s/epoch - 129ms/step
+Epoch 39/56
+89/89 - 12s - loss: 3.6215 - r1: 0.4175 - r5: 0.6408 - r10: 0.7131 - p5: 0.1281 - p10: 0.0713 - lr: 4.8070e-04 - e_time: 11.6498 - 12s/epoch - 131ms/step
+Epoch 40/56
+89/89 - 12s - loss: 3.5920 - r1: 0.4179 - r5: 0.6408 - r10: 0.7136 - p5: 0.1282 - p10: 0.0713 - lr: 4.8020e-04 - e_time: 11.6362 - 12s/epoch - 131ms/step
+Epoch 41/56
+89/89 - 11s - loss: 3.5629 - r1: 0.4183 - r5: 0.6423 - r10: 0.7148 - p5: 0.1284 - p10: 0.0715 - lr: 4.7971e-04 - e_time: 11.2440 - 11s/epoch - 126ms/step
+Epoch 42/56
+89/89 - 12s - loss: 3.5351 - r1: 0.4175 - r5: 0.6418 - r10: 0.7151 - p5: 0.1284 - p10: 0.0715 - lr: 4.7921e-04 - e_time: 11.5903 - 12s/epoch - 130ms/step
+Epoch 43/56
+89/89 - 11s - loss: 3.5050 - r1: 0.4179 - r5: 0.6432 - r10: 0.7167 - p5: 0.1286 - p10: 0.0716 - lr: 4.7872e-04 - e_time: 11.4556 - 11s/epoch - 129ms/step
+Epoch 44/56
+89/89 - 12s - loss: 3.4785 - r1: 0.4171 - r5: 0.6432 - r10: 0.7167 - p5: 0.1286 - p10: 0.0717 - lr: 4.7822e-04 - e_time: 11.6356 - 12s/epoch - 131ms/step
+Epoch 45/56
+89/89 - 12s - loss: 3.4550 - r1: 0.4166 - r5: 0.6434 - r10: 0.7171 - p5: 0.1286 - p10: 0.0717 - lr: 4.7773e-04 - e_time: 11.6531 - 12s/epoch - 131ms/step
+Epoch 46/56
+89/89 - 12s - loss: 3.4299 - r1: 0.4157 - r5: 0.6436 - r10: 0.7176 - p5: 0.1287 - p10: 0.0718 - lr: 4.7723e-04 - e_time: 11.6082 - 12s/epoch - 130ms/step
+Epoch 47/56
+89/89 - 11s - loss: 3.4007 - r1: 0.4152 - r5: 0.6442 - r10: 0.7182 - p5: 0.1288 - p10: 0.0718 - lr: 4.7674e-04 - e_time: 11.2867 - 11s/epoch - 127ms/step
+Epoch 48/56
+89/89 - 12s - loss: 3.3811 - r1: 0.4144 - r5: 0.6434 - r10: 0.7184 - p5: 0.1287 - p10: 0.0718 - lr: 4.7624e-04 - e_time: 11.5845 - 12s/epoch - 130ms/step
+Epoch 49/56
+89/89 - 11s - loss: 3.3559 - r1: 0.4132 - r5: 0.6434 - r10: 0.7187 - p5: 0.1287 - p10: 0.0719 - lr: 4.7575e-04 - e_time: 11.3822 - 11s/epoch - 128ms/step
+Epoch 50/56
+89/89 - 12s - loss: 3.3296 - r1: 0.4126 - r5: 0.6436 - r10: 0.7196 - p5: 0.1288 - p10: 0.0719 - lr: 4.7525e-04 - e_time: 11.6078 - 12s/epoch - 130ms/step
+Epoch 51/56
+89/89 - 12s - loss: 3.3121 - r1: 0.4112 - r5: 0.6426 - r10: 0.7188 - p5: 0.1286 - p10: 0.0719 - lr: 4.7476e-04 - e_time: 11.5480 - 12s/epoch - 130ms/step
+Epoch 52/56
+89/89 - 11s - loss: 3.2921 - r1: 0.4098 - r5: 0.6418 - r10: 0.7186 - p5: 0.1284 - p10: 0.0719 - lr: 4.7426e-04 - e_time: 11.2928 - 11s/epoch - 127ms/step
+Epoch 53/56
+89/89 - 12s - loss: 3.2725 - r1: 0.4083 - r5: 0.6417 - r10: 0.7184 - p5: 0.1282 - p10: 0.0719 - lr: 4.7377e-04 - e_time: 11.6314 - 12s/epoch - 131ms/step
+Epoch 54/56
+89/89 - 11s - loss: 3.2553 - r1: 0.4072 - r5: 0.6409 - r10: 0.7186 - p5: 0.1282 - p10: 0.0719 - lr: 4.7327e-04 - e_time: 11.3214 - 11s/epoch - 127ms/step
+Epoch 55/56
+89/89 - 11s - loss: 3.2371 - r1: 0.4057 - r5: 0.6402 - r10: 0.7180 - p5: 0.1280 - p10: 0.0718 - lr: 4.7278e-04 - e_time: 11.2920 - 11s/epoch - 127ms/step
+Epoch 56/56
+89/89 - 11s - loss: 3.2159 - r1: 0.4050 - r5: 0.6401 - r10: 0.7184 - p5: 0.1280 - p10: 0.0718 - lr: 4.7228e-04 - e_time: 11.3707 - 11s/epoch - 128ms/step
+[92m[INFO] Loading best model...[0m

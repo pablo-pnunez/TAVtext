@@ -1,0 +1,30 @@
+[94mLoading best model: 6e921900e2c8a12d84716e2b1d975711[0m
+[93m[WARNING] Model folder already exists...[0m
+Model: "model"
+_________________________________________________________________
+ Layer (type)                Output Shape              Param #   
+=================================================================
+ input_1 (InputLayer)        [(None,)]                 0         
+                                                                 
+ USEM (KerasLayer)           (None, 512)               68927232  
+                                                                 
+ dropout (Dropout)           (None, 512)               0         
+                                                                 
+ out (Dense)                 (None, 52)                26676     
+                                                                 
+=================================================================
+Total params: 68,953,908
+Trainable params: 68,953,908
+Non-trainable params: 0
+_________________________________________________________________
+None
+[92m[INFO] Best epoch number: 4[0m
+Epoch 1/4
+154/154 - 23s - loss: 2.3258 - r1: 0.6323 - r5: 0.8232 - r10: 0.8828 - p5: 0.1646 - p10: 0.0883 - lr: 9.9901e-04 - e_time: 23.2481 - 23s/epoch - 151ms/step
+Epoch 2/4
+154/154 - 13s - loss: 1.1730 - r1: 0.7886 - r5: 0.9365 - r10: 0.9659 - p5: 0.1873 - p10: 0.0966 - lr: 9.9802e-04 - e_time: 13.0156 - 13s/epoch - 85ms/step
+Epoch 3/4
+154/154 - 13s - loss: 0.8195 - r1: 0.8384 - r5: 0.9582 - r10: 0.9788 - p5: 0.1916 - p10: 0.0979 - lr: 9.9703e-04 - e_time: 13.1066 - 13s/epoch - 85ms/step
+Epoch 4/4
+154/154 - 13s - loss: 0.6407 - r1: 0.8687 - r5: 0.9693 - r10: 0.9840 - p5: 0.1939 - p10: 0.0984 - lr: 9.9604e-04 - e_time: 13.0850 - 13s/epoch - 85ms/step
+[92m[INFO] Loading best model...[0m

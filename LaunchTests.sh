@@ -58,7 +58,7 @@ for DATASET_NAME in ${!DATASETS[@]}; do
             # source /media/nas/pperez/miniconda3/etc/profile.d/conda.sh
             # conda activate TAV_text
 
-            nohup /media/nas/pperez/miniconda3/envs/TAV_text/bin/python -u Main.py -stg $STAGE -mn $MODEL_NAME -dst $DATASET_NAME -sst $SUBSET_NAME -mv $MODEL_VERSION -esp $ESP -bs $BATCH -lr $LRATE >> "$TXT_PATH"$MODEL_NAME"_["$MODEL_VERSION"]_"$BOWNWORDS"_("$BATCH"_"$LRATE").txt" &
+            nohup /media/nas/pperez/miniconda3/envs/TAVtext/bin/python -u Main.py -stg $STAGE -mn $MODEL_NAME -dst $DATASET_NAME -sst $SUBSET_NAME -mv $MODEL_VERSION -esp $ESP -bs $BATCH -lr $LRATE >> "$TXT_PATH"$MODEL_NAME"_["$MODEL_VERSION"]_"$BOWNWORDS"_("$BATCH"_"$LRATE").txt" &
           
             # GPU=$(($(($GPU+1%2))%2))
 

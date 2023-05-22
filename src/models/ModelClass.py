@@ -37,11 +37,11 @@ class ModelClass:
         with open(self.MODEL_PATH+'/cfg.json', 'w') as fp: 
             json.dump(cfg_save_data, fp, indent=4)
 
-        # Fijar las semillas
-        self.__fix_seeds__()
-
         # Seleccionar la GPU más adecuada y limitar el uso de memoria
         self.__config_session__(mixed_precision=self.CONFIG["session"]["mixed_precision"])
+
+        # Fijar las semillas
+        self.__fix_seeds__()
 
         # Crear el modelo
         self.MODEL = self.get_model()

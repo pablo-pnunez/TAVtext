@@ -63,7 +63,7 @@ def load_set(dataset, subset):
         elif "USEM2ITM" == model: model_class = USEM2ITM(mdl_cfg, text_dataset)
         else: raise NotImplementedError    
         # Cargar el modelo y evaluar
-        model_class.train(dev=True, save_model=True)
+        model_class.train(dev=False, save_model=True)
         eval_data[model] = model_class.evaluate(test=True)
 
     # Luego se cargan los datos y se adaptan a Cornac
@@ -169,6 +169,6 @@ for result in experiment.result:
 final_res = pd.DataFrame(final_res, columns=metric_names)
 final_res.insert(0, "Model", model_names)
 final_res = final_res.sort_values("Model")
-final_res.to_csv(f"models/Baselines/{dataset}/{subset}/results.csv", index=False)
+final_res.to_csv(f"models/ColdStart/{dataset}/{subset}/results.csv", index=False)
 
 print(final_res.to_string())

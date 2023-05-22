@@ -1,23 +1,54 @@
-2023-05-21 13:16:03.623694: I tensorflow/core/platform/cpu_feature_guard.cc:193] This TensorFlow binary is optimized with oneAPI Deep Neural Network Library (oneDNN) to use the following CPU instructions in performance-critical operations:  SSE3 SSE4.1 SSE4.2 AVX AVX2 FMA
-To enable them in other operations, rebuild TensorFlow with the appropriate compiler flags.
-/media/nas/pperez/miniconda3/envs/TAV_text/lib/python3.8/site-packages/tensorflow_addons/utils/tfa_eol_msg.py:23: UserWarning: 
-
-TensorFlow Addons (TFA) has ended development and introduction of new features.
-TFA has entered a minimal maintenance and release mode until a planned end of life in May 2024.
-Please modify downstream libraries to take dependencies from other repositories in our TensorFlow community (e.g. Keras, Keras-CV, and Keras-NLP). 
-
-For more information see: https://github.com/tensorflow/addons/issues/2807 
-
-  warnings.warn(
-Traceback (most recent call last):
-  File "FinalTrain.py", line 5, in <module>
-    from src.models.text_models.ATT2ITM import ATT2ITM
-  File "/media/nas/pperez/code/TAVtext/src/models/text_models/ATT2ITM.py", line 7, in <module>
-    import tensorflow_addons as tfa
-  File "/media/nas/pperez/miniconda3/envs/TAV_text/lib/python3.8/site-packages/tensorflow_addons/__init__.py", line 24, in <module>
-    from tensorflow_addons import callbacks
-  File "/media/nas/pperez/miniconda3/envs/TAV_text/lib/python3.8/site-packages/tensorflow_addons/callbacks/__init__.py", line 17, in <module>
-    from tensorflow_addons.callbacks.average_model_checkpoint import AverageModelCheckpoint
-  File "/media/nas/pperez/miniconda3/envs/TAV_text/lib/python3.8/site-packages/tensorflow_addons/callbacks/average_model_checkpoint.py", line 17, in <module>
-    from typeguard import typechecked
-ImportError: cannot import name 'typechecked' from 'typeguard' (unknown location)
+[94mLoading best model: 681a8a44718862ca193269a2f26c265b[0m
+[93m[WARNING] Model folder already exists...[0m
+Model: "model"
+_________________________________________________________________
+ Layer (type)                Output Shape              Param #   
+=================================================================
+ input_1 (InputLayer)        [(None,)]                 0         
+                                                                 
+ USEM (KerasLayer)           (None, 512)               68927232  
+                                                                 
+ dropout (Dropout)           (None, 512)               0         
+                                                                 
+ out (Dense)                 (None, 1322)              678186    
+                                                                 
+=================================================================
+Total params: 69,605,418
+Trainable params: 69,605,418
+Non-trainable params: 0
+_________________________________________________________________
+None
+[92m[INFO] Best epoch number: 16[0m
+Epoch 1/16
+282/282 - 62s - loss: 6.8119 - r1: 0.0261 - r5: 0.0746 - r10: 0.1168 - p5: 0.0149 - p10: 0.0117 - lr: 9.9901e-04 - e_time: 62.2163 - 62s/epoch - 221ms/step
+Epoch 2/16
+282/282 - 51s - loss: 6.0105 - r1: 0.0762 - r5: 0.1896 - r10: 0.2647 - p5: 0.0379 - p10: 0.0265 - lr: 9.9802e-04 - e_time: 50.9790 - 51s/epoch - 181ms/step
+Epoch 3/16
+282/282 - 51s - loss: 5.3686 - r1: 0.1241 - r5: 0.2730 - r10: 0.3595 - p5: 0.0546 - p10: 0.0360 - lr: 9.9703e-04 - e_time: 50.9607 - 51s/epoch - 181ms/step
+Epoch 4/16
+282/282 - 51s - loss: 4.8824 - r1: 0.1672 - r5: 0.3404 - r10: 0.4332 - p5: 0.0681 - p10: 0.0433 - lr: 9.9604e-04 - e_time: 50.9013 - 51s/epoch - 181ms/step
+Epoch 5/16
+282/282 - 51s - loss: 4.5012 - r1: 0.2047 - r5: 0.3950 - r10: 0.4922 - p5: 0.0790 - p10: 0.0492 - lr: 9.9505e-04 - e_time: 51.2661 - 51s/epoch - 182ms/step
+Epoch 6/16
+282/282 - 51s - loss: 4.1907 - r1: 0.2380 - r5: 0.4417 - r10: 0.5398 - p5: 0.0883 - p10: 0.0540 - lr: 9.9406e-04 - e_time: 51.0920 - 51s/epoch - 181ms/step
+Epoch 7/16
+282/282 - 51s - loss: 3.9324 - r1: 0.2676 - r5: 0.4809 - r10: 0.5791 - p5: 0.0962 - p10: 0.0579 - lr: 9.9307e-04 - e_time: 51.0781 - 51s/epoch - 181ms/step
+Epoch 8/16
+282/282 - 51s - loss: 3.7027 - r1: 0.2957 - r5: 0.5173 - r10: 0.6148 - p5: 0.1035 - p10: 0.0615 - lr: 9.9208e-04 - e_time: 51.0668 - 51s/epoch - 181ms/step
+Epoch 9/16
+282/282 - 51s - loss: 3.5037 - r1: 0.3217 - r5: 0.5494 - r10: 0.6467 - p5: 0.1099 - p10: 0.0647 - lr: 9.9109e-04 - e_time: 51.0752 - 51s/epoch - 181ms/step
+Epoch 10/16
+282/282 - 51s - loss: 3.3243 - r1: 0.3454 - r5: 0.5779 - r10: 0.6729 - p5: 0.1156 - p10: 0.0673 - lr: 9.9010e-04 - e_time: 51.0620 - 51s/epoch - 181ms/step
+Epoch 11/16
+282/282 - 51s - loss: 3.1582 - r1: 0.3679 - r5: 0.6045 - r10: 0.6986 - p5: 0.1209 - p10: 0.0699 - lr: 9.8911e-04 - e_time: 51.2113 - 51s/epoch - 182ms/step
+Epoch 12/16
+282/282 - 51s - loss: 3.0097 - r1: 0.3901 - r5: 0.6285 - r10: 0.7205 - p5: 0.1257 - p10: 0.0721 - lr: 9.8812e-04 - e_time: 51.1676 - 51s/epoch - 181ms/step
+Epoch 13/16
+282/282 - 51s - loss: 2.8825 - r1: 0.4099 - r5: 0.6495 - r10: 0.7388 - p5: 0.1299 - p10: 0.0739 - lr: 9.8713e-04 - e_time: 51.2067 - 51s/epoch - 182ms/step
+Epoch 14/16
+282/282 - 51s - loss: 2.7602 - r1: 0.4278 - r5: 0.6693 - r10: 0.7563 - p5: 0.1339 - p10: 0.0756 - lr: 9.8614e-04 - e_time: 51.1599 - 51s/epoch - 181ms/step
+Epoch 15/16
+282/282 - 51s - loss: 2.6336 - r1: 0.4474 - r5: 0.6894 - r10: 0.7741 - p5: 0.1379 - p10: 0.0774 - lr: 9.8515e-04 - e_time: 51.1868 - 51s/epoch - 182ms/step
+Epoch 16/16
+282/282 - 51s - loss: 2.5163 - r1: 0.4666 - r5: 0.7079 - r10: 0.7900 - p5: 0.1416 - p10: 0.0790 - lr: 9.8416e-04 - e_time: 51.2596 - 51s/epoch - 182ms/step
+[92m[INFO] Loading best model...[0m

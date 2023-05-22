@@ -6,7 +6,7 @@ declare -A DATASETS
 
 DATASETS["restaurants"]="gijon barcelona madrid newyorkcity paris"
 DATASETS["pois"]="barcelona madrid newyorkcity paris london"
-#DATASETS["amazon"]="digital_music fashion"
+DATASETS["amazon"]="digital_music fashion"
 
 for DATASET_NAME in ${!DATASETS[@]}; do 
   for SUBSET_NAME in ${DATASETS[$DATASET_NAME]}; do
@@ -15,7 +15,7 @@ for DATASET_NAME in ${!DATASETS[@]}; do
     # source /media/nas/pperez/miniconda3/etc/profile.d/conda.sh
     # conda activate TAV_text
 
-    nohup /media/nas/pperez/miniconda3/envs/TAV_text/bin/python -u Baselines.py -dst $DATASET_NAME -sst $SUBSET_NAME &
+    nohup /media/nas/pperez/miniconda3/envs/TAVtext/bin/python -u Baselines.py -dst $DATASET_NAME -sst $SUBSET_NAME &
   
     # Si se alcanza el máximo de procesos simultaneos, esperar
     while [ $(jobs -r | wc -l) -eq $MAXTSTS ];

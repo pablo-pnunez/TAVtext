@@ -1,5 +1,15 @@
 # -*- coding: utf-8 -*-
 from src.Common import parse_cmd_args, print_b, print_e
+import pandas as pd
+import numpy as np
+import nvgpu
+import json
+import os
+
+args = parse_cmd_args()
+gpu = np.argmin([g["mem_used_percent"] for g in nvgpu.gpu_info()]) if args.gpu is None else args.gpu
+os.environ["CUDA_VISIBLE_DEVICES"] = str(gpu)
+
 from src.datasets.text_datasets.RestaurantDataset import RestaurantDataset
 from src.datasets.text_datasets.AmazonDataset import AmazonDataset
 from src.datasets.text_datasets.POIDataset import POIDataset
@@ -8,16 +18,7 @@ from src.models.text_models.ATT2ITM import ATT2ITM
 from src.models.text_models.BOW2ITM import BOW2ITM
 from src.models.text_models.USEM2ITM import USEM2ITM
 
-import pandas as pd
-import numpy as np
-import nvgpu
-import json
-
-
 # #######################################################################################################################
-
-args = parse_cmd_args()
-gpu = int(np.argmin(list(map(lambda x: x["mem_used_percent"], nvgpu.gpu_info())))) if args.gpu is None else args.gpu
 
 model = "BOW2ITM" if args.mn is None else args.mn
 dataset = "restaurants".lower().replace(" ", "") if args.dst is None else args.dst
