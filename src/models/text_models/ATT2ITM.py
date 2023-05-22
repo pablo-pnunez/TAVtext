@@ -421,7 +421,7 @@ class ATT2ITM(RSTModel):
         data_y = tf.data.Dataset.from_tensor_slices(rst_data)
         data_y = data_y.map(lambda x: tf.one_hot(x, self.DATASET.DATA["N_ITEMS"]), num_parallel_calls=tf.data.AUTOTUNE)
         
-        data_y = tf.data.Dataset.zip((data_y, data_y))
+        #data_y = tf.data.Dataset.zip((data_y, data_y))
 
         data_x_rsts = tf.data.Dataset.from_tensor_slices([range(self.DATASET.DATA["N_ITEMS"])]).repeat(len(dataframe))
         data_x = tf.data.Dataset.zip((data_x, data_x_rsts))

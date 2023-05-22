@@ -54,3 +54,6 @@ else: raise NotImplementedError
 
 # Entrenar el modelo final
 model_class.train(dev=False, save_model=True)
+
+# Evaluar el modelo final
+model_class.evaluate(test=True)

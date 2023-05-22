@@ -5,7 +5,7 @@ MAXTSTS=2
 declare -A DATASETS
 
 # DATASETS["restaurants"]="gijon barcelona madrid"
-# DATASETS["restaurants"]="newyorkcity paris"
+DATASETS["restaurants"]="newyorkcity paris"
 # DATASETS["pois"]="barcelona madrid newyorkcity paris london"
 # DATASETS["amazon"]="digital_music fashion"
 

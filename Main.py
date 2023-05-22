@@ -22,7 +22,7 @@ from src.models.text_models.USEM2ITM import USEM2ITM
 
 model = "ATT2ITM" if args.mn is None else args.mn
 dataset = "restaurants".lower().replace(" ", "") if args.dst is None else args.dst
-subset = "gijon".lower().replace(" ", "") if args.sst is None else args.sst
+subset = "barcelona".lower().replace(" ", "") if args.sst is None else args.sst
 
 stage = 3 if args.stg is None else args.stg
 use_best = True
