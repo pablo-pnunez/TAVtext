@@ -70,7 +70,7 @@ class RSTModel(KerasModelClass):
             train_dev_gn = self.__create_tfdata__(all_data)
             return train_dev_gn
 
-    def evaluate(self, test=False):
+    def evaluate(self, test=False, user_info=False):
         if test:
             test_data = self.DATASET.DATA["TEST"]
         else:
@@ -94,21 +94,22 @@ class RSTModel(KerasModelClass):
         self.MODEL.compile(loss=self.MODEL.loss, optimizer=self.MODEL.optimizer, metrics=metrics)
         ret = self.MODEL.evaluate(test_gn.cache().batch(self.CONFIG["model"]['batch_size']).prefetch(tf.data.AUTOTUNE), verbose=0, return_dict=True)
         
-        y_pred = self.MODEL.predict(test_gn.cache().batch(self.CONFIG["model"]['batch_size']).prefetch(tf.data.AUTOTUNE), verbose=0)
-        y_true = np.row_stack([list(f[-1]) for f in test_gn.as_numpy_iterator()])
+        if user_info:
+            y_pred = self.MODEL.predict(test_gn.cache().batch(self.CONFIG["model"]['batch_size']).prefetch(tf.data.AUTOTUNE), verbose=0)
+            y_true = np.row_stack([list(f[-1]) for f in test_gn.as_numpy_iterator()])
 
-        sm_all = []
-        # metrics = [tfr.keras.metrics.NDCGMetric(name="NDCG@-1")]
-        for yp, yt in zip(y_pred, y_true):
-            # sm = self.MODEL.evaluate(self.__create_tfdata__(test_data.iloc[idx:idx+1]).cache().batch(self.CONFIG["model"]['batch_size']).prefetch(tf.data.AUTOTUNE), verbose=0)
-            sm = ndcg_score([yt], [yp])
-            sm_all.append(sm)
+            sm_all = []
+            # metrics = [tfr.keras.metrics.NDCGMetric(name="NDCG@-1")]
+            for yp, yt in zip(y_pred, y_true):
+                # sm = self.MODEL.evaluate(self.__create_tfdata__(test_data.iloc[idx:idx+1]).cache().batch(self.CONFIG["model"]['batch_size']).prefetch(tf.data.AUTOTUNE), verbose=0)
+                sm = ndcg_score([yt], [yp])
+                sm_all.append(sm)
 
-        sm_all = pd.DataFrame(sm_all, columns=["NDCG"])
-        sm_all = pd.concat([test_data.reset_index(drop=True), sm_all], axis=1)
-        train_dev_user_count = self.DATASET.DATA["TRAIN_DEV"].groupby("userId").agg(cold=("userId","count")).reset_index()
-        sm_all = sm_all.merge(train_dev_user_count, how="left").fillna(0)
-        sm_all.to_csv(f"{self.MODEL_PATH}{'final_' if test else ''}eval.csv")
+            sm_all = pd.DataFrame(sm_all, columns=["NDCG"])
+            sm_all = pd.concat([test_data.reset_index(drop=True), sm_all], axis=1)
+            train_dev_user_count = self.DATASET.DATA["TRAIN_DEV"].groupby("userId").agg(cold=("userId","count")).reset_index()
+            sm_all = sm_all.merge(train_dev_user_count, how="left").fillna(0)
+            sm_all.to_csv(f"{self.MODEL_PATH}{'final_' if test else ''}user_eval.csv")
 
         for r in [1, 5, 10]:
             r_at = ret[f"Recall@{r}"]

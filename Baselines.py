@@ -70,6 +70,9 @@ def load_set(dataset, subset):
         model_class.train(dev=False, save_model=True)
         eval_data[model] = model_class.evaluate(test=True)
 
+    # Número de reseñas de cada usuario en train/dev (para separar resultados por usuario)
+    train_dev_user_count = text_dataset.DATA["TRAIN_DEV"].groupby("userId").agg(cold=("userId","count")).reset_index()
+
     # Luego se cargan los datos y se adaptan a Cornac
     all_data = pd.read_pickle(f"{text_dataset.DATASET_PATH}ALL_DATA")
     all_data["rating"] /= 10
@@ -78,8 +81,8 @@ def load_set(dataset, subset):
     # Eliminar usuarios desconocidos y dividir en 3 subconjuntos
     train_data = all_data[(all_data["dev"] == 0) & (all_data["test"] == 0)]
     train_users = train_data["userId"].unique()
-    id_user, userId = pd.factorize(train_data["userId"])
-    user_map = pd.DataFrame(zip(userId, id_user), columns=["userId", "id_user"])
+    id_user, _ = pd.factorize(train_data["userId"])
+    user_map = pd.DataFrame(zip(train_data["userId"], id_user), columns=["userId", "id_user"])
     val_data = all_data[(all_data["dev"] == 1) & (all_data["userId"].isin(train_users))]
     test_data = all_data[(all_data["test"] == 1) & (all_data["userId"].isin(train_users))]
 
@@ -88,8 +91,9 @@ def load_set(dataset, subset):
     test_data = test_data.merge(user_map)[["id_user", "id_item", "rating"]].drop_duplicates(subset=["id_user", "id_item"], keep='last', inplace=False)
 
     # Instantiate a Base evaluation method using the provided train and test sets
-    eval_method = BaseMethod.from_splits(train_data=train_data.to_records(index=False), val_data=val_data.to_records(index=False), test_data=test_data.to_records(index=False),  verbose=False, rating_threshold=3)
-    # Ojo, lo anterior elimina las repeticiones de USUARIO, ITEM
+    eval_method = BaseMethod.from_splits(train_data=train_data.to_records(index=False), val_data=val_data.to_records(index=False), test_data=test_data.to_records(index=False),  verbose=False, rating_threshold=1)
+    # OJO: lo anterior elimina las repeticiones de USUARIO, ITEM
+    # OJO: Si se pone un rating treshold, en test, por algún motivo se eliminan los menores de este. Con uno no pasa nada.
 
     # max_vocab = 3000
     # max_doc_freq = 0.5
@@ -97,7 +101,7 @@ def load_set(dataset, subset):
     # reviews = all_data.drop_duplicates(subset=["userId", "id_item"], keep='last', inplace=False).merge(user_map)[["id_user", "id_item", "text"]].to_records(index=False).tolist()
     # eval_method = BaseMethod.from_splits(train_data=train_data.to_records(index=False), review_text=rm, val_data=val_data.to_records(index=False), test_data=test_data.to_records(index=False),  verbose=True, rating_threshold=3)
 
-    return eval_data, eval_method
+    return eval_data, eval_method, user_map, train_dev_user_count
 
 
 seed = 2048
@@ -113,7 +117,7 @@ dataset = "restaurants" if args.dst is None else args.dst
 subset = "gijon" if args.sst is None else args.sst
 
 # Cargar los datos
-eval_data, eval_method = load_set(dataset, subset)
+eval_data, eval_method, user_map, train_dev_user_count = load_set(dataset, subset)
 
 metrics = [
     FMeasure(k=1), FMeasure(k=5), FMeasure(k=10),
@@ -132,11 +136,11 @@ models = [
             Discrete("k", [25, 50]),
             Discrete("max_iter", [50, 100]),
             Discrete("learning_rate", [1e-4, 5e-4, 1e-3]),
-        ], metric=FMeasure(k=1), eval_method=eval_method),
+        ], metric=NDCG(), eval_method=eval_method),
     GridSearch(
         model=md_ease, space=[
             Discrete("posB", [True, False]),
-        ], metric=FMeasure(k=1), eval_method=eval_method),
+        ], metric=NDCG(), eval_method=eval_method),
     # cornac.models.MF(seed=seed),  # Best parameter settings: {'k': 30, 'learning_rate': 5e-06, 'max_iter': 10}
     # cornac.models.MMMF(seed=seed),  # Best parameter settings: {'k': 5, 'learning_rate': 0.001, 'max_iter': 50}
     # cornac.models.NeuMF(seed=seed),
@@ -156,7 +160,8 @@ experiment = Experiment(
     models=models,
     metrics=metrics,
     save_dir=f"{base_path}/{dataset}/{subset}",
-    verbose=True
+    verbose=True,
+    user_based=False,
 )
 
 experiment.run()
@@ -169,13 +174,23 @@ for model_name, model_data in eval_data.items():
     model_names.append(model_name)
     final_res.append(model_data[metric_names].values.tolist()[0])
 
+user_final_res = None
 for result in experiment.result:
     model_names.append(result.model_name)
     final_res.append([result.metric_avg_results[mtr] for mtr in metric_names])
+
+    # Separar por usuario
+    metric = metric_names[0]
+    usr_metric = pd.DataFrame(result.metric_user_results[metric].items(), columns=["id_user", result.model_name]).merge(user_map.drop_duplicates(), how="left")
+    usr_metric = usr_metric.merge(train_dev_user_count, how="left").fillna(0)
+    if user_final_res is None: user_final_res = usr_metric
+    else: user_final_res = user_final_res.merge(usr_metric, how="left")
 
 final_res = pd.DataFrame(final_res, columns=metric_names)
 final_res.insert(0, "Model", model_names)
 final_res = final_res.sort_values("Model")
 final_res.to_csv(f"{base_path}/{dataset}/{subset}/results.csv", index=False)
+
+user_final_res[["userId", "cold"]+[r.model_name for r in experiment.result]].to_csv(f"{base_path}/{dataset}/{subset}/user_results.csv", index=False)
 
 print(final_res.to_string())

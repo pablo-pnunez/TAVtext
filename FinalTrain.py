@@ -56,4 +56,4 @@ else: raise NotImplementedError
 model_class.train(dev=False, save_model=True)
 
 # Evaluar el modelo final
-model_class.evaluate(test=True)
+model_class.evaluate(test=True, user_info=True)
