@@ -143,7 +143,7 @@ models = [
         model=md_ease, space=[
             Discrete("posB", [True, False]),
         ], metric=NDCG(), eval_method=eval_method),
-    # cornac.models.MF(seed=seed),  # Best parameter settings: {'k': 30, 'learning_rate': 5e-06, 'max_iter': 10}
+    cornac.models.MF(seed=seed),  # Best parameter settings: {'k': 30, 'learning_rate': 5e-06, 'max_iter': 10}
     # cornac.models.MMMF(seed=seed),  # Best parameter settings: {'k': 5, 'learning_rate': 0.001, 'max_iter': 50}
     # cornac.models.NeuMF(seed=seed),
     # cornac.models.WBPR(seed=seed),
