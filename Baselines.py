@@ -82,28 +82,26 @@ def load_set(dataset, subset):
     train_data = all_data[(all_data["dev"] == 0) & (all_data["test"] == 0)]
     train_users = train_data["userId"].unique()
     id_user, _ = pd.factorize(train_data["userId"])
-    user_map = pd.DataFrame(zip(train_data["userId"], id_user), columns=["userId", "id_user"])
+    # user_map = pd.DataFrame(zip(train_data["userId"], id_user), columns=["userId", "id_user"])
     val_data = all_data[(all_data["dev"] == 1) & (all_data["userId"].isin(train_users))]
     test_data = all_data[(all_data["test"] == 1) & (all_data["userId"].isin(train_users))]
 
-    train_data = train_data.merge(user_map)[["id_user", "id_item", "rating"]]
-    val_data = val_data.merge(user_map)[["id_user", "id_item", "rating"]].drop_duplicates(subset=["id_user", "id_item"], keep='last', inplace=False)
-    test_data = test_data.merge(user_map)[["id_user", "id_item", "rating"]].drop_duplicates(subset=["id_user", "id_item"], keep='last', inplace=False)
+    # train_data = train_data.merge(user_map)[["id_user", "id_item", "rating"]]
+    # val_data = val_data.merge(user_map)[["id_user", "id_item", "rating"]].drop_duplicates(subset=["id_user", "id_item"], keep='last', inplace=False)
+    # test_data = test_data.merge(user_map)[["id_user", "id_item", "rating"]].drop_duplicates(subset=["id_user", "id_item"], keep='last', inplace=False)
+    
+    train_data = train_data[["userId", "id_item", "rating"]]
+    val_data = val_data[["userId", "id_item", "rating"]].drop_duplicates(subset=["userId", "id_item"], keep='last', inplace=False)
+    test_data = test_data[["userId", "id_item", "rating"]].drop_duplicates(subset=["userId", "id_item"], keep='last', inplace=False)
 
-    print_e(f"TEST USERS: {len(test_data.id_user.unique())}")
+    print_e(f"TEST USERS: {len(test_data['userId'].unique())}")
 
     # Instantiate a Base evaluation method using the provided train and test sets
     eval_method = BaseMethod.from_splits(train_data=train_data.to_records(index=False), val_data=val_data.to_records(index=False), test_data=test_data.to_records(index=False),  verbose=False, rating_threshold=1)
     # OJO: lo anterior elimina las repeticiones de USUARIO, ITEM
     # OJO: Si se pone un rating treshold, en test, por algún motivo se eliminan los menores de este. Con uno no pasa nada.
 
-    # max_vocab = 3000
-    # max_doc_freq = 0.5
-    # tokenizer = BaseTokenizer()
-    # reviews = all_data.drop_duplicates(subset=["userId", "id_item"], keep='last', inplace=False).merge(user_map)[["id_user", "id_item", "text"]].to_records(index=False).tolist()
-    # eval_method = BaseMethod.from_splits(train_data=train_data.to_records(index=False), review_text=rm, val_data=val_data.to_records(index=False), test_data=test_data.to_records(index=False),  verbose=True, rating_threshold=3)
-
-    return eval_data, eval_method, user_map, train_dev_user_count
+    return eval_data, eval_method, train_dev_user_count
 
 
 seed = 2048
@@ -119,7 +117,9 @@ dataset = "restaurants" if args.dst is None else args.dst
 subset = "barcelona" if args.sst is None else args.sst
 
 # Cargar los datos
-eval_data, eval_method, user_map, train_dev_user_count = load_set(dataset, subset)
+eval_data, eval_method, train_dev_user_count = load_set(dataset, subset)
+
+user_id_map = pd.DataFrame(eval_method.test_set.uid_map.items(), columns=["userId", "id_user"])
 
 metrics = [
     FMeasure(k=1), FMeasure(k=5), FMeasure(k=10),
@@ -182,13 +182,13 @@ for result in experiment.result:
     final_res.append([result.metric_avg_results[mtr] for mtr in metric_names])
 
     # Separar por usuario
-    metric = "F1@10"
-    usr_metric = pd.DataFrame(result.metric_user_results[metric].items(), columns=["id_user", result.model_name]).merge(user_map.drop_duplicates(), how="left")
-    print_e(f"TEST USERS: {len(usr_metric)}")
+    user_metric = "NDCG@-1"   
+    usr_results = pd.DataFrame(result.metric_user_results).reset_index().rename(columns={"index":"id_user"}).merge(user_id_map, how="left")
+    usr_results = usr_results.merge(train_dev_user_count, how="left")
+    usr_results = usr_results[["userId", "cold", user_metric]].rename(columns={user_metric: result.model_name})
 
-    usr_metric = usr_metric.merge(train_dev_user_count, how="left").fillna(0)
-    if user_final_res is None: user_final_res = usr_metric
-    else: user_final_res = user_final_res.merge(usr_metric, how="left")
+    if user_final_res is None: user_final_res = usr_results
+    else: user_final_res = user_final_res.merge(usr_results, how="left")
 
 final_res = pd.DataFrame(final_res, columns=metric_names)
 final_res.insert(0, "Model", model_names)

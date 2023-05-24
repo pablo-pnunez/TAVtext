@@ -558,7 +558,7 @@ class ATT2ITM(RSTModel):
         print(f"min_prb: {word_att.min()}\nmin_rst: {less_prob_rest}\nmax_prb: {word_att.max()}\nmax_rst: {most_prob_rest}\nstd_prb: {word_att.std()}")
         print("-"*30)
 
-    def item_relevant_words(self, items, words_shown=6, plot=False):
+    def item_relevant_words(self, items, words_shown=10, plot=False):
   
         '''
         Dado id retorna nombre y palabras relevantes
@@ -655,7 +655,8 @@ class ATT2ITM(RSTModel):
             #     rst_words_names = np.array(rst_words_names)[[i in wrds_high_mean_std for i in rst_words_sorted]]
 
             # Mostrar solo X elementos
-            closest = rst_words_names[:words_shown]
+            # closest = rst_words_names[:words_shown]
+            closest = dict(zip(rst_words_names[:words_shown], att_rst_words[np.argsort(att_rst_words)[::-1]][:words_shown]))
             # print(list(zip(rst_words_names,np.sort(att_rst_words)[::-1]))[:words_shown])
 
             # most_relevant_words.extend(closest)
