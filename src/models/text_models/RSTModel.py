@@ -82,6 +82,7 @@ class RSTModel(KerasModelClass):
         metrics = [
             tfr.keras.metrics.NDCGMetric(topn=1, name="NDCG@1"),
             tfr.keras.metrics.NDCGMetric(topn=10, name="NDCG@10"),
+            tfr.keras.metrics.NDCGMetric(topn=10, name="NDCG@100"),
             tfr.keras.metrics.NDCGMetric(name="NDCG@-1"),
             tf.keras.metrics.Precision(name="Precision@-1"),
             tf.keras.metrics.Precision(top_k=1, name="Precision@1"),
@@ -90,7 +91,9 @@ class RSTModel(KerasModelClass):
             tf.keras.metrics.Recall(name="Recall@-1"),
             tf.keras.metrics.Recall(top_k=1, name="Recall@1"),
             tf.keras.metrics.Recall(top_k=5, name="Recall@5"),
-            tf.keras.metrics.Recall(top_k=10, name="Recall@10")]
+            tf.keras.metrics.Recall(top_k=10, name="Recall@10"),
+            tf.keras.metrics.Recall(top_k=20, name="Recall@20"),
+            tf.keras.metrics.Recall(top_k=50, name="Recall@50"),]
 
         print_g(f"There are {len(test_data)} evaluation examples.")
 

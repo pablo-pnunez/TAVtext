@@ -5,9 +5,12 @@ GPU=0
 
 declare -A DATASETS
 declare -A MODELS
-DATASETS["restaurants"]="gijon barcelona madrid newyorkcity paris"
-DATASETS["pois"]="barcelona madrid newyorkcity paris london"
-DATASETS["amazon"]="digital_music fashion"
+# DATASETS["restaurants"]="gijon barcelona madrid newyorkcity paris"
+# DATASETS["pois"]="barcelona madrid newyorkcity paris london"
+# DATASETS["amazon"]="digital_music fashion"
+
+DATASETS["restaurants"]="gijon"
+
 
 MODELS["BOW2ITM"]="" 
 MODELS["ATT2ITM"]="" 

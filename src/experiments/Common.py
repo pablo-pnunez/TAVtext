@@ -14,12 +14,13 @@ import numpy as np
 import nvgpu
 import json
 
-def load_best_config(model, dataset, subset):
+def load_best_config(model, dataset, subset, gpu=None):
     """Carga y retorna la mejor configuración de modelo y dataset según los parámetros datos. Se carga desde el fichero 'best_models.csv'
     Args:
         model (str, required): Nombre del modelo a cargar. 
         dataset (str, required): Nombre del conjunto de datos.
         subset (str, required): Nombre del subconjunto de datos.
+        gpu (int, optional): Entero indicando GPU.
     Returns:
         dts_cfg, mdl_cfg: Mejores configuraciones
     """
@@ -28,7 +29,7 @@ def load_best_config(model, dataset, subset):
 
     assert model is not None and dataset is not None and subset is not None
 
-    gpu = int(np.argmin(list(map(lambda x: x["mem_used_percent"], nvgpu.gpu_info())))) 
+    if gpu is None: gpu = int(np.argmin(list(map(lambda x: x["mem_used_percent"], nvgpu.gpu_info())))) 
 
     best_model = pd.read_csv("models/best_models.csv")
     best_model = best_model.loc[(best_model.dataset == dataset) & (best_model.subset == subset) & (best_model.model == model)]["model_md5"].values[0]
@@ -42,17 +43,18 @@ def load_best_config(model, dataset, subset):
 
     return dts_cfg, mdl_cfg
 
-def load_best_model(model, dataset, subset):
+def load_best_model(model, dataset, subset, gpu=None):
     """Retorna la mejor combinación de parámetros para el modelo-dataset dados.
     Args:
         model (str, required): Nombre del modelo a cargar. 
         dataset (str, required): Nombre del conjunto de datos.
         subset (str, required): Nombre del subconjunto de datos.
+        gpu (int, optional): Entero indicando GPU.
     Returns:
         model_class: Modelo con la mejor combinación de parámetros existente.
     """
     
-    dts_cfg, mdl_cfg = load_best_config(model=model, dataset=dataset, subset=subset)
+    dts_cfg, mdl_cfg = load_best_config(model=model, dataset=dataset, subset=subset, gpu=gpu)
 
     if dataset == "restaurants": text_dataset = RestaurantDataset(dts_cfg)
     elif dataset == "pois": text_dataset = POIDataset(dts_cfg)

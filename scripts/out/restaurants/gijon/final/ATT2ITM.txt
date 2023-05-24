@@ -1,61 +1,10 @@
-[94mLoading best model: 544d98b3ba0a0dfd7e3f0019f4d9675e[0m
+[94mLoading best ATT2ITM model: 544d98b3ba0a0dfd7e3f0019f4d9675e[0m
 [93m[WARNING] Model folder already exists...[0m
-Model: "ATT2ITM_1"
-__________________________________________________________________________________________________
- Layer (type)                   Output Shape         Param #     Connected to                     
-==================================================================================================
- input_1 (InputLayer)           [(None, 162)]        0           []                               
-                                                                                                  
- input_2 (InputLayer)           [(None, 149)]        0           []                               
-                                                                                                  
- embedding (Embedding)          (None, 162, 384)     926976      ['input_1[0][0]']                
-                                                                                                  
- in_rsts (Embedding)            (None, 149, 384)     57216       ['input_2[0][0]']                
-                                                                                                  
- dense (Dense)                  (None, 162, 256)     98560       ['embedding[0][0]']              
-                                                                                                  
- dense_2 (Dense)                (None, 149, 256)     98560       ['in_rsts[0][0]']                
-                                                                                                  
- tf.math.not_equal (TFOpLambda)  (None, 162)         0           ['input_1[0][0]']                
-                                                                                                  
- dense_1 (Dense)                (None, 162, 128)     32896       ['dense[0][0]']                  
-                                                                                                  
- dense_3 (Dense)                (None, 149, 128)     32896       ['dense_2[0][0]']                
-                                                                                                  
- tf.cast (TFOpLambda)           (None, 162)          0           ['tf.math.not_equal[0][0]']      
-                                                                                                  
- word_emb (Lambda)              (None, 162, 128)     0           ['dense_1[0][0]']                
-                                                                                                  
- rest_emb (Lambda)              (None, 149, 128)     0           ['dense_3[0][0]']                
-                                                                                                  
- tf.expand_dims (TFOpLambda)    (None, 162, 1)       0           ['tf.cast[0][0]']                
-                                                                                                  
- lambda (Lambda)                (None, 162, 149)     0           ['word_emb[0][0]',               
-                                                                  'rest_emb[0][0]']               
-                                                                                                  
- tf.tile (TFOpLambda)           (None, 162, 149)     0           ['tf.expand_dims[0][0]']         
-                                                                                                  
- lambda_1 (Lambda)              (None, 162, 149)     0           ['lambda[0][0]',                 
-                                                                  'tf.tile[0][0]']                
-                                                                                                  
- dotprod (Activation)           (None, 162, 149)     0           ['lambda_1[0][0]']               
-                                                                                                  
- dropout (Dropout)              (None, 162, 149)     0           ['dotprod[0][0]']                
-                                                                                                  
- sum (Lambda)                   (None, 149)          0           ['dropout[0][0]']                
-                                                                                                  
- out (Activation)               (None, 149)          0           ['sum[0][0]']                    
-                                                                                                  
-==================================================================================================
-Total params: 1,247,104
-Trainable params: 1,247,104
-Non-trainable params: 0
-__________________________________________________________________________________________________
-None
+[93m[WARNING] Model weights are not loaded![0m
 [92m[INFO] Best epoch number: 161[0m
 [92m[INFO] Model already trained. Loading weights...[0m
 [92m[INFO] There are 3935 evaluation examples.[0m
 [92m      loss    NDCG@1   NDCG@10  ...      F1@1      F1@5     F1@10
-0  0.01088  0.428208  0.584222  ...  0.428208  0.220923  0.138339
+0  0.01088  0.428717  0.584471  ...  0.428717  0.220839  0.138293
 
-[1 rows x 13 columns][0m
+[1 rows x 19 columns][0m
