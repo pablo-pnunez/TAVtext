@@ -18,7 +18,8 @@ from nltk.stem import SnowballStemmer, PorterStemmer
 class TripAdvisorDataset(DatasetClass):
 
     def __init__(self, config, load):
-        nltk.download('stopwords')
+        nltk.download('stopwords', quiet=True)
+
 
         if config["city"] in ["gijon", "madrid", "barcelona"]:
             import es_core_news_sm as spacy_es_model  # python -m spacy download es_core_news_sm

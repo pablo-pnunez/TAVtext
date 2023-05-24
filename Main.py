@@ -24,6 +24,15 @@ model = "ATT2ITM" if args.mn is None else args.mn
 dataset = "restaurants".lower().replace(" ", "") if args.dst is None else args.dst
 subset = "newyorkcity".lower().replace(" ", "") if args.sst is None else args.sst
 
+
+from src.experiments.Common import load_best_model
+
+model = load_best_model(model=model, dataset=dataset, subset=subset)
+model.train(dev=False, save_model=True)
+model.evaluate_text("Where can i eat the typical pastrami sandwich")
+
+exit()
+
 stage = 3 if args.stg is None else args.stg
 use_best = True
 

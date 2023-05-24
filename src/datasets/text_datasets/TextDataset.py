@@ -25,7 +25,7 @@ def get_lang_detector(nlp, name):
 class TextDataset(DatasetClass):
 
     def __init__(self, config, load):
-        nltk.download('stopwords')
+        nltk.download('stopwords', quiet=True)
 
         if config["language"] == "es":
             import es_core_news_sm as spacy_model  # python -m spacy download es_core_news_sm

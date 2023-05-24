@@ -405,7 +405,7 @@ class ATT2ITM(RSTModel):
             model.compile(loss=loss, metrics=metrics, optimizer=optimizer)
         '''
         
-        print(model.summary())
+        # print(model.summary())
         return model
 
     def __create_tfdata__(self, dataframe):

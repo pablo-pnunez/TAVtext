@@ -42,7 +42,7 @@ def load_set(dataset, subset):
         with open(f'{model_path}/cfg.json') as f: model_config = json.load(f)
         mdl_cfg = {"model": model_config["model"], "session": {"gpu": gpu, "mixed_precision": False, "in_md5": False}}
 
-        print_b(f"Loading best model: {best_model}")
+        # print_b(f"Loading best model: {best_model}")
 
         if dataset == "restaurants":
             # text_dataset = RestaurantDataset(dts_cfg, load=["TRAIN_DEV", "TEXT_TOKENIZER", "TEXT_SEQUENCES", "WORD_INDEX", "VOCAB_SIZE", "MAX_LEN_PADDING", "N_ITEMS", "FEATURES_NAME", "BOW_SEQUENCES"])
@@ -94,7 +94,7 @@ def load_set(dataset, subset):
     val_data = val_data[["userId", "id_item", "rating"]].drop_duplicates(subset=["userId", "id_item"], keep='last', inplace=False)
     test_data = test_data[["userId", "id_item", "rating"]].drop_duplicates(subset=["userId", "id_item"], keep='last', inplace=False)
 
-    print_e(f"TEST USERS: {len(test_data['userId'].unique())}")
+    # print_e(f"TEST USERS: {len(test_data['userId'].unique())}")
 
     # Instantiate a Base evaluation method using the provided train and test sets
     eval_method = BaseMethod.from_splits(train_data=train_data.to_records(index=False), val_data=val_data.to_records(index=False), test_data=test_data.to_records(index=False),  verbose=False, rating_threshold=1)
@@ -114,7 +114,7 @@ args = parser.parse_args()
 
 # datasets = {"pois": ["barcelona", "gijon"]}
 dataset = "restaurants" if args.dst is None else args.dst
-subset = "barcelona" if args.sst is None else args.sst
+subset = "gijon" if args.sst is None else args.sst
 
 # Cargar los datos
 eval_data, eval_method, train_dev_user_count = load_set(dataset, subset)
@@ -122,9 +122,9 @@ eval_data, eval_method, train_dev_user_count = load_set(dataset, subset)
 user_id_map = pd.DataFrame(eval_method.test_set.uid_map.items(), columns=["userId", "id_user"])
 
 metrics = [
-    FMeasure(k=1), FMeasure(k=5), FMeasure(k=10),
-    Recall(k=1), Recall(k=5), Recall(k=10),
-    Precision(k=1), Precision(k=5), Precision(k=10),
+    FMeasure(), FMeasure(k=1), FMeasure(k=5), FMeasure(k=10),
+    Recall(), Recall(k=1), Recall(k=5), Recall(k=10),
+    Precision(), Precision(k=1), Precision(k=5), Precision(k=10),
     NDCG(), NDCG(k=1), NDCG(k=10),
     ]
 
@@ -168,7 +168,7 @@ experiment = Experiment(
 
 experiment.run()
 
-metric_names = ['NDCG@-1','NDCG@1','NDCG@10','F1@1', 'F1@5', 'F1@10', 'Precision@1', 'Precision@5', 'Precision@10', 'Recall@1', 'Recall@5', 'Recall@10']
+metric_names = [m.name for m in experiment.metrics]
 model_names = []
 final_res = []
 

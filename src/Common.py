@@ -1,5 +1,6 @@
-import pickle
+# -*- coding: utf-8 -*-
 import argparse
+import pickle
 
 
 class BColors:
@@ -65,3 +66,4 @@ def parse_cmd_args():
 
     args = parser.parse_args()
     return args
+

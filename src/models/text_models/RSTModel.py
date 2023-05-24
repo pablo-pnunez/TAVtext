@@ -13,6 +13,7 @@ from sklearn.preprocessing import MultiLabelBinarizer
 from gensim.models import KeyedVectors
 
 class RSTModel(KerasModelClass):
+    #TODO cambiar esto a ITEM!!
     """ Métodos comunes para todos los modelos VAL """
     def __init__(self, config, dataset):
         KerasModelClass.__init__(self, config=config, dataset=dataset)
@@ -82,9 +83,11 @@ class RSTModel(KerasModelClass):
             tfr.keras.metrics.NDCGMetric(topn=1, name="NDCG@1"),
             tfr.keras.metrics.NDCGMetric(topn=10, name="NDCG@10"),
             tfr.keras.metrics.NDCGMetric(name="NDCG@-1"),
+            tf.keras.metrics.Precision(name="Precision@-1"),
             tf.keras.metrics.Precision(top_k=1, name="Precision@1"),
             tf.keras.metrics.Precision(top_k=5, name="Precision@5"),
             tf.keras.metrics.Precision(top_k=10, name="Precision@10"),
+            tf.keras.metrics.Recall(name="Recall@-1"),
             tf.keras.metrics.Recall(top_k=1, name="Recall@1"),
             tf.keras.metrics.Recall(top_k=5, name="Recall@5"),
             tf.keras.metrics.Recall(top_k=10, name="Recall@10")]
@@ -111,11 +114,12 @@ class RSTModel(KerasModelClass):
             sm_all = sm_all.merge(train_dev_user_count, how="left").fillna(0)
             sm_all.to_csv(f"{self.MODEL_PATH}{'final_' if test else ''}user_eval.csv")
 
-        for r in [1, 5, 10]:
-            r_at = ret[f"Recall@{r}"]
-            p_at = ret[f"Precision@{r}"]
+        # Obtener F1 de forma manual
+        for r in ["@-1","@1", "@5", "@10"]:
+            r_at = ret[f"Recall{r}"]
+            p_at = ret[f"Precision{r}"]
             f1_at = 2 * ((r_at * p_at) / (r_at + p_at))
-            ret[f"F1@{r}"] = f1_at
+            ret[f"F1{r}"] = f1_at
 
         ret = pd.DataFrame([ret.values()], columns=ret.keys())
         print_g(ret, title=False)

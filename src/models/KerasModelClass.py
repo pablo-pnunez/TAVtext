@@ -7,7 +7,8 @@ from src.Callbacks import linear_decay, CustomStopper, EpochTime
 import os
 import numpy as np
 import pandas as pd
-import tensorflow as tf
+import tensorflow as tf; 
+tf.get_logger().setLevel('INFO')
 import matplotlib.pylab as plt
 import seaborn as sns
 
