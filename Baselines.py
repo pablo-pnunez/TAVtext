@@ -90,6 +90,8 @@ def load_set(dataset, subset):
     val_data = val_data.merge(user_map)[["id_user", "id_item", "rating"]].drop_duplicates(subset=["id_user", "id_item"], keep='last', inplace=False)
     test_data = test_data.merge(user_map)[["id_user", "id_item", "rating"]].drop_duplicates(subset=["id_user", "id_item"], keep='last', inplace=False)
 
+    print_e(f"TEST USERS: {len(test_data.id_user.unique())}")
+
     # Instantiate a Base evaluation method using the provided train and test sets
     eval_method = BaseMethod.from_splits(train_data=train_data.to_records(index=False), val_data=val_data.to_records(index=False), test_data=test_data.to_records(index=False),  verbose=False, rating_threshold=1)
     # OJO: lo anterior elimina las repeticiones de USUARIO, ITEM
@@ -114,7 +116,7 @@ args = parser.parse_args()
 
 # datasets = {"pois": ["barcelona", "gijon"]}
 dataset = "restaurants" if args.dst is None else args.dst
-subset = "gijon" if args.sst is None else args.sst
+subset = "barcelona" if args.sst is None else args.sst
 
 # Cargar los datos
 eval_data, eval_method, user_map, train_dev_user_count = load_set(dataset, subset)
@@ -180,8 +182,10 @@ for result in experiment.result:
     final_res.append([result.metric_avg_results[mtr] for mtr in metric_names])
 
     # Separar por usuario
-    metric = metric_names[0]
+    metric = "F1@10"
     usr_metric = pd.DataFrame(result.metric_user_results[metric].items(), columns=["id_user", result.model_name]).merge(user_map.drop_duplicates(), how="left")
+    print_e(f"TEST USERS: {len(usr_metric)}")
+
     usr_metric = usr_metric.merge(train_dev_user_count, how="left").fillna(0)
     if user_final_res is None: user_final_res = usr_metric
     else: user_final_res = user_final_res.merge(usr_metric, how="left")
