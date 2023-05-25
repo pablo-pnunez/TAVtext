@@ -82,7 +82,8 @@ class RSTModel(KerasModelClass):
         metrics = [
             tfr.keras.metrics.NDCGMetric(topn=1, name="NDCG@1"),
             tfr.keras.metrics.NDCGMetric(topn=10, name="NDCG@10"),
-            tfr.keras.metrics.NDCGMetric(topn=10, name="NDCG@100"),
+            tfr.keras.metrics.NDCGMetric(topn=50, name="NDCG@50"),
+            tfr.keras.metrics.NDCGMetric(topn=100, name="NDCG@100"),# NO utilizar, hay datasets con menos de 100 items
             tfr.keras.metrics.NDCGMetric(name="NDCG@-1"),
             tf.keras.metrics.Precision(name="Precision@-1"),
             tf.keras.metrics.Precision(top_k=1, name="Precision@1"),

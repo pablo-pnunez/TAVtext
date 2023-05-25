@@ -125,7 +125,7 @@ metrics = [
     FMeasure(), FMeasure(k=1), FMeasure(k=5), FMeasure(k=10),
     Recall(), Recall(k=1), Recall(k=5), Recall(k=10), Recall(k=20), Recall(k=50),
     Precision(), Precision(k=1), Precision(k=5), Precision(k=10),
-    NDCG(), NDCG(k=1), NDCG(k=10),NDCG(k=100),
+    NDCG(), NDCG(k=1), NDCG(k=10), NDCG(k=50), NDCG(k=100),
     ]
 
 
