@@ -29,7 +29,8 @@ from src.experiments.Common import load_best_model
 
 model = load_best_model(model=model, dataset=dataset, subset=subset)
 model.train(dev=False, save_model=True)
-model.evaluate_text("Where can i eat the typical pastrami sandwich")
+model.evaluate_text("Where can i eat the typical pastrami sandwich with no cheese")
+
 
 exit()
 

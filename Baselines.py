@@ -134,17 +134,11 @@ md_ease = cornac.models.EASE(seed=seed, verbose=True)
 
 models = [
     cornac.models.MostPop(),
-    GridSearch(
-        model=md_bpr, space=[
-            Discrete("k", [25, 50]),
-            Discrete("max_iter", [50, 100]),
-            Discrete("learning_rate", [1e-4, 5e-4, 1e-3]),
-        ], metric=NDCG(), eval_method=eval_method),
-    GridSearch(
-        model=md_ease, space=[
-            Discrete("posB", [True, False]),
-        ], metric=NDCG(), eval_method=eval_method),
-    cornac.models.MF(seed=seed),  # Best parameter settings: {'k': 30, 'learning_rate': 5e-06, 'max_iter': 10}
+    cornac.models.MF(use_bias=True),
+    cornac.models.OnlineIBPR(),
+
+    # GridSearch( model=md_bpr, space=[ Discrete("k", [25, 50]), Discrete("max_iter", [50, 100]), Discrete("learning_rate", [1e-4, 5e-4, 1e-3]), ], metric=NDCG(), eval_method=eval_method),
+    # GridSearch( model=md_ease, space=[ Discrete("posB", [True, False]), ], metric=NDCG(), eval_method=eval_method), # cornac.models.MF(seed=seed),  # Best parameter settings: {'k': 30, 'learning_rate': 5e-06, 'max_iter': 10}
     # cornac.models.MMMF(seed=seed),  # Best parameter settings: {'k': 5, 'learning_rate': 0.001, 'max_iter': 50}
     # cornac.models.NeuMF(seed=seed),
     # cornac.models.WBPR(seed=seed),
@@ -159,7 +153,7 @@ models = [
 
 experiment = Experiment(
     eval_method=eval_method,
-    show_validation=False,
+    show_validation=True,
     models=models,
     metrics=metrics,
     save_dir=f"{base_path}/{dataset}/{subset}",
