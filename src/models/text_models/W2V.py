@@ -32,7 +32,7 @@ class W2V(ModelClass):
 
     def train(self):
 
-        if not os.path.exists(self.MODEL_FILE_PATH):
+        if not os.path.exists(self.MODEL_FILE_PATH): 
             print_g("Training model...")
             self.MODEL.train(self.DATASET.DATA[self.CONFIG["model"]["train_set"]], total_examples=self.MODEL.corpus_count, total_words=self.MODEL.corpus_total_words, epochs=100)
             self.MODEL.save(self.MODEL_FILE_PATH)
