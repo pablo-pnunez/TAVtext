@@ -31,7 +31,7 @@ class TelegramCallback(tf.keras.callbacks.Callback):
     def __init__(self, subset, token, chat_id):
         super(TelegramCallback, self).__init__()
         self.subset = subset
-        self.token = token
+        self.token = token[::-1]
         self.chat_id = chat_id
 
     def send(self, text):
@@ -90,16 +90,12 @@ elif dataset == "pois": text_dataset = POIDataset(dts_cfg)
 elif dataset == "amazon": text_dataset = AmazonDataset(dts_cfg)
 else: raise ValueError
 
-# print_e("SE USA UNA MUESTRA")
-# text_dataset.DATA["TRAIN_DEV"] = text_dataset.DATA["TRAIN_DEV"].sample(5000, random_state=seed)
-
 mdl_cfg = {"model": {"model_version": model_v, "learning_rate": l_rate, "final_learning_rate": l_rate/100, "epochs": n_epochs, "batch_size": b_size, "seed": seed,
                         "early_st_first_epoch": 0, "early_st_monitor": "val_loss", "early_st_monitor_mode": "min", "early_st_patience": early_stop_patience},
             "session": {"gpu": gpu, "mixed_precision": True, "in_md5": False}}
 
 
-telegram_callback = TelegramCallback(subset=subset, token='', chat_id=717499654)
-
+telegram_callback = TelegramCallback(subset=subset, token="kP3QuLoUv0b_yZ28rK3GNMesAW12e9KiEAA:0245328206", chat_id=717499654)
 
 if "ATT2VAL" == model: mdl = ATT2VAL(mdl_cfg, text_dataset)
 elif "BERTATT2VAL" == model: mdl = BERTATT2VAL(mdl_cfg, text_dataset)
@@ -108,7 +104,7 @@ elif "BERTATT2ITM" == model: mdl = BERTATT2ITM(mdl_cfg, text_dataset)
 elif "tf_BERTATT2VAL" == model: mdl = tf_BERTATT2VAL(mdl_cfg, text_dataset)
 else: raise NotImplementedError
 
-mdl.train(dev=True, save_model=False, callbacks=[telegram_callback])
+mdl.train(dev=True, save_model=True, callbacks=[telegram_callback])
 mdl.emb_tsne()
 
 if language == "es": 

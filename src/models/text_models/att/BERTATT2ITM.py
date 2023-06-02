@@ -35,7 +35,7 @@ class BERTATT2ITM(ATT2VAL):
         # self.bert_model = TFBertModel.from_pretrained("bert-base-multilingual-uncased")
         # self.tokenizer = BertTokenizer.from_pretrained('bert-base-multilingual-uncased')
 
-        self.bert_model.trainable = False
+        self.bert_model.trainable = True
 
         text_in = tf.keras.Input(shape=(pad_len), dtype='int32')
         rest_in = tf.keras.Input(shape=(rst_no), dtype='int32')
@@ -127,7 +127,7 @@ class BERTATT2ITM(ATT2VAL):
         data_y = tf.data.Dataset.from_tensor_slices(rst_data)
         data_y = data_y.map(lambda x: tf.one_hot(x, self.DATASET.DATA["N_ITEMS"]), num_parallel_calls=tf.data.AUTOTUNE)
         
-
+        # return tf.data.Dataset.zip((data_x, data_y)).take(int(len(dataframe)*0.1)).shuffle(1000)
         return tf.data.Dataset.zip((data_x, data_y))
     
     def emb_tsne(self):
@@ -138,9 +138,9 @@ class BERTATT2ITM(ATT2VAL):
         rst_embs = rst_embs.predict([list(range(self.DATASET.DATA["N_ITEMS"]))], verbose=0).squeeze()
         rest_names = self.DATASET.DATA["TRAIN_DEV"][["id_item", "name"]].sort_values("id_item").drop_duplicates().name.values.tolist()
         
-        vocab = self.tokenizer.get_vocab()
-        word_names = np.array(["UNK"]+list(self.DATASET.DATA["WORD_INDEX"].keys()))
-        wrd_embs = wrd_embs.predict(list(range(self.DATASET.DATA["VOCAB_SIZE"])), verbose=0).numpy()
+        vocab = pd.DataFrame(self.tokenizer.vocab.items(), columns=["token", "id"]).sort_values("id").reset_index(drop=True).set_index("id")
+        word_names = vocab.token.values
+        wrd_embs = wrd_embs.predict(vocab.index.values, verbose=0).numpy()
         wrd_embs = np.concatenate(wrd_embs)
 
         if rst_embs.shape[1] > 2:
