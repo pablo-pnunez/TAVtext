@@ -98,7 +98,7 @@ mdl_cfg = {"model": {"model_version": model_v, "learning_rate": l_rate, "final_l
             "session": {"gpu": gpu, "mixed_precision": True, "in_md5": False}}
 
 
-telegram_callback = TelegramCallback(subset=subset, token='6028235420:AAEiK9e21WAseMNG3Kr82Zy_b0vUoLuQ3Pk', chat_id=717499654)
+telegram_callback = TelegramCallback(subset=subset, token='', chat_id=717499654)
 
 
 if "ATT2VAL" == model: mdl = ATT2VAL(mdl_cfg, text_dataset)
