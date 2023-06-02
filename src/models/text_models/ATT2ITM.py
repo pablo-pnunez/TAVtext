@@ -99,7 +99,7 @@ class ATT2ITM(RSTModel):
 
             optimizer = tf.keras.optimizers.legacy.Adam(self.CONFIG["model"]["learning_rate"])
 
-            metrics = [tfr.keras.metrics.NDCGMetric(topn=10, name="NDCG10"), tfr.keras.metrics.RecallMetric(topn=1, name='r1'), tfr.keras.metrics.RecallMetric(topn=5, name='r5'), tfr.keras.metrics.RecallMetric(topn=10, name='r10'),
+            metrics = [tfr.keras.metrics.NDCGMetric(topn=10, name="NDCG@10"), tfr.keras.metrics.RecallMetric(topn=1, name='r1'), tfr.keras.metrics.RecallMetric(topn=5, name='r5'), tfr.keras.metrics.RecallMetric(topn=10, name='r10'),
                        tfr.keras.metrics.PrecisionMetric(topn=5, name='p5'), tfr.keras.metrics.PrecisionMetric(topn=10, name='p10'), f1_score]
 
             if mv == "0":
@@ -145,7 +145,7 @@ class ATT2ITM(RSTModel):
 
             optimizer = tf.keras.optimizers.legacy.Adam(self.CONFIG["model"]["learning_rate"])
 
-            metrics = [tfr.keras.metrics.NDCGMetric(topn=10, name="NDCG10"), tf.keras.metrics.AUC(name="AUC"), tfr.keras.metrics.RecallMetric(topn=1, name='r1'), 
+            metrics = [tfr.keras.metrics.NDCGMetric(topn=10, name="NDCG@10"), tf.keras.metrics.AUC(name="AUC"), tfr.keras.metrics.RecallMetric(topn=1, name='r1'), 
                        tfr.keras.metrics.PrecisionMetric(topn=1, name='p1'), tfa.metrics.F1Score(num_classes=rst_no, name="F1")]
 
             loss = tf.keras.losses.CategoricalCrossentropy()
@@ -823,6 +823,7 @@ class ATT2ITM(RSTModel):
         all_att = np.dot(wrd_embs, itm_embs.T)
         if act_function == "tanh": all_att = np.tanh(all_att)
         elif act_function == "sigmoid": all_att = tf.math.sigmoid(all_att).numpy()
+        elif act_function == "linear": all_att = all_att
         else: raise ValueError
         # att_std = np.std(all_att, -1)
         # att_mean = np.mean(all_att, -1)

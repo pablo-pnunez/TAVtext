@@ -14,7 +14,7 @@ from src.datasets.text_datasets.RestaurantDataset import RestaurantDataset
 from src.datasets.text_datasets.AmazonDataset import AmazonDataset
 from src.datasets.text_datasets.POIDataset import POIDataset
 
-from src.models.text_models.ATT2ITM import ATT2ITM
+from models.text_models.ATT2ITM import ATT2ITM
 from src.models.text_models.BOW2ITM import BOW2ITM
 from src.models.text_models.USEM2ITM import USEM2ITM
 
@@ -29,7 +29,6 @@ from src.experiments.Common import load_best_model
 model = load_best_model(model=model, dataset=dataset, subset=subset)
 model.train(dev=False, save_model=True)
 model.evaluate_text("Where can i eat the best vegan burger")
-
 
 
 exit()
@@ -81,10 +80,6 @@ else:
         language = "es"  # Están todas en español
     elif dataset == "amazon":
         base_path = "/media/nas/datasets/amazon/"
-
-    #  FIXME: NO SE JUNTA TRAIN+DEV PARA EL MODELO FINAL!!!
-    #  FIXME: TENSORFLOW DATA PARA BOW
-    #  TODO: SELECCIÓN AUTOMÁTICA DEL MEJOR MODELO DE GRIDSEARCH
 
     # DATASET CONFIG #######################################################################################################
 
