@@ -41,22 +41,22 @@ class KerasModelClass(ModelClass):
         """
         raise NotImplementedError
 
-    def train(self, dev=False, save_model=False, train_cfg={}):
+    def train(self, dev=False, save_model=False, train_cfg={}, callbacks=[]):
 
         train_cfg = {"verbose": 2, "workers": 6, "class_weight": None, "max_queue_size": 20, "multiprocessing": True}
 
         if dev:
             train_seq, dev_seq = self.get_train_dev_sequences(dev=dev)
-            self.__train_model__(train_sequence=train_seq, dev_sequence=dev_seq, save_model=save_model, train_cfg=train_cfg)
+            self.__train_model__(train_sequence=train_seq, dev_sequence=dev_seq, save_model=save_model, train_cfg=train_cfg, callbacks=callbacks)
         else:
             train_dev_seq = self.get_train_dev_sequences(dev=dev)
-            self.__train_model__(train_sequence=train_dev_seq, dev_sequence=None, save_model=save_model, train_cfg=train_cfg)
+            self.__train_model__(train_sequence=train_dev_seq, dev_sequence=None, save_model=save_model, train_cfg=train_cfg, callbacks=callbacks)
 
-    def __train_model__(self, train_sequence=None, dev_sequence=None, save_model=False, train_cfg={}):
+    def __train_model__(self, train_sequence=None, dev_sequence=None, save_model=False, train_cfg={}, callbacks=[]):
 
         is_dev = dev_sequence is not None
 
-        callbacks = []
+        # callbacks = []
 
         # Learning rate decay (lineal o cosine)
         lrs = tf.keras.callbacks.LearningRateScheduler(lambda epoch, lr: linear_decay(current_lr=lr,
