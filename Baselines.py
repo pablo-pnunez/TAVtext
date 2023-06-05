@@ -11,7 +11,7 @@ from src.datasets.text_datasets.AmazonDataset import AmazonDataset
 from src.datasets.text_datasets.POIDataset import POIDataset
 
 from src.models.text_models.USEM2ITM import USEM2ITM
-from src.models.text_models.ATT2ITM import ATT2ITM
+from models.text_models.att.ATT2ITM import ATT2ITM
 from src.models.text_models.BOW2ITM import BOW2ITM
 
 from cornac.metrics import Recall, Precision, FMeasure, NDCG

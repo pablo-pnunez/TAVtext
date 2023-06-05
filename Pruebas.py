@@ -15,10 +15,13 @@ from src.datasets.text_datasets.AmazonDataset import AmazonDataset
 from src.datasets.text_datasets.POIDataset import POIDataset
 
 from src.models.text_models.att.ATT2VAL import ATT2VAL
-from src.models.text_models.att.BERTATT2VAL import BERTATT2VAL
-from src.models.text_models.ATT2ITM import ATT2ITM
-from src.models.text_models.att.tf_BERTATT2VAL import tf_BERTATT2VAL
-from src.models.text_models.att.BERTATT2ITM import BERTATT2ITM
+from src.models.text_models.att.bert.BERTATT2VAL import BERTATT2VAL
+from src.models.text_models.att.ATT2ITM import ATT2ITM
+from src.models.text_models.att.bert.tf_BERTATT2VAL import tf_BERTATT2VAL
+from src.models.text_models.att.bert.BERTATT2ITM import BERTATT2ITM
+
+from src.models.text_models.att.w2v.W2VATT2VAL import W2VATT2VAL
+from src.models.text_models.att.w2v.W2VATT2ITM import W2VATT2ITM
 
 import tensorflow as tf
 import urllib.parse
@@ -46,16 +49,9 @@ class TelegramCallback(tf.keras.callbacks.Callback):
 
 
 dataset = "restaurants".lower().replace(" ", "") if args.dst is None else args.dst
-subset = "gijon".lower().replace(" ", "") if args.sst is None else args.sst
-
-model = "BERTATT2ITM"
-model_v = "0" if args.mv is None else args.mv
+subset = "barcelona".lower().replace(" ", "") if args.sst is None else args.sst
 
 seed = 100 if args.sd is None else args.sd
-l_rate = 1e-4 if args.lr is None else args.lr
-n_epochs = 1000 if args.ep is None else args.eps
-b_size = 256 if args.bs is None else args.bs
-early_stop_patience = 10 if args.esp is None else args.esp
 
 min_reviews_rst = 100
 min_reviews_usr = 1
@@ -90,6 +86,14 @@ elif dataset == "pois": text_dataset = POIDataset(dts_cfg)
 elif dataset == "amazon": text_dataset = AmazonDataset(dts_cfg)
 else: raise ValueError
 
+model = "ATT2VAL"
+model_v = "0" if args.mv is None else args.mv
+
+l_rate = 1e-4 if args.lr is None else args.lr
+n_epochs = 1000 if args.ep is None else args.eps
+b_size = 256 if args.bs is None else args.bs
+early_stop_patience = 10 if args.esp is None else args.esp
+
 mdl_cfg = {"model": {"model_version": model_v, "learning_rate": l_rate, "final_learning_rate": l_rate/100, "epochs": n_epochs, "batch_size": b_size, "seed": seed,
                         "early_st_first_epoch": 0, "early_st_monitor": "val_loss", "early_st_monitor_mode": "min", "early_st_patience": early_stop_patience},
             "session": {"gpu": gpu, "mixed_precision": True, "in_md5": False}}
@@ -102,14 +106,18 @@ elif "BERTATT2VAL" == model: mdl = BERTATT2VAL(mdl_cfg, text_dataset)
 elif "ATT2ITM" == model: mdl = ATT2ITM(mdl_cfg, text_dataset)
 elif "BERTATT2ITM" == model: mdl = BERTATT2ITM(mdl_cfg, text_dataset)
 elif "tf_BERTATT2VAL" == model: mdl = tf_BERTATT2VAL(mdl_cfg, text_dataset)
+
+elif "W2VATT2VAL" == model: mdl = W2VATT2VAL(mdl_cfg, text_dataset)
+elif "W2VATT2ITM" == model: mdl = W2VATT2ITM(mdl_cfg, text_dataset)
+
 else: raise NotImplementedError
 
-mdl.train(dev=True, save_model=True, callbacks=[telegram_callback])
+mdl.train(dev=True, save_model=False, callbacks=[])
 mdl.emb_tsne()
 
 if language == "es": 
-    mdl.evaluate_text("quiero comer un arroz con bogavante y con buenas vistas")
     mdl.evaluate_text("a el la yo en un con y") # HAY QUE USAR UNA RELU o RELUTAN SI NO ESTO DA VALORES ALTOS
+    mdl.evaluate_text("quiero comer un arroz con bogavante y con buenas vistas")
 if language == "en": mdl.evaluate_text("Where can not i eat the typical pastrami sandwich")
 
 

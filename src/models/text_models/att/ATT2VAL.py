@@ -12,7 +12,7 @@ import binascii
 import os
 
 from src.Common import print_g, print_e, get_pickle, to_pickle
-from src.models.text_models.ATT2ITM import ATT2ITM
+from src.models.text_models.att.ATT2ITM import ATT2ITM
 
 
 class ATT2VAL(ATT2ITM):
@@ -20,6 +20,52 @@ class ATT2VAL(ATT2ITM):
 
     def __init__(self, config, dataset):
         ATT2ITM.__init__(self, config=config, dataset=dataset)
+
+    def custom_loss(self, y_true, y_pred):
+        mse = tf.square(y_true - y_pred)
+
+        rst_no = self.DATASET.DATA["N_ITEMS"]
+
+        mul_factor = int(rst_no*0.05) ## un 5%
+
+        true_max = tf.reduce_max(y_true, axis=1, keepdims=True)
+        true_ones = (y_true/true_max) # multiplica por 1 los items no activos y por 2 el actual
+        mse = mse * ((true_ones*(mul_factor-1))+1)
+        
+        mse = tf.sqrt(tf.reduce_mean(mse))
+        return mse  # Devolver la pérdida calculada
+    
+    def custom_activation_sigmoid(self, x):
+        min_value = 0.0
+        max_value = 5.0
+        return (max_value - min_value) * tf.sigmoid(x) + min_value
+
+    def custom_activation_sigmoid_two(self, x):
+        min_value = 0.0
+        max_value = 10.0
+        return (tf.sigmoid(x) - 0.5) * (max_value - min_value) + min_value
+
+    def custom_activation_tanh(self, x):
+        min_value = 0.0
+        max_value = 5.0
+        return (tf.nn.tanh(x) + 1) * ((max_value - min_value) / 2) + min_value
+
+    def custom_activation_relutan(self, x):
+        min_value = 0.0
+        max_value = 5
+        x = tf.cast(x, 'float32')  # Convertir a float32
+        return tf.maximum(0.0, tf.nn.tanh(x)) * (max_value - min_value) + min_value
+
+    def custom_activation_relu5(self, x):
+        min_value = 0.0
+        max_value = 5.0
+        x = tf.cast(x, 'float32')  # Convertir a float32
+        return tf.maximum(0.0, x) * max_value
+
+    def custom_activation_smoothstep(self, x, min_value=0.0, max_value=5.0):
+        x = tf.cast(x, 'float32')  # Convertir a float32
+        # return tf.where(x < 0, 0.0, tf.where(x >= 1, max_value, max_value * tf.pow(x, 2) * (3 - 2 * x)))
+        return tf.where(x < 0, min_value, tf.where(x >= 1, max_value, min_value + (max_value - min_value) * tf.pow(x, 2) * (3 - 2 * x)))
 
     def get_sub_model(self):
 
@@ -30,54 +76,14 @@ class ATT2VAL(ATT2ITM):
         pad_len = self.DATASET.DATA["MAX_LEN_PADDING"]
         vocab_size = self.DATASET.DATA["VOCAB_SIZE"]
 
-        def custom_loss(y_true, y_pred):
-            mse = tf.square(y_true - y_pred)
-            
-            mul_factor = int(rst_no*0.3) ## un 10%
-
-            true_max = tf.reduce_max(y_true, axis=1, keepdims=True)
-            true_ones = (y_true/true_max) # multiplica por 1 los items no activos y por 2 el actual
-            mse = mse * ((true_ones*(mul_factor-1))+1)
-            
-            mse = tf.sqrt(tf.reduce_mean(mse))
-            return mse  # Devolver la pérdida calculada
-        
-        def custom_activation_sigmoid(x):
-            min_value = 0.0
-            max_value = 5.0
-            return (max_value - min_value) * tf.sigmoid(x) + min_value
-
-        def custom_activation_sigmoid_two(x):
-            min_value = 0.0
-            max_value = 10.0
-            return (tf.sigmoid(x) - 0.5) * (max_value - min_value) + min_value
-
-        def custom_activation_tanh(x):
-            min_value = 0.0
-            max_value = 5.0
-            return (tf.nn.tanh(x) + 1) * ((max_value - min_value) / 2) + min_value
-
-        def custom_activation_relutan(x):
-            min_value = 0.0
-            max_value = 5
-            x = tf.cast(x, 'float32')  # Convertir a float32
-            return tf.maximum(0.0, tf.nn.tanh(x)) * (max_value - min_value) + min_value
-
-        def custom_activation_relu5(x):
-            min_value = 0.0
-            max_value = 5.0
-            x = tf.cast(x, 'float32')  # Convertir a float32
-            return tf.maximum(0.0, x) * max_value
-
-
         text_in = tf.keras.Input(shape=(pad_len), dtype='int32')
         rest_in = tf.keras.Input(shape=(rst_no), dtype='int32')
         
         model = None
 
         if mv == "0": # Se añade la estandarización a la salida y se simplifica el modelo
-            emb_size = 64  # 128
-            dropout = .2
+            emb_size = 128  # 128
+            dropout = .4
 
             use_bias = True
             emb_regu = None # tf.keras.regularizers.L2()
@@ -87,11 +93,20 @@ class ATT2VAL(ATT2ITM):
             mask_query = tf.tile(tf.expand_dims(mask_query, axis=-1),[1,1,rst_no]) # Se repite para todos los items
 
             ht_emb = query_emb(text_in)
+
+            # ht_emb = tf.keras.layers.Activation("tanh")(ht_emb)
+            # ht_emb = tf.keras.layers.Dense(emb_size, use_bias=use_bias)(ht_emb)
+
+
             ht_emb = tf.keras.layers.Lambda(lambda x: x, name="word_emb")(ht_emb)
             ht_emb = tf.keras.layers.Dropout(dropout)(ht_emb)
 
-            items_emb = tf.keras.layers.Embedding(rst_no, emb_size, name="all_items", embeddings_regularizer=emb_regu)
+            items_emb = tf.keras.layers.Embedding(rst_no, emb_size , name="all_items", embeddings_regularizer=emb_regu)
             hr_emb = items_emb(rest_in)
+
+            # hr_emb = tf.keras.layers.Activation("tanh")(hr_emb)
+            # hr_emb = tf.keras.layers.Dense(emb_size, use_bias=use_bias)(hr_emb)
+            
             hr_emb = tf.keras.layers.Lambda(lambda x: x, name="rest_emb")(hr_emb)
             hr_emb = tf.keras.layers.Dropout(dropout)(hr_emb)
 
@@ -100,7 +115,12 @@ class ATT2VAL(ATT2ITM):
             model = tf.keras.layers.Activation("tanh", name="dotprod")(model)
 
             model = tf.keras.layers.Lambda(lambda x: tf.math.reduce_sum(x, 1), name="sum")(model)
-            model = tf.keras.layers.Activation(custom_activation_relutan)(model) # Sigmoide entre 1 y 5                                 
+
+            # mask_sum = tf.keras.layers.Lambda(lambda x: tf.math.reduce_sum(x, 1), name="mask_sum")(mask_query)
+            # model = tf.keras.layers.Lambda(lambda x: x[0] / x[1], name="norm")([model, mask_sum])
+            # model = tf.keras.layers.Dense(rst_no, use_bias=False)(model)
+
+            model = tf.keras.layers.Activation(self.custom_activation_smoothstep)(model) # Sigmoide entre 1 y 5                                 
             model_out = tf.keras.layers.Activation("linear", name="out", dtype='float32')(model)
                         
             model = tf.keras.models.Model(inputs=[text_in, rest_in], outputs=[model_out], name=f"{self.MODEL_NAME}_{self.MODEL_VERSION}")
@@ -109,7 +129,7 @@ class ATT2VAL(ATT2ITM):
             metrics = [tfr.keras.metrics.NDCGMetric(topn=10, name="NDCG@10"), tf.keras.metrics.MeanAbsoluteError(name="MAE"),
                        tfr.keras.metrics.RecallMetric(topn=5, name='RC@5'), tfr.keras.metrics.RecallMetric(topn=10, name='RC@10')]
                      
-        model.compile(loss=custom_loss, metrics=metrics, optimizer=optimizer)
+        model.compile(loss=self.custom_loss, metrics=metrics, optimizer=optimizer)
 
         print(model.summary())
 
