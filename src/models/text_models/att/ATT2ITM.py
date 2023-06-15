@@ -21,6 +21,8 @@ from src.models.Common import create_weighted_binary_crossentropy, weighted_bina
 from src.models.text_models.RSTModel import RSTModel
 from src.sequences.BaseSequence import BaseSequence
 
+import keras_nlp
+
 
 class ATT2ITM(RSTModel):
     """ Predecir, a partir de los embeddings de una review y los de los restaruantes, el restaurante de la review """
@@ -65,10 +67,23 @@ class ATT2ITM(RSTModel):
             ht_emb = tf.keras.layers.Dense(emb_size * 2, use_bias=use_bias)(ht_emb)
             # ht_emb = tf.keras.layers.Activation("tanh")(ht_emb)
             ht_emb = tf.keras.layers.Dense(emb_size, use_bias=use_bias)(ht_emb)
-
             # ht_emb = tf.keras.layers.Activation("tanh")(ht_emb)
+           
+            '''
+            wr_att_embs = tf.keras.layers.Embedding(vocab_size, 32, mask_zero=True, name="wr_att_embs")
+            wr_att_embs = wr_att_embs(text_in)
+            wr_att_embs = tf.keras.layers.Dropout(.8)(wr_att_embs)     
+            wr_attention_scores = tf.matmul(wr_att_embs, wr_att_embs, transpose_b=True)
+            ht_emb = tf.einsum("abc,acd->abd", wr_attention_scores, ht_emb)
+            '''            
+
             ht_emb = tf.keras.layers.Lambda(lambda x: x, name="word_emb")(ht_emb)
 
+            '''
+            position_embeddings = keras_nlp.layers.SinePositionEncoding()(ht_emb)
+            ht_emb = ht_emb + position_embeddings
+            '''
+            
             rests_emb = tf.keras.layers.Embedding(rst_no, emb_size * 3, name=f"in_rsts")
             hr_emb = rests_emb(rest_in)
             # hr_emb = tf.keras.layers.Activation("tanh")(hr_emb)
@@ -90,9 +105,11 @@ class ATT2ITM(RSTModel):
             model = tf.keras.layers.Dropout(.4)(model)
 
             model = tf.keras.layers.Lambda(lambda x: tf.math.reduce_sum(x, 1), name="sum")(model)
+            # model = tf.keras.layers.Lambda(lambda x: tf.math.reduce_sum(x[0], 1)/tf.math.reduce_sum(x[1], 1), name="sum")([model, mask_query])
             ##  model = tf.keras.layers.Dropout(.1)(model)
 
             model_out = tf.keras.layers.Activation("sigmoid", name="out", dtype='float32')(model)
+            # model_out = tf.keras.layers.Activation("linear", name="out", dtype='float32')(model)
 
             model = tf.keras.models.Model(inputs=[text_in, rest_in], outputs=[model_out], name=f"{self.MODEL_NAME}_{self.MODEL_VERSION}")
 
@@ -430,7 +447,7 @@ class ATT2ITM(RSTModel):
         rest_names = self.DATASET.DATA["TRAIN_DEV"][["id_item", "name"]].sort_values("id_item").drop_duplicates().name.values.tolist()
         
         word_names = np.array(["UNK"]+list(self.DATASET.DATA["WORD_INDEX"].keys()))
-        wrd_embs = wrd_embs.predict(list(range(self.DATASET.DATA["VOCAB_SIZE"])), verbose=0).squeeze()
+        wrd_embs = wrd_embs.predict(np.expand_dims(list(range(self.DATASET.DATA["VOCAB_SIZE"])),-1), verbose=0).squeeze()
         
         ''' 
         # BUSCAR PALABRAS CERCANAS USANDO DISTANCIA COSENO
@@ -808,7 +825,7 @@ class ATT2ITM(RSTModel):
         # Obtener todas las palabras (nombres y embeddings)
         word_names = np.array(["UNK"] + list(self.DATASET.DATA["WORD_INDEX"].keys()))
         word_names = pd.DataFrame(word_names, columns=["name"]).loc[words].name.tolist()
-        wrd_embs = wrd_embs.predict(words, verbose=0).squeeze()
+        wrd_embs = wrd_embs.predict(np.expand_dims(words,-1), verbose=0).squeeze()
         # wrd_embs_std = np.std(wrd_embs, -1)
         # wrd_embs_std_pct = np.argsort(-wrd_embs_std)[:int(len(wrd_embs_std)*.10)]
 

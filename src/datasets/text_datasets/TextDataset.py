@@ -17,9 +17,8 @@ from unicodedata import normalize as normalize_uni
 from sklearn.feature_extraction.text import CountVectorizer
 
 
-@Language.factory("language_detector")
 def get_lang_detector(nlp, name):
-    return LanguageDetector()
+    return LanguageDetector()  # We use the seed 42
 
 
 class TextDataset(DatasetClass):
@@ -39,8 +38,10 @@ class TextDataset(DatasetClass):
         # self.NLP = spacy_model.load(disable=["parser", "ner", "attribute_ruler"])
         # self.NLP = spacy_model.load(disable=["parser", "ner"])
         self.NLP = spacy_model.load()
+        Language.factory("language_detector", func=get_lang_detector)
         self.NLP.add_pipe('language_detector', last=True)
         self.STOPWORDS = self.__get_stopwords__(lang=config["language"])
+
         DatasetClass.__init__(self, config=config, load=load)
 
     def prerpocess_text(self, text):
@@ -119,7 +120,7 @@ class TextDataset(DatasetClass):
         rev["text"] = rev["text"].apply(self.__preprocess_text_base__)
 
         # Luego hacemos la lemmatización si es necesario y aprovechamos para hacer el PoS
-        # FIXME: HACER ESTO SIEMPRE?, SE NECESITA PARA OBTENER EL LENGUAJE
+        # FIXME: Código de extraer lenguaje repetido
         pos_list = []
         if self.CONFIG["lemmatization"]:
             out_list = []
@@ -146,6 +147,12 @@ class TextDataset(DatasetClass):
             rev["text"] = out_list
             rev["lang"] = lang_list
             del out_list
+        else:
+            # Extraer el idioma de la reseña sin lemmatización
+            lang_list = []
+            for doc in tqdm(self.NLP.pipe(rev["text"].tolist()), total=len(rev), desc="Language extraction"):
+                lang_list.append(doc._.language["language"])
+            rev["lang"] = lang_list
 
         # Eliminar reviews que no sean del mismo idioma (guardar el resto en excel)
         rev[rev["lang"] != self.CONFIG["language"]][["text", "lang"]].to_excel(self.DATASET_PATH+"other_languages.xlsx")

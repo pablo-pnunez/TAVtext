@@ -1,0 +1,790 @@
+2023-06-06 23:54:23.902816: I tensorflow/core/platform/cpu_feature_guard.cc:193] This TensorFlow binary is optimized with oneAPI Deep Neural Network Library (oneDNN) to use the following CPU instructions in performance-critical operations:  SSE3 SSE4.1 SSE4.2 AVX AVX2 FMA
+To enable them in other operations, rebuild TensorFlow with the appropriate compiler flags.
+/media/nas/pperez/miniconda3/envs/TAVtext/lib/python3.8/site-packages/tensorflow_addons/utils/tfa_eol_msg.py:23: UserWarning: 
+
+TensorFlow Addons (TFA) has ended development and introduction of new features.
+TFA has entered a minimal maintenance and release mode until a planned end of life in May 2024.
+Please modify downstream libraries to take dependencies from other repositories in our TensorFlow community (e.g. Keras, Keras-CV, and Keras-NLP). 
+
+For more information see: https://github.com/tensorflow/addons/issues/2807 
+
+  warnings.warn(
+INFO:tensorflow:Mixed precision compatibility check (mixed_float16): OK
+Your GPU will likely run quickly with dtype policy mixed_float16 as it has compute capability of at least 7.0. Your GPU: NVIDIA GeForce RTX 3090, compute capability 8.6
+Model: "ATT2VAL_0"
+__________________________________________________________________________________________________
+ Layer (type)                   Output Shape         Param #     Connected to                     
+==================================================================================================
+ input_1 (InputLayer)           [(None, 172)]        0           []                               
+                                                                                                  
+ input_2 (InputLayer)           [(None, 1322)]       0           []                               
+                                                                                                  
+ all_words (Embedding)          (None, 172, 128)     1129984     ['input_1[0][0]']                
+                                                                                                  
+ all_items (Embedding)          (None, 1322, 128)    169216      ['input_2[0][0]']                
+                                                                                                  
+ tf.math.not_equal (TFOpLambda)  (None, 172)         0           ['input_1[0][0]']                
+                                                                                                  
+ word_emb (Lambda)              (None, 172, 128)     0           ['all_words[0][0]']              
+                                                                                                  
+ rest_emb (Lambda)              (None, 1322, 128)    0           ['all_items[0][0]']              
+                                                                                                  
+ tf.cast (TFOpLambda)           (None, 172)          0           ['tf.math.not_equal[0][0]']      
+                                                                                                  
+ dropout (Dropout)              (None, 172, 128)     0           ['word_emb[0][0]']               
+                                                                                                  
+ dropout_1 (Dropout)            (None, 1322, 128)    0           ['rest_emb[0][0]']               
+                                                                                                  
+ tf.expand_dims (TFOpLambda)    (None, 172, 1)       0           ['tf.cast[0][0]']                
+                                                                                                  
+ dot_mul (Lambda)               (None, 172, 1322)    0           ['dropout[0][0]',                
+                                                                  'dropout_1[0][0]']              
+                                                                                                  
+ tf.tile (TFOpLambda)           (None, 172, 1322)    0           ['tf.expand_dims[0][0]']         
+                                                                                                  
+ dot_mask (Lambda)              (None, 172, 1322)    0           ['dot_mul[0][0]',                
+                                                                  'tf.tile[0][0]']                
+                                                                                                  
+ dotprod (Activation)           (None, 172, 1322)    0           ['dot_mask[0][0]']               
+                                                                                                  
+ sum (Lambda)                   (None, 1322)         0           ['dotprod[0][0]']                
+                                                                                                  
+ re_lu (ReLU)                   (None, 1322)         0           ['sum[0][0]']                    
+                                                                                                  
+ out (Activation)               (None, 1322)         0           ['re_lu[0][0]']                  
+                                                                                                  
+==================================================================================================
+Total params: 1,299,200
+Trainable params: 1,299,200
+Non-trainable params: 0
+__________________________________________________________________________________________________
+None
+Epoch 1/1000
+2005/2005 - 17s - loss: 0.9173 - NDCG@10: 0.0207 - MAE: 0.0606 - RC@5: 0.0246 - RC@10: 0.0393 - val_loss: 0.9068 - val_NDCG@10: 0.0496 - val_MAE: 0.0600 - val_RC@5: 0.0575 - val_RC@10: 0.0879 - lr: 4.9951e-05 - e_time: 16.6362 - 17s/epoch - 8ms/step
+Epoch 2/1000
+2005/2005 - 15s - loss: 0.8987 - NDCG@10: 0.0526 - MAE: 0.0868 - RC@5: 0.0631 - RC@10: 0.0916 - val_loss: 0.8872 - val_NDCG@10: 0.0810 - val_MAE: 0.0798 - val_RC@5: 0.0939 - val_RC@10: 0.1375 - lr: 4.9901e-05 - e_time: 14.8989 - 15s/epoch - 8ms/step
+Epoch 3/1000
+2005/2005 - 15s - loss: 0.8790 - NDCG@10: 0.0798 - MAE: 0.1028 - RC@5: 0.0952 - RC@10: 0.1353 - val_loss: 0.8658 - val_NDCG@10: 0.1111 - val_MAE: 0.0924 - val_RC@5: 0.1332 - val_RC@10: 0.1854 - lr: 4.9852e-05 - e_time: 14.5168 - 15s/epoch - 7ms/step
+Epoch 4/1000
+2005/2005 - 15s - loss: 0.8581 - NDCG@10: 0.1075 - MAE: 0.1137 - RC@5: 0.1297 - RC@10: 0.1807 - val_loss: 0.8436 - val_NDCG@10: 0.1430 - val_MAE: 0.1004 - val_RC@5: 0.1723 - val_RC@10: 0.2339 - lr: 4.9802e-05 - e_time: 14.6463 - 15s/epoch - 7ms/step
+Epoch 5/1000
+2005/2005 - 15s - loss: 0.8374 - NDCG@10: 0.1340 - MAE: 0.1215 - RC@5: 0.1618 - RC@10: 0.2221 - val_loss: 0.8229 - val_NDCG@10: 0.1726 - val_MAE: 0.1060 - val_RC@5: 0.2062 - val_RC@10: 0.2750 - lr: 4.9753e-05 - e_time: 14.6544 - 15s/epoch - 7ms/step
+Epoch 6/1000
+2005/2005 - 15s - loss: 0.8193 - NDCG@10: 0.1583 - MAE: 0.1263 - RC@5: 0.1896 - RC@10: 0.2580 - val_loss: 0.8051 - val_NDCG@10: 0.1988 - val_MAE: 0.1087 - val_RC@5: 0.2345 - val_RC@10: 0.3119 - lr: 4.9703e-05 - e_time: 14.6026 - 15s/epoch - 7ms/step
+Epoch 7/1000
+2005/2005 - 15s - loss: 0.8036 - NDCG@10: 0.1787 - MAE: 0.1279 - RC@5: 0.2142 - RC@10: 0.2877 - val_loss: 0.7902 - val_NDCG@10: 0.2207 - val_MAE: 0.1087 - val_RC@5: 0.2613 - val_RC@10: 0.3424 - lr: 4.9654e-05 - e_time: 14.6545 - 15s/epoch - 7ms/step
+Epoch 8/1000
+2005/2005 - 15s - loss: 0.7906 - NDCG@10: 0.1962 - MAE: 0.1276 - RC@5: 0.2356 - RC@10: 0.3128 - val_loss: 0.7778 - val_NDCG@10: 0.2405 - val_MAE: 0.1066 - val_RC@5: 0.2837 - val_RC@10: 0.3685 - lr: 4.9604e-05 - e_time: 14.6316 - 15s/epoch - 7ms/step
+Epoch 9/1000
+2005/2005 - 15s - loss: 0.7794 - NDCG@10: 0.2115 - MAE: 0.1263 - RC@5: 0.2535 - RC@10: 0.3356 - val_loss: 0.7671 - val_NDCG@10: 0.2574 - val_MAE: 0.1049 - val_RC@5: 0.3037 - val_RC@10: 0.3903 - lr: 4.9555e-05 - e_time: 14.6123 - 15s/epoch - 7ms/step
+Epoch 10/1000
+2005/2005 - 15s - loss: 0.7699 - NDCG@10: 0.2242 - MAE: 0.1246 - RC@5: 0.2681 - RC@10: 0.3534 - val_loss: 0.7578 - val_NDCG@10: 0.2717 - val_MAE: 0.1027 - val_RC@5: 0.3207 - val_RC@10: 0.4099 - lr: 4.9505e-05 - e_time: 14.6756 - 15s/epoch - 7ms/step
+Epoch 11/1000
+2005/2005 - 15s - loss: 0.7615 - NDCG@10: 0.2349 - MAE: 0.1226 - RC@5: 0.2821 - RC@10: 0.3695 - val_loss: 0.7496 - val_NDCG@10: 0.2845 - val_MAE: 0.0998 - val_RC@5: 0.3352 - val_RC@10: 0.4269 - lr: 4.9456e-05 - e_time: 14.6554 - 15s/epoch - 7ms/step
+Epoch 12/1000
+2005/2005 - 15s - loss: 0.7542 - NDCG@10: 0.2442 - MAE: 0.1209 - RC@5: 0.2935 - RC@10: 0.3826 - val_loss: 0.7422 - val_NDCG@10: 0.2958 - val_MAE: 0.0981 - val_RC@5: 0.3485 - val_RC@10: 0.4423 - lr: 4.9406e-05 - e_time: 14.6678 - 15s/epoch - 7ms/step
+Epoch 13/1000
+2005/2005 - 15s - loss: 0.7471 - NDCG@10: 0.2534 - MAE: 0.1189 - RC@5: 0.3048 - RC@10: 0.3956 - val_loss: 0.7357 - val_NDCG@10: 0.3060 - val_MAE: 0.0954 - val_RC@5: 0.3612 - val_RC@10: 0.4555 - lr: 4.9357e-05 - e_time: 14.6420 - 15s/epoch - 7ms/step
+Epoch 14/1000
+2005/2005 - 15s - loss: 0.7410 - NDCG@10: 0.2617 - MAE: 0.1171 - RC@5: 0.3147 - RC@10: 0.4084 - val_loss: 0.7297 - val_NDCG@10: 0.3151 - val_MAE: 0.0933 - val_RC@5: 0.3724 - val_RC@10: 0.4674 - lr: 4.9307e-05 - e_time: 14.6274 - 15s/epoch - 7ms/step
+Epoch 15/1000
+2005/2005 - 15s - loss: 0.7354 - NDCG@10: 0.2692 - MAE: 0.1153 - RC@5: 0.3233 - RC@10: 0.4173 - val_loss: 0.7242 - val_NDCG@10: 0.3229 - val_MAE: 0.0909 - val_RC@5: 0.3839 - val_RC@10: 0.4781 - lr: 4.9258e-05 - e_time: 14.5975 - 15s/epoch - 7ms/step
+Epoch 16/1000
+2005/2005 - 15s - loss: 0.7301 - NDCG@10: 0.2762 - MAE: 0.1137 - RC@5: 0.3321 - RC@10: 0.4276 - val_loss: 0.7192 - val_NDCG@10: 0.3308 - val_MAE: 0.0893 - val_RC@5: 0.3929 - val_RC@10: 0.4880 - lr: 4.9208e-05 - e_time: 14.6252 - 15s/epoch - 7ms/step
+Epoch 17/1000
+2005/2005 - 15s - loss: 0.7255 - NDCG@10: 0.2821 - MAE: 0.1120 - RC@5: 0.3397 - RC@10: 0.4365 - val_loss: 0.7148 - val_NDCG@10: 0.3372 - val_MAE: 0.0865 - val_RC@5: 0.3993 - val_RC@10: 0.4964 - lr: 4.9159e-05 - e_time: 14.6246 - 15s/epoch - 7ms/step
+Epoch 18/1000
+2005/2005 - 15s - loss: 0.7209 - NDCG@10: 0.2885 - MAE: 0.1105 - RC@5: 0.3478 - RC@10: 0.4436 - val_loss: 0.7105 - val_NDCG@10: 0.3435 - val_MAE: 0.0856 - val_RC@5: 0.4068 - val_RC@10: 0.5034 - lr: 4.9109e-05 - e_time: 14.6036 - 15s/epoch - 7ms/step
+Epoch 19/1000
+2005/2005 - 15s - loss: 0.7169 - NDCG@10: 0.2937 - MAE: 0.1092 - RC@5: 0.3535 - RC@10: 0.4515 - val_loss: 0.7066 - val_NDCG@10: 0.3496 - val_MAE: 0.0840 - val_RC@5: 0.4157 - val_RC@10: 0.5098 - lr: 4.9060e-05 - e_time: 14.6098 - 15s/epoch - 7ms/step
+Epoch 20/1000
+2005/2005 - 15s - loss: 0.7131 - NDCG@10: 0.2989 - MAE: 0.1081 - RC@5: 0.3593 - RC@10: 0.4575 - val_loss: 0.7031 - val_NDCG@10: 0.3546 - val_MAE: 0.0822 - val_RC@5: 0.4215 - val_RC@10: 0.5159 - lr: 4.9010e-05 - e_time: 14.5881 - 15s/epoch - 7ms/step
+Epoch 21/1000
+2005/2005 - 15s - loss: 0.7096 - NDCG@10: 0.3034 - MAE: 0.1066 - RC@5: 0.3647 - RC@10: 0.4637 - val_loss: 0.6997 - val_NDCG@10: 0.3591 - val_MAE: 0.0811 - val_RC@5: 0.4263 - val_RC@10: 0.5207 - lr: 4.8961e-05 - e_time: 14.7689 - 15s/epoch - 7ms/step
+Epoch 22/1000
+2005/2005 - 15s - loss: 0.7059 - NDCG@10: 0.3079 - MAE: 0.1057 - RC@5: 0.3716 - RC@10: 0.4696 - val_loss: 0.6967 - val_NDCG@10: 0.3646 - val_MAE: 0.0793 - val_RC@5: 0.4330 - val_RC@10: 0.5264 - lr: 4.8911e-05 - e_time: 14.6597 - 15s/epoch - 7ms/step
+Epoch 23/1000
+2005/2005 - 15s - loss: 0.7028 - NDCG@10: 0.3121 - MAE: 0.1044 - RC@5: 0.3758 - RC@10: 0.4759 - val_loss: 0.6938 - val_NDCG@10: 0.3699 - val_MAE: 0.0783 - val_RC@5: 0.4379 - val_RC@10: 0.5321 - lr: 4.8862e-05 - e_time: 14.6778 - 15s/epoch - 7ms/step
+Epoch 24/1000
+2005/2005 - 15s - loss: 0.6998 - NDCG@10: 0.3163 - MAE: 0.1036 - RC@5: 0.3805 - RC@10: 0.4799 - val_loss: 0.6911 - val_NDCG@10: 0.3734 - val_MAE: 0.0772 - val_RC@5: 0.4412 - val_RC@10: 0.5359 - lr: 4.8812e-05 - e_time: 14.6295 - 15s/epoch - 7ms/step
+Epoch 25/1000
+2005/2005 - 15s - loss: 0.6971 - NDCG@10: 0.3190 - MAE: 0.1028 - RC@5: 0.3845 - RC@10: 0.4841 - val_loss: 0.6888 - val_NDCG@10: 0.3783 - val_MAE: 0.0755 - val_RC@5: 0.4466 - val_RC@10: 0.5414 - lr: 4.8763e-05 - e_time: 14.6055 - 15s/epoch - 7ms/step
+Epoch 26/1000
+2005/2005 - 15s - loss: 0.6945 - NDCG@10: 0.3232 - MAE: 0.1018 - RC@5: 0.3889 - RC@10: 0.4886 - val_loss: 0.6863 - val_NDCG@10: 0.3811 - val_MAE: 0.0749 - val_RC@5: 0.4498 - val_RC@10: 0.5450 - lr: 4.8713e-05 - e_time: 14.6195 - 15s/epoch - 7ms/step
+Epoch 27/1000
+2005/2005 - 15s - loss: 0.6919 - NDCG@10: 0.3258 - MAE: 0.1009 - RC@5: 0.3930 - RC@10: 0.4926 - val_loss: 0.6839 - val_NDCG@10: 0.3837 - val_MAE: 0.0748 - val_RC@5: 0.4530 - val_RC@10: 0.5474 - lr: 4.8664e-05 - e_time: 14.6456 - 15s/epoch - 7ms/step
+Epoch 28/1000
+2005/2005 - 15s - loss: 0.6893 - NDCG@10: 0.3302 - MAE: 0.1001 - RC@5: 0.3975 - RC@10: 0.4976 - val_loss: 0.6819 - val_NDCG@10: 0.3879 - val_MAE: 0.0734 - val_RC@5: 0.4579 - val_RC@10: 0.5520 - lr: 4.8614e-05 - e_time: 14.6490 - 15s/epoch - 7ms/step
+Epoch 29/1000
+2005/2005 - 15s - loss: 0.6874 - NDCG@10: 0.3327 - MAE: 0.0994 - RC@5: 0.4010 - RC@10: 0.4998 - val_loss: 0.6799 - val_NDCG@10: 0.3906 - val_MAE: 0.0725 - val_RC@5: 0.4614 - val_RC@10: 0.5542 - lr: 4.8565e-05 - e_time: 14.6343 - 15s/epoch - 7ms/step
+Epoch 30/1000
+2005/2005 - 15s - loss: 0.6851 - NDCG@10: 0.3355 - MAE: 0.0986 - RC@5: 0.4039 - RC@10: 0.5033 - val_loss: 0.6781 - val_NDCG@10: 0.3938 - val_MAE: 0.0718 - val_RC@5: 0.4637 - val_RC@10: 0.5579 - lr: 4.8515e-05 - e_time: 14.5876 - 15s/epoch - 7ms/step
+Epoch 31/1000
+2005/2005 - 15s - loss: 0.6829 - NDCG@10: 0.3383 - MAE: 0.0980 - RC@5: 0.4068 - RC@10: 0.5074 - val_loss: 0.6765 - val_NDCG@10: 0.3964 - val_MAE: 0.0707 - val_RC@5: 0.4671 - val_RC@10: 0.5606 - lr: 4.8466e-05 - e_time: 14.5983 - 15s/epoch - 7ms/step
+Epoch 32/1000
+2005/2005 - 15s - loss: 0.6811 - NDCG@10: 0.3404 - MAE: 0.0973 - RC@5: 0.4104 - RC@10: 0.5102 - val_loss: 0.6749 - val_NDCG@10: 0.3991 - val_MAE: 0.0697 - val_RC@5: 0.4701 - val_RC@10: 0.5633 - lr: 4.8416e-05 - e_time: 14.6111 - 15s/epoch - 7ms/step
+Epoch 33/1000
+2005/2005 - 15s - loss: 0.6793 - NDCG@10: 0.3434 - MAE: 0.0968 - RC@5: 0.4133 - RC@10: 0.5139 - val_loss: 0.6734 - val_NDCG@10: 0.4014 - val_MAE: 0.0690 - val_RC@5: 0.4730 - val_RC@10: 0.5658 - lr: 4.8367e-05 - e_time: 14.6113 - 15s/epoch - 7ms/step
+Epoch 34/1000
+2005/2005 - 15s - loss: 0.6777 - NDCG@10: 0.3444 - MAE: 0.0962 - RC@5: 0.4143 - RC@10: 0.5142 - val_loss: 0.6718 - val_NDCG@10: 0.4029 - val_MAE: 0.0684 - val_RC@5: 0.4753 - val_RC@10: 0.5677 - lr: 4.8317e-05 - e_time: 14.6146 - 15s/epoch - 7ms/step
+Epoch 35/1000
+2005/2005 - 15s - loss: 0.6757 - NDCG@10: 0.3477 - MAE: 0.0956 - RC@5: 0.4191 - RC@10: 0.5181 - val_loss: 0.6704 - val_NDCG@10: 0.4056 - val_MAE: 0.0679 - val_RC@5: 0.4782 - val_RC@10: 0.5707 - lr: 4.8268e-05 - e_time: 14.6063 - 15s/epoch - 7ms/step
+Epoch 36/1000
+2005/2005 - 15s - loss: 0.6740 - NDCG@10: 0.3493 - MAE: 0.0951 - RC@5: 0.4204 - RC@10: 0.5203 - val_loss: 0.6690 - val_NDCG@10: 0.4078 - val_MAE: 0.0675 - val_RC@5: 0.4806 - val_RC@10: 0.5732 - lr: 4.8218e-05 - e_time: 14.7065 - 15s/epoch - 7ms/step
+Epoch 37/1000
+2005/2005 - 15s - loss: 0.6723 - NDCG@10: 0.3520 - MAE: 0.0946 - RC@5: 0.4238 - RC@10: 0.5232 - val_loss: 0.6679 - val_NDCG@10: 0.4101 - val_MAE: 0.0666 - val_RC@5: 0.4827 - val_RC@10: 0.5753 - lr: 4.8169e-05 - e_time: 14.6322 - 15s/epoch - 7ms/step
+Epoch 38/1000
+2005/2005 - 15s - loss: 0.6709 - NDCG@10: 0.3538 - MAE: 0.0941 - RC@5: 0.4256 - RC@10: 0.5256 - val_loss: 0.6668 - val_NDCG@10: 0.4120 - val_MAE: 0.0659 - val_RC@5: 0.4839 - val_RC@10: 0.5771 - lr: 4.8119e-05 - e_time: 14.6135 - 15s/epoch - 7ms/step
+Epoch 39/1000
+2005/2005 - 15s - loss: 0.6697 - NDCG@10: 0.3548 - MAE: 0.0936 - RC@5: 0.4280 - RC@10: 0.5278 - val_loss: 0.6656 - val_NDCG@10: 0.4128 - val_MAE: 0.0654 - val_RC@5: 0.4856 - val_RC@10: 0.5777 - lr: 4.8070e-05 - e_time: 14.6420 - 15s/epoch - 7ms/step
+Epoch 40/1000
+2005/2005 - 15s - loss: 0.6680 - NDCG@10: 0.3582 - MAE: 0.0931 - RC@5: 0.4307 - RC@10: 0.5312 - val_loss: 0.6646 - val_NDCG@10: 0.4160 - val_MAE: 0.0647 - val_RC@5: 0.4885 - val_RC@10: 0.5800 - lr: 4.8020e-05 - e_time: 14.6653 - 15s/epoch - 7ms/step
+Epoch 41/1000
+2005/2005 - 15s - loss: 0.6668 - NDCG@10: 0.3587 - MAE: 0.0927 - RC@5: 0.4311 - RC@10: 0.5317 - val_loss: 0.6638 - val_NDCG@10: 0.4170 - val_MAE: 0.0638 - val_RC@5: 0.4895 - val_RC@10: 0.5812 - lr: 4.7971e-05 - e_time: 14.6386 - 15s/epoch - 7ms/step
+Epoch 42/1000
+2005/2005 - 15s - loss: 0.6654 - NDCG@10: 0.3609 - MAE: 0.0922 - RC@5: 0.4336 - RC@10: 0.5336 - val_loss: 0.6625 - val_NDCG@10: 0.4182 - val_MAE: 0.0641 - val_RC@5: 0.4910 - val_RC@10: 0.5826 - lr: 4.7921e-05 - e_time: 14.5803 - 15s/epoch - 7ms/step
+Epoch 43/1000
+2005/2005 - 15s - loss: 0.6640 - NDCG@10: 0.3630 - MAE: 0.0918 - RC@5: 0.4363 - RC@10: 0.5358 - val_loss: 0.6617 - val_NDCG@10: 0.4204 - val_MAE: 0.0634 - val_RC@5: 0.4921 - val_RC@10: 0.5848 - lr: 4.7872e-05 - e_time: 14.6421 - 15s/epoch - 7ms/step
+Epoch 44/1000
+2005/2005 - 15s - loss: 0.6628 - NDCG@10: 0.3644 - MAE: 0.0915 - RC@5: 0.4381 - RC@10: 0.5381 - val_loss: 0.6610 - val_NDCG@10: 0.4218 - val_MAE: 0.0626 - val_RC@5: 0.4939 - val_RC@10: 0.5850 - lr: 4.7822e-05 - e_time: 14.6652 - 15s/epoch - 7ms/step
+Epoch 45/1000
+2005/2005 - 15s - loss: 0.6618 - NDCG@10: 0.3653 - MAE: 0.0911 - RC@5: 0.4395 - RC@10: 0.5394 - val_loss: 0.6604 - val_NDCG@10: 0.4231 - val_MAE: 0.0615 - val_RC@5: 0.4966 - val_RC@10: 0.5861 - lr: 4.7773e-05 - e_time: 14.6141 - 15s/epoch - 7ms/step
+Epoch 46/1000
+2005/2005 - 15s - loss: 0.6606 - NDCG@10: 0.3676 - MAE: 0.0907 - RC@5: 0.4416 - RC@10: 0.5421 - val_loss: 0.6593 - val_NDCG@10: 0.4242 - val_MAE: 0.0617 - val_RC@5: 0.4975 - val_RC@10: 0.5881 - lr: 4.7723e-05 - e_time: 14.6853 - 15s/epoch - 7ms/step
+Epoch 47/1000
+2005/2005 - 15s - loss: 0.6593 - NDCG@10: 0.3694 - MAE: 0.0902 - RC@5: 0.4435 - RC@10: 0.5434 - val_loss: 0.6586 - val_NDCG@10: 0.4252 - val_MAE: 0.0613 - val_RC@5: 0.4986 - val_RC@10: 0.5883 - lr: 4.7674e-05 - e_time: 14.6318 - 15s/epoch - 7ms/step
+Epoch 48/1000
+2005/2005 - 15s - loss: 0.6586 - NDCG@10: 0.3696 - MAE: 0.0901 - RC@5: 0.4443 - RC@10: 0.5440 - val_loss: 0.6576 - val_NDCG@10: 0.4269 - val_MAE: 0.0615 - val_RC@5: 0.5003 - val_RC@10: 0.5909 - lr: 4.7624e-05 - e_time: 14.6461 - 15s/epoch - 7ms/step
+Epoch 49/1000
+2005/2005 - 15s - loss: 0.6574 - NDCG@10: 0.3714 - MAE: 0.0897 - RC@5: 0.4466 - RC@10: 0.5463 - val_loss: 0.6570 - val_NDCG@10: 0.4273 - val_MAE: 0.0609 - val_RC@5: 0.5017 - val_RC@10: 0.5909 - lr: 4.7575e-05 - e_time: 14.6504 - 15s/epoch - 7ms/step
+Epoch 50/1000
+2005/2005 - 15s - loss: 0.6563 - NDCG@10: 0.3732 - MAE: 0.0893 - RC@5: 0.4481 - RC@10: 0.5474 - val_loss: 0.6563 - val_NDCG@10: 0.4290 - val_MAE: 0.0606 - val_RC@5: 0.5027 - val_RC@10: 0.5922 - lr: 4.7525e-05 - e_time: 14.6699 - 15s/epoch - 7ms/step
+Epoch 51/1000
+2005/2005 - 15s - loss: 0.6551 - NDCG@10: 0.3739 - MAE: 0.0891 - RC@5: 0.4494 - RC@10: 0.5485 - val_loss: 0.6560 - val_NDCG@10: 0.4298 - val_MAE: 0.0595 - val_RC@5: 0.5032 - val_RC@10: 0.5926 - lr: 4.7476e-05 - e_time: 14.6285 - 15s/epoch - 7ms/step
+Epoch 52/1000
+2005/2005 - 15s - loss: 0.6546 - NDCG@10: 0.3750 - MAE: 0.0888 - RC@5: 0.4507 - RC@10: 0.5504 - val_loss: 0.6553 - val_NDCG@10: 0.4313 - val_MAE: 0.0595 - val_RC@5: 0.5047 - val_RC@10: 0.5944 - lr: 4.7426e-05 - e_time: 14.6132 - 15s/epoch - 7ms/step
+Epoch 53/1000
+2005/2005 - 15s - loss: 0.6533 - NDCG@10: 0.3760 - MAE: 0.0886 - RC@5: 0.4521 - RC@10: 0.5509 - val_loss: 0.6548 - val_NDCG@10: 0.4328 - val_MAE: 0.0589 - val_RC@5: 0.5064 - val_RC@10: 0.5952 - lr: 4.7377e-05 - e_time: 14.6313 - 15s/epoch - 7ms/step
+Epoch 54/1000
+2005/2005 - 15s - loss: 0.6523 - NDCG@10: 0.3784 - MAE: 0.0881 - RC@5: 0.4544 - RC@10: 0.5540 - val_loss: 0.6542 - val_NDCG@10: 0.4337 - val_MAE: 0.0586 - val_RC@5: 0.5066 - val_RC@10: 0.5961 - lr: 4.7327e-05 - e_time: 14.6006 - 15s/epoch - 7ms/step
+Epoch 55/1000
+2005/2005 - 15s - loss: 0.6515 - NDCG@10: 0.3792 - MAE: 0.0879 - RC@5: 0.4547 - RC@10: 0.5543 - val_loss: 0.6537 - val_NDCG@10: 0.4348 - val_MAE: 0.0582 - val_RC@5: 0.5094 - val_RC@10: 0.5975 - lr: 4.7278e-05 - e_time: 14.6216 - 15s/epoch - 7ms/step
+Epoch 56/1000
+2005/2005 - 15s - loss: 0.6507 - NDCG@10: 0.3799 - MAE: 0.0877 - RC@5: 0.4568 - RC@10: 0.5554 - val_loss: 0.6532 - val_NDCG@10: 0.4344 - val_MAE: 0.0580 - val_RC@5: 0.5090 - val_RC@10: 0.5961 - lr: 4.7228e-05 - e_time: 14.6326 - 15s/epoch - 7ms/step
+Epoch 57/1000
+2005/2005 - 15s - loss: 0.6502 - NDCG@10: 0.3802 - MAE: 0.0875 - RC@5: 0.4558 - RC@10: 0.5556 - val_loss: 0.6528 - val_NDCG@10: 0.4361 - val_MAE: 0.0577 - val_RC@5: 0.5100 - val_RC@10: 0.5980 - lr: 4.7179e-05 - e_time: 14.6446 - 15s/epoch - 7ms/step
+Epoch 58/1000
+2005/2005 - 15s - loss: 0.6489 - NDCG@10: 0.3823 - MAE: 0.0871 - RC@5: 0.4589 - RC@10: 0.5587 - val_loss: 0.6522 - val_NDCG@10: 0.4362 - val_MAE: 0.0576 - val_RC@5: 0.5108 - val_RC@10: 0.5974 - lr: 4.7129e-05 - e_time: 14.6191 - 15s/epoch - 7ms/step
+Epoch 59/1000
+2005/2005 - 15s - loss: 0.6480 - NDCG@10: 0.3836 - MAE: 0.0869 - RC@5: 0.4609 - RC@10: 0.5602 - val_loss: 0.6518 - val_NDCG@10: 0.4373 - val_MAE: 0.0572 - val_RC@5: 0.5110 - val_RC@10: 0.5986 - lr: 4.7080e-05 - e_time: 14.6166 - 15s/epoch - 7ms/step
+Epoch 60/1000
+2005/2005 - 15s - loss: 0.6477 - NDCG@10: 0.3842 - MAE: 0.0867 - RC@5: 0.4617 - RC@10: 0.5599 - val_loss: 0.6513 - val_NDCG@10: 0.4383 - val_MAE: 0.0570 - val_RC@5: 0.5121 - val_RC@10: 0.5996 - lr: 4.7030e-05 - e_time: 14.6188 - 15s/epoch - 7ms/step
+Epoch 61/1000
+2005/2005 - 15s - loss: 0.6468 - NDCG@10: 0.3850 - MAE: 0.0865 - RC@5: 0.4623 - RC@10: 0.5606 - val_loss: 0.6510 - val_NDCG@10: 0.4389 - val_MAE: 0.0566 - val_RC@5: 0.5121 - val_RC@10: 0.5996 - lr: 4.6981e-05 - e_time: 14.6732 - 15s/epoch - 7ms/step
+Epoch 62/1000
+2005/2005 - 15s - loss: 0.6458 - NDCG@10: 0.3856 - MAE: 0.0862 - RC@5: 0.4637 - RC@10: 0.5626 - val_loss: 0.6500 - val_NDCG@10: 0.4390 - val_MAE: 0.0573 - val_RC@5: 0.5125 - val_RC@10: 0.6007 - lr: 4.6931e-05 - e_time: 14.6257 - 15s/epoch - 7ms/step
+Epoch 63/1000
+2005/2005 - 15s - loss: 0.6453 - NDCG@10: 0.3867 - MAE: 0.0860 - RC@5: 0.4641 - RC@10: 0.5632 - val_loss: 0.6503 - val_NDCG@10: 0.4403 - val_MAE: 0.0557 - val_RC@5: 0.5140 - val_RC@10: 0.6010 - lr: 4.6882e-05 - e_time: 14.6451 - 15s/epoch - 7ms/step
+Epoch 64/1000
+2005/2005 - 15s - loss: 0.6444 - NDCG@10: 0.3875 - MAE: 0.0858 - RC@5: 0.4643 - RC@10: 0.5641 - val_loss: 0.6496 - val_NDCG@10: 0.4408 - val_MAE: 0.0562 - val_RC@5: 0.5156 - val_RC@10: 0.6021 - lr: 4.6832e-05 - e_time: 14.6743 - 15s/epoch - 7ms/step
+Epoch 65/1000
+2005/2005 - 15s - loss: 0.6441 - NDCG@10: 0.3882 - MAE: 0.0857 - RC@5: 0.4662 - RC@10: 0.5647 - val_loss: 0.6495 - val_NDCG@10: 0.4420 - val_MAE: 0.0556 - val_RC@5: 0.5168 - val_RC@10: 0.6028 - lr: 4.6783e-05 - e_time: 14.6970 - 15s/epoch - 7ms/step
+Epoch 66/1000
+2005/2005 - 15s - loss: 0.6432 - NDCG@10: 0.3897 - MAE: 0.0854 - RC@5: 0.4677 - RC@10: 0.5676 - val_loss: 0.6495 - val_NDCG@10: 0.4421 - val_MAE: 0.0548 - val_RC@5: 0.5160 - val_RC@10: 0.6038 - lr: 4.6733e-05 - e_time: 14.6768 - 15s/epoch - 7ms/step
+Epoch 67/1000
+2005/2005 - 15s - loss: 0.6430 - NDCG@10: 0.3894 - MAE: 0.0853 - RC@5: 0.4668 - RC@10: 0.5663 - val_loss: 0.6489 - val_NDCG@10: 0.4426 - val_MAE: 0.0550 - val_RC@5: 0.5172 - val_RC@10: 0.6036 - lr: 4.6684e-05 - e_time: 14.7147 - 15s/epoch - 7ms/step
+Epoch 68/1000
+2005/2005 - 15s - loss: 0.6420 - NDCG@10: 0.3909 - MAE: 0.0850 - RC@5: 0.4685 - RC@10: 0.5673 - val_loss: 0.6486 - val_NDCG@10: 0.4432 - val_MAE: 0.0547 - val_RC@5: 0.5175 - val_RC@10: 0.6038 - lr: 4.6634e-05 - e_time: 14.6339 - 15s/epoch - 7ms/step
+Epoch 69/1000
+2005/2005 - 15s - loss: 0.6412 - NDCG@10: 0.3913 - MAE: 0.0849 - RC@5: 0.4692 - RC@10: 0.5686 - val_loss: 0.6485 - val_NDCG@10: 0.4440 - val_MAE: 0.0543 - val_RC@5: 0.5181 - val_RC@10: 0.6042 - lr: 4.6585e-05 - e_time: 14.7733 - 15s/epoch - 7ms/step
+Epoch 70/1000
+2005/2005 - 15s - loss: 0.6408 - NDCG@10: 0.3926 - MAE: 0.0846 - RC@5: 0.4705 - RC@10: 0.5699 - val_loss: 0.6483 - val_NDCG@10: 0.4443 - val_MAE: 0.0539 - val_RC@5: 0.5183 - val_RC@10: 0.6048 - lr: 4.6535e-05 - e_time: 14.6479 - 15s/epoch - 7ms/step
+Epoch 71/1000
+2005/2005 - 15s - loss: 0.6403 - NDCG@10: 0.3928 - MAE: 0.0846 - RC@5: 0.4710 - RC@10: 0.5709 - val_loss: 0.6475 - val_NDCG@10: 0.4437 - val_MAE: 0.0545 - val_RC@5: 0.5191 - val_RC@10: 0.6044 - lr: 4.6486e-05 - e_time: 14.6390 - 15s/epoch - 7ms/step
+Epoch 72/1000
+2005/2005 - 15s - loss: 0.6394 - NDCG@10: 0.3943 - MAE: 0.0844 - RC@5: 0.4727 - RC@10: 0.5716 - val_loss: 0.6475 - val_NDCG@10: 0.4448 - val_MAE: 0.0538 - val_RC@5: 0.5197 - val_RC@10: 0.6052 - lr: 4.6436e-05 - e_time: 14.6217 - 15s/epoch - 7ms/step
+Epoch 73/1000
+2005/2005 - 15s - loss: 0.6389 - NDCG@10: 0.3952 - MAE: 0.0841 - RC@5: 0.4743 - RC@10: 0.5725 - val_loss: 0.6473 - val_NDCG@10: 0.4454 - val_MAE: 0.0537 - val_RC@5: 0.5196 - val_RC@10: 0.6052 - lr: 4.6387e-05 - e_time: 14.6508 - 15s/epoch - 7ms/step
+Epoch 74/1000
+2005/2005 - 15s - loss: 0.6386 - NDCG@10: 0.3947 - MAE: 0.0842 - RC@5: 0.4731 - RC@10: 0.5724 - val_loss: 0.6467 - val_NDCG@10: 0.4459 - val_MAE: 0.0540 - val_RC@5: 0.5195 - val_RC@10: 0.6055 - lr: 4.6337e-05 - e_time: 14.6550 - 15s/epoch - 7ms/step
+Epoch 75/1000
+2005/2005 - 15s - loss: 0.6378 - NDCG@10: 0.3957 - MAE: 0.0839 - RC@5: 0.4740 - RC@10: 0.5732 - val_loss: 0.6470 - val_NDCG@10: 0.4469 - val_MAE: 0.0530 - val_RC@5: 0.5207 - val_RC@10: 0.6059 - lr: 4.6288e-05 - e_time: 14.6449 - 15s/epoch - 7ms/step
+Epoch 76/1000
+2005/2005 - 15s - loss: 0.6373 - NDCG@10: 0.3967 - MAE: 0.0836 - RC@5: 0.4753 - RC@10: 0.5739 - val_loss: 0.6464 - val_NDCG@10: 0.4468 - val_MAE: 0.0534 - val_RC@5: 0.5206 - val_RC@10: 0.6059 - lr: 4.6238e-05 - e_time: 14.6729 - 15s/epoch - 7ms/step
+Epoch 77/1000
+2005/2005 - 15s - loss: 0.6370 - NDCG@10: 0.3969 - MAE: 0.0836 - RC@5: 0.4752 - RC@10: 0.5748 - val_loss: 0.6464 - val_NDCG@10: 0.4466 - val_MAE: 0.0529 - val_RC@5: 0.5214 - val_RC@10: 0.6061 - lr: 4.6189e-05 - e_time: 14.6520 - 15s/epoch - 7ms/step
+Epoch 78/1000
+2005/2005 - 15s - loss: 0.6361 - NDCG@10: 0.3974 - MAE: 0.0834 - RC@5: 0.4765 - RC@10: 0.5758 - val_loss: 0.6466 - val_NDCG@10: 0.4473 - val_MAE: 0.0523 - val_RC@5: 0.5221 - val_RC@10: 0.6061 - lr: 4.6139e-05 - e_time: 14.6635 - 15s/epoch - 7ms/step
+Epoch 79/1000
+2005/2005 - 15s - loss: 0.6359 - NDCG@10: 0.3981 - MAE: 0.0832 - RC@5: 0.4775 - RC@10: 0.5764 - val_loss: 0.6460 - val_NDCG@10: 0.4475 - val_MAE: 0.0526 - val_RC@5: 0.5214 - val_RC@10: 0.6065 - lr: 4.6090e-05 - e_time: 14.7000 - 15s/epoch - 7ms/step
+Epoch 80/1000
+2005/2005 - 15s - loss: 0.6354 - NDCG@10: 0.3987 - MAE: 0.0831 - RC@5: 0.4780 - RC@10: 0.5762 - val_loss: 0.6458 - val_NDCG@10: 0.4478 - val_MAE: 0.0524 - val_RC@5: 0.5228 - val_RC@10: 0.6074 - lr: 4.6040e-05 - e_time: 14.6430 - 15s/epoch - 7ms/step
+Epoch 81/1000
+2005/2005 - 15s - loss: 0.6347 - NDCG@10: 0.3987 - MAE: 0.0831 - RC@5: 0.4791 - RC@10: 0.5761 - val_loss: 0.6457 - val_NDCG@10: 0.4487 - val_MAE: 0.0522 - val_RC@5: 0.5228 - val_RC@10: 0.6081 - lr: 4.5991e-05 - e_time: 14.6342 - 15s/epoch - 7ms/step
+Epoch 82/1000
+2005/2005 - 15s - loss: 0.6343 - NDCG@10: 0.4000 - MAE: 0.0828 - RC@5: 0.4793 - RC@10: 0.5780 - val_loss: 0.6452 - val_NDCG@10: 0.4488 - val_MAE: 0.0524 - val_RC@5: 0.5235 - val_RC@10: 0.6074 - lr: 4.5941e-05 - e_time: 14.6387 - 15s/epoch - 7ms/step
+Epoch 83/1000
+2005/2005 - 15s - loss: 0.6339 - NDCG@10: 0.4007 - MAE: 0.0827 - RC@5: 0.4798 - RC@10: 0.5784 - val_loss: 0.6449 - val_NDCG@10: 0.4487 - val_MAE: 0.0524 - val_RC@5: 0.5230 - val_RC@10: 0.6083 - lr: 4.5892e-05 - e_time: 14.8918 - 15s/epoch - 8ms/step
+Epoch 84/1000
+2005/2005 - 15s - loss: 0.6332 - NDCG@10: 0.4022 - MAE: 0.0826 - RC@5: 0.4826 - RC@10: 0.5799 - val_loss: 0.6450 - val_NDCG@10: 0.4497 - val_MAE: 0.0521 - val_RC@5: 0.5239 - val_RC@10: 0.6089 - lr: 4.5842e-05 - e_time: 14.6941 - 15s/epoch - 7ms/step
+Epoch 85/1000
+2005/2005 - 15s - loss: 0.6335 - NDCG@10: 0.4007 - MAE: 0.0826 - RC@5: 0.4803 - RC@10: 0.5786 - val_loss: 0.6446 - val_NDCG@10: 0.4502 - val_MAE: 0.0521 - val_RC@5: 0.5236 - val_RC@10: 0.6091 - lr: 4.5793e-05 - e_time: 14.6894 - 15s/epoch - 7ms/step
+Epoch 86/1000
+2005/2005 - 15s - loss: 0.6324 - NDCG@10: 0.4018 - MAE: 0.0824 - RC@5: 0.4824 - RC@10: 0.5804 - val_loss: 0.6449 - val_NDCG@10: 0.4503 - val_MAE: 0.0513 - val_RC@5: 0.5250 - val_RC@10: 0.6093 - lr: 4.5743e-05 - e_time: 14.6835 - 15s/epoch - 7ms/step
+Epoch 87/1000
+2005/2005 - 14s - loss: 0.6320 - NDCG@10: 0.4029 - MAE: 0.0821 - RC@5: 0.4823 - RC@10: 0.5806 - val_loss: 0.6449 - val_NDCG@10: 0.4507 - val_MAE: 0.0509 - val_RC@5: 0.5247 - val_RC@10: 0.6084 - lr: 4.5694e-05 - e_time: 14.4930 - 14s/epoch - 7ms/step
+Epoch 88/1000
+2005/2005 - 15s - loss: 0.6316 - NDCG@10: 0.4037 - MAE: 0.0821 - RC@5: 0.4832 - RC@10: 0.5825 - val_loss: 0.6451 - val_NDCG@10: 0.4510 - val_MAE: 0.0503 - val_RC@5: 0.5252 - val_RC@10: 0.6088 - lr: 4.5644e-05 - e_time: 14.6227 - 15s/epoch - 7ms/step
+Epoch 89/1000
+2005/2005 - 15s - loss: 0.6315 - NDCG@10: 0.4038 - MAE: 0.0818 - RC@5: 0.4836 - RC@10: 0.5821 - val_loss: 0.6445 - val_NDCG@10: 0.4515 - val_MAE: 0.0509 - val_RC@5: 0.5256 - val_RC@10: 0.6099 - lr: 4.5595e-05 - e_time: 14.6478 - 15s/epoch - 7ms/step
+Epoch 90/1000
+2005/2005 - 15s - loss: 0.6312 - NDCG@10: 0.4036 - MAE: 0.0820 - RC@5: 0.4843 - RC@10: 0.5823 - val_loss: 0.6443 - val_NDCG@10: 0.4510 - val_MAE: 0.0507 - val_RC@5: 0.5254 - val_RC@10: 0.6096 - lr: 4.5545e-05 - e_time: 14.6702 - 15s/epoch - 7ms/step
+Epoch 91/1000
+2005/2005 - 15s - loss: 0.6306 - NDCG@10: 0.4046 - MAE: 0.0816 - RC@5: 0.4843 - RC@10: 0.5831 - val_loss: 0.6441 - val_NDCG@10: 0.4514 - val_MAE: 0.0508 - val_RC@5: 0.5241 - val_RC@10: 0.6089 - lr: 4.5496e-05 - e_time: 14.6242 - 15s/epoch - 7ms/step
+Epoch 92/1000
+2005/2005 - 15s - loss: 0.6297 - NDCG@10: 0.4053 - MAE: 0.0816 - RC@5: 0.4863 - RC@10: 0.5840 - val_loss: 0.6441 - val_NDCG@10: 0.4510 - val_MAE: 0.0505 - val_RC@5: 0.5253 - val_RC@10: 0.6089 - lr: 4.5446e-05 - e_time: 14.6797 - 15s/epoch - 7ms/step
+Epoch 93/1000
+2005/2005 - 15s - loss: 0.6296 - NDCG@10: 0.4055 - MAE: 0.0816 - RC@5: 0.4866 - RC@10: 0.5842 - val_loss: 0.6435 - val_NDCG@10: 0.4518 - val_MAE: 0.0509 - val_RC@5: 0.5259 - val_RC@10: 0.6097 - lr: 4.5397e-05 - e_time: 14.6593 - 15s/epoch - 7ms/step
+Epoch 94/1000
+2005/2005 - 15s - loss: 0.6295 - NDCG@10: 0.4055 - MAE: 0.0813 - RC@5: 0.4866 - RC@10: 0.5844 - val_loss: 0.6435 - val_NDCG@10: 0.4513 - val_MAE: 0.0506 - val_RC@5: 0.5260 - val_RC@10: 0.6098 - lr: 4.5347e-05 - e_time: 14.6673 - 15s/epoch - 7ms/step
+Epoch 95/1000
+2005/2005 - 15s - loss: 0.6290 - NDCG@10: 0.4060 - MAE: 0.0813 - RC@5: 0.4867 - RC@10: 0.5844 - val_loss: 0.6440 - val_NDCG@10: 0.4528 - val_MAE: 0.0499 - val_RC@5: 0.5269 - val_RC@10: 0.6103 - lr: 4.5298e-05 - e_time: 14.6462 - 15s/epoch - 7ms/step
+Epoch 96/1000
+2005/2005 - 15s - loss: 0.6288 - NDCG@10: 0.4065 - MAE: 0.0811 - RC@5: 0.4869 - RC@10: 0.5844 - val_loss: 0.6437 - val_NDCG@10: 0.4524 - val_MAE: 0.0499 - val_RC@5: 0.5270 - val_RC@10: 0.6100 - lr: 4.5248e-05 - e_time: 14.6616 - 15s/epoch - 7ms/step
+Epoch 97/1000
+2005/2005 - 15s - loss: 0.6279 - NDCG@10: 0.4080 - MAE: 0.0809 - RC@5: 0.4888 - RC@10: 0.5865 - val_loss: 0.6438 - val_NDCG@10: 0.4530 - val_MAE: 0.0496 - val_RC@5: 0.5262 - val_RC@10: 0.6098 - lr: 4.5199e-05 - e_time: 14.6223 - 15s/epoch - 7ms/step
+Epoch 98/1000
+2005/2005 - 15s - loss: 0.6276 - NDCG@10: 0.4077 - MAE: 0.0810 - RC@5: 0.4897 - RC@10: 0.5874 - val_loss: 0.6440 - val_NDCG@10: 0.4527 - val_MAE: 0.0490 - val_RC@5: 0.5267 - val_RC@10: 0.6099 - lr: 4.5149e-05 - e_time: 14.6478 - 15s/epoch - 7ms/step
+Epoch 99/1000
+2005/2005 - 15s - loss: 0.6272 - NDCG@10: 0.4086 - MAE: 0.0808 - RC@5: 0.4904 - RC@10: 0.5882 - val_loss: 0.6432 - val_NDCG@10: 0.4529 - val_MAE: 0.0498 - val_RC@5: 0.5267 - val_RC@10: 0.6100 - lr: 4.5100e-05 - e_time: 14.6343 - 15s/epoch - 7ms/step
+Epoch 100/1000
+2005/2005 - 15s - loss: 0.6267 - NDCG@10: 0.4092 - MAE: 0.0807 - RC@5: 0.4909 - RC@10: 0.5881 - val_loss: 0.6431 - val_NDCG@10: 0.4531 - val_MAE: 0.0496 - val_RC@5: 0.5266 - val_RC@10: 0.6107 - lr: 4.5050e-05 - e_time: 14.6529 - 15s/epoch - 7ms/step
+Epoch 101/1000
+2005/2005 - 15s - loss: 0.6270 - NDCG@10: 0.4093 - MAE: 0.0807 - RC@5: 0.4905 - RC@10: 0.5871 - val_loss: 0.6438 - val_NDCG@10: 0.4542 - val_MAE: 0.0487 - val_RC@5: 0.5276 - val_RC@10: 0.6106 - lr: 4.5001e-05 - e_time: 14.6351 - 15s/epoch - 7ms/step
+Epoch 102/1000
+2005/2005 - 15s - loss: 0.6263 - NDCG@10: 0.4094 - MAE: 0.0807 - RC@5: 0.4906 - RC@10: 0.5886 - val_loss: 0.6435 - val_NDCG@10: 0.4537 - val_MAE: 0.0487 - val_RC@5: 0.5265 - val_RC@10: 0.6109 - lr: 4.4951e-05 - e_time: 14.6940 - 15s/epoch - 7ms/step
+Epoch 103/1000
+2005/2005 - 15s - loss: 0.6255 - NDCG@10: 0.4105 - MAE: 0.0803 - RC@5: 0.4923 - RC@10: 0.5902 - val_loss: 0.6430 - val_NDCG@10: 0.4529 - val_MAE: 0.0490 - val_RC@5: 0.5267 - val_RC@10: 0.6107 - lr: 4.4902e-05 - e_time: 14.6645 - 15s/epoch - 7ms/step
+Epoch 104/1000
+2005/2005 - 15s - loss: 0.6258 - NDCG@10: 0.4096 - MAE: 0.0806 - RC@5: 0.4910 - RC@10: 0.5892 - val_loss: 0.6429 - val_NDCG@10: 0.4539 - val_MAE: 0.0490 - val_RC@5: 0.5266 - val_RC@10: 0.6112 - lr: 4.4852e-05 - e_time: 14.6677 - 15s/epoch - 7ms/step
+Epoch 105/1000
+2005/2005 - 15s - loss: 0.6254 - NDCG@10: 0.4101 - MAE: 0.0803 - RC@5: 0.4931 - RC@10: 0.5895 - val_loss: 0.6431 - val_NDCG@10: 0.4538 - val_MAE: 0.0488 - val_RC@5: 0.5264 - val_RC@10: 0.6108 - lr: 4.4803e-05 - e_time: 14.6627 - 15s/epoch - 7ms/step
+Epoch 106/1000
+2005/2005 - 15s - loss: 0.6249 - NDCG@10: 0.4112 - MAE: 0.0802 - RC@5: 0.4929 - RC@10: 0.5903 - val_loss: 0.6430 - val_NDCG@10: 0.4538 - val_MAE: 0.0488 - val_RC@5: 0.5271 - val_RC@10: 0.6107 - lr: 4.4753e-05 - e_time: 14.6420 - 15s/epoch - 7ms/step
+Epoch 107/1000
+2005/2005 - 15s - loss: 0.6244 - NDCG@10: 0.4113 - MAE: 0.0800 - RC@5: 0.4929 - RC@10: 0.5905 - val_loss: 0.6430 - val_NDCG@10: 0.4537 - val_MAE: 0.0485 - val_RC@5: 0.5268 - val_RC@10: 0.6113 - lr: 4.4704e-05 - e_time: 14.6567 - 15s/epoch - 7ms/step
+Epoch 108/1000
+2005/2005 - 15s - loss: 0.6244 - NDCG@10: 0.4115 - MAE: 0.0799 - RC@5: 0.4935 - RC@10: 0.5904 - val_loss: 0.6424 - val_NDCG@10: 0.4539 - val_MAE: 0.0491 - val_RC@5: 0.5271 - val_RC@10: 0.6107 - lr: 4.4654e-05 - e_time: 14.6841 - 15s/epoch - 7ms/step
+Epoch 109/1000
+2005/2005 - 15s - loss: 0.6241 - NDCG@10: 0.4111 - MAE: 0.0800 - RC@5: 0.4929 - RC@10: 0.5906 - val_loss: 0.6429 - val_NDCG@10: 0.4540 - val_MAE: 0.0483 - val_RC@5: 0.5274 - val_RC@10: 0.6098 - lr: 4.4605e-05 - e_time: 14.7235 - 15s/epoch - 7ms/step
+Epoch 110/1000
+2005/2005 - 15s - loss: 0.6237 - NDCG@10: 0.4128 - MAE: 0.0798 - RC@5: 0.4942 - RC@10: 0.5913 - val_loss: 0.6430 - val_NDCG@10: 0.4544 - val_MAE: 0.0481 - val_RC@5: 0.5280 - val_RC@10: 0.6098 - lr: 4.4555e-05 - e_time: 14.6624 - 15s/epoch - 7ms/step
+Epoch 111/1000
+2005/2005 - 15s - loss: 0.6236 - NDCG@10: 0.4128 - MAE: 0.0798 - RC@5: 0.4946 - RC@10: 0.5927 - val_loss: 0.6433 - val_NDCG@10: 0.4548 - val_MAE: 0.0476 - val_RC@5: 0.5284 - val_RC@10: 0.6106 - lr: 4.4506e-05 - e_time: 14.6660 - 15s/epoch - 7ms/step
+Epoch 112/1000
+2005/2005 - 15s - loss: 0.6232 - NDCG@10: 0.4132 - MAE: 0.0797 - RC@5: 0.4949 - RC@10: 0.5924 - val_loss: 0.6426 - val_NDCG@10: 0.4542 - val_MAE: 0.0482 - val_RC@5: 0.5282 - val_RC@10: 0.6105 - lr: 4.4456e-05 - e_time: 14.6370 - 15s/epoch - 7ms/step
+Epoch 113/1000
+2005/2005 - 15s - loss: 0.6228 - NDCG@10: 0.4126 - MAE: 0.0796 - RC@5: 0.4951 - RC@10: 0.5925 - val_loss: 0.6428 - val_NDCG@10: 0.4547 - val_MAE: 0.0477 - val_RC@5: 0.5281 - val_RC@10: 0.6099 - lr: 4.4407e-05 - e_time: 14.6703 - 15s/epoch - 7ms/step
+Epoch 114/1000
+2005/2005 - 15s - loss: 0.6225 - NDCG@10: 0.4135 - MAE: 0.0794 - RC@5: 0.4952 - RC@10: 0.5932 - val_loss: 0.6431 - val_NDCG@10: 0.4545 - val_MAE: 0.0474 - val_RC@5: 0.5275 - val_RC@10: 0.6095 - lr: 4.4357e-05 - e_time: 14.6616 - 15s/epoch - 7ms/step
+Epoch 115/1000
+2005/2005 - 15s - loss: 0.6224 - NDCG@10: 0.4142 - MAE: 0.0794 - RC@5: 0.4964 - RC@10: 0.5935 - val_loss: 0.6427 - val_NDCG@10: 0.4543 - val_MAE: 0.0477 - val_RC@5: 0.5278 - val_RC@10: 0.6100 - lr: 4.4308e-05 - e_time: 14.6518 - 15s/epoch - 7ms/step
+Epoch 116/1000
+2005/2005 - 15s - loss: 0.6224 - NDCG@10: 0.4141 - MAE: 0.0794 - RC@5: 0.4957 - RC@10: 0.5935 - val_loss: 0.6425 - val_NDCG@10: 0.4544 - val_MAE: 0.0478 - val_RC@5: 0.5273 - val_RC@10: 0.6098 - lr: 4.4258e-05 - e_time: 14.6729 - 15s/epoch - 7ms/step
+Epoch 117/1000
+2005/2005 - 15s - loss: 0.6218 - NDCG@10: 0.4144 - MAE: 0.0793 - RC@5: 0.4965 - RC@10: 0.5945 - val_loss: 0.6428 - val_NDCG@10: 0.4549 - val_MAE: 0.0473 - val_RC@5: 0.5281 - val_RC@10: 0.6097 - lr: 4.4209e-05 - e_time: 14.6157 - 15s/epoch - 7ms/step
+Epoch 118/1000
+2005/2005 - 15s - loss: 0.6215 - NDCG@10: 0.4151 - MAE: 0.0791 - RC@5: 0.4971 - RC@10: 0.5943 - val_loss: 0.6425 - val_NDCG@10: 0.4553 - val_MAE: 0.0475 - val_RC@5: 0.5281 - val_RC@10: 0.6101 - lr: 4.4159e-05 - e_time: 14.6114 - 15s/epoch - 7ms/step
+Epoch 118: early stopping
+[92m[INFO] Loading best model...[0m
+WARNING:tensorflow:Model was constructed with shape (None, 172) for input KerasTensor(type_spec=TensorSpec(shape=(None, 172), dtype=tf.int32, name='input_1'), name='input_1', description="created by layer 'input_1'"), but it was called on an input with incompatible shape (None,).
+/media/nas/pperez/miniconda3/envs/TAVtext/lib/python3.8/site-packages/sklearn/manifold/_t_sne.py:991: FutureWarning: The PCA initialization in TSNE will change to have the standard deviation of PC1 equal to 1e-4 in 1.2. This will ensure better convergence.
+  warnings.warn(
+/media/nas/pperez/miniconda3/envs/TAVtext/lib/python3.8/site-packages/sklearn/manifold/_t_sne.py:991: FutureWarning: The PCA initialization in TSNE will change to have the standard deviation of PC1 equal to 1e-4 in 1.2. This will ensure better convergence.
+  warnings.warn(
+(1322, 2)
+[92m[QUERY] 'a el la yo en un con y'[0m
+[PREPR]         [a el el yo en uno con y]
+[TXT2ID]        [9, 1, 1, 10, 8, 5, 11, 3]
+[WORD FREQ]     [366954, 2121705, 2121705, 319015, 407041, 675003, 313255, 899271]
+WARNING:tensorflow:Model was constructed with shape (None, 172) for input KerasTensor(type_spec=TensorSpec(shape=(None, 172), dtype=tf.int32, name='input_1'), name='input_1', description="created by layer 'input_1'"), but it was called on an input with incompatible shape (None,).
+[91m[ERROR] Reparar y unificar la parte de selección de palabras relevantes[0m
+WARNING:tensorflow:Model was constructed with shape (None, 172) for input KerasTensor(type_spec=TensorSpec(shape=(None, 172), dtype=tf.int32, name='input_1'), name='input_1', description="created by layer 'input_1'"), but it was called on an input with incompatible shape (None,).
+	[0.43] Mirandoalmar              {'visto': 0.9844, 'vista': 0.9824, 'meryam': 0.981, 'kobita': 0.9736, 'maremagnum': 0.9717, 'vistas': 0.9644, 'puerto': 0.9463, 'cristiar': 0.9116, 'descuento': 0.89, 'mar': 0.8633}
+	[0.35] Dans Le Noir              {'oscura': 0.968, 'dans': 0.961, 'oscuridad': 0.9478, 'noir': 0.946, 'invident': 0.938, 'invidente': 0.917, 'jose': 0.907, 'pilar': 0.8857, 'jo': 0.87, 'reimos': 0.859}
+	[0.34] GAMBITO BCN               {'joel': 0.9565, 'risotto': 0.8765, 'rissoto': 0.862, 'rissotto': 0.79, 'risoto': 0.7495, 'ilimitado': 0.6885, 'despedida': 0.682, 'passeig': 0.653, 'detallazo': 0.643, 'coulant': 0.6426}
+	[0.34] Superpizza                {'pizza': 0.9985, 'domicilio': 0.9526, 'pizcer': 0.944, 'pizzeria': 0.936, 'pizzerio': 0.936, 'economica': 0.923, 'favorita': 0.896, 'masa': 0.8696, 'buenisima': 0.864, 'entrega': 0.854}
+	[0.30] Domino Bar by Bierzo food {'coctel': 0.9883, 'bierzo': 0.961, 'cocktel': 0.9604, 'cocktail': 0.958, 'pizza': 0.957, 'empanada': 0.956, 'cocktails': 0.949, 'cocteleria': 0.944, 'domino': 0.9365, 'coc': 0.935}
+	[0.29] The George Payne          {'karaoke': 0.922, 'nacho': 0.892, 'birra': 0.876, 'partido': 0.8486, 'pub': 0.845, 'futbol': 0.8267, 'irland': 0.817, 'musico': 0.8145, 'alita': 0.7793, 'deporte': 0.778}
+[92m[QUERY] 'quiero comer un arroz con bogavante y con buenas vistas'[0m
+[PREPR]         [querer comer uno arroz con bogavante y con buena vista]
+[TXT2ID]        [137, 37, 5, 129, 11, 722, 3, 11, 125, 276]
+[WORD FREQ]     [20479, 73909, 675003, 21133, 313255, 2593, 899271, 313255, 22042, 9065]
+WARNING:tensorflow:Model was constructed with shape (None, 172) for input KerasTensor(type_spec=TensorSpec(shape=(None, 172), dtype=tf.int32, name='input_1'), name='input_1', description="created by layer 'input_1'"), but it was called on an input with incompatible shape (None,).
+[91m[ERROR] Reparar y unificar la parte de selección de palabras relevantes[0m
+WARNING:tensorflow:Model was constructed with shape (None, 172) for input KerasTensor(type_spec=TensorSpec(shape=(None, 172), dtype=tf.int32, name='input_1'), name='input_1', description="created by layer 'input_1'"), but it was called on an input with incompatible shape (None,).
+	[2.22] Restaurante Barceloneta     {'puerto': 0.9614, 'visto': 0.8813, 'barceloneta': 0.875, 'barco': 0.85, 'aparcacoch': 0.8496, 'ramon': 0.841, 'maritimo': 0.835, 'arro': 0.835, 'mar': 0.8345, 'vista': 0.832}
+		arroz 0.52
+		bogavante 0.51
+		vista 0.83
+	[2.21] Martinez                    {'visto': 0.9546, 'vista': 0.9526, 'vistas': 0.933, 'puerto': 0.9, 'martinez': 0.856, 'impresionant': 0.7427, 'idilico': 0.738, 'privilegiada': 0.7354, 'arro': 0.7314, 'arroz': 0.725}
+		arroz 0.73
+		bogavante 0.28
+		vista 0.95
+	[1.86] Mirandoalmar                {'visto': 0.9844, 'vista': 0.9824, 'meryam': 0.981, 'kobita': 0.9736, 'maremagnum': 0.9717, 'vistas': 0.9644, 'puerto': 0.9463, 'cristiar': 0.9116, 'descuento': 0.89, 'mar': 0.8633}
+		arroz -0.24
+		bogavante 0.60
+		vista 0.98
+	[1.76] Pez Vela Chiringuito        {'playa': 0.9756, 'maritimo': 0.8887, 'mar': 0.857, 'orilla': 0.845, 'arroz': 0.8438, 'velar': 0.8423, 'playero': 0.8296, 'paella': 0.827, 'visto': 0.8115, 'gallito': 0.799}
+		arroz 0.84
+		bogavante -0.07
+		vista 0.73
+	[1.76] Boo Restaurant & Beach Club {'boo': 0.957, 'visto': 0.7974, 'mar': 0.7637, 'vista': 0.7476, 'letsbonu': 0.745, 'vistas': 0.727, 'playa': 0.693, 'direccion': 0.6846, 'privilegiado': 0.6504, 'preciosa': 0.623}
+		arroz 0.38
+		bogavante 0.46
+		vista 0.75
+	[1.66] El Cangrejo Loco            {'puerto': 0.9307, 'mar': 0.842, 'estimado': 0.7974, 'vista': 0.7876, 'visto': 0.785, 'cangrejo': 0.7734, 'loco': 0.7715, 'olimpico': 0.747, 'olimpic': 0.7417, 'estimar': 0.7373}
+		arroz 0.11
+		bogavante 0.50
+		vista 0.79
+[92m[QUERY] 'quiero arroz pero no quiero marisco'[0m
+[PREPR]         [querer arroz pero no querer marisco]
+[TXT2ID]        [137, 129, 18, 12, 137, 347]
+[WORD FREQ]     [20479, 21133, 157348, 281348, 20479, 6889]
+WARNING:tensorflow:Model was constructed with shape (None, 172) for input KerasTensor(type_spec=TensorSpec(shape=(None, 172), dtype=tf.int32, name='input_1'), name='input_1', description="created by layer 'input_1'"), but it was called on an input with incompatible shape (None,).
+[91m[ERROR] Reparar y unificar la parte de selección de palabras relevantes[0m
+WARNING:tensorflow:Model was constructed with shape (None, 172) for input KerasTensor(type_spec=TensorSpec(shape=(None, 172), dtype=tf.int32, name='input_1'), name='input_1', description="created by layer 'input_1'"), but it was called on an input with incompatible shape (None,).
+	[1.53] Mariscco                {'marisco': 0.8315, 'marisqueria': 0.8174, 'bogavante': 0.7896, 'escogser': 0.7793, 'pescaderia': 0.7515, 'bogabante': 0.7295, 'marisquerio': 0.6665, 'pescado': 0.646, 'cigala': 0.6357, 'peso': 0.627}
+		arroz 0.59
+		marisco 0.83
+	[1.46] 7 Portes                {'paella': 0.9824, 'pael': 0.9395, 'arro': 0.9316, 'clasico': 0.9307, 'historia': 0.9277, 'historico': 0.9243, 'parellado': 0.9214, 'solero': 0.9194, 'emblematico': 0.919, 'centenario': 0.9}
+		arroz 0.89
+		marisco 0.49
+	[1.39] Restaurante Cheriff     {'cheriff': 0.8794, 'paella': 0.8574, 'barceloneta': 0.8374, 'pael': 0.689, 'paellar': 0.6826, 'arrocser': 0.6494, 'paello': 0.6484, 'marisco': 0.6367, 'arroz': 0.6006, 'marinero': 0.59}
+		arroz 0.60
+		marisco 0.64
+	[1.32] Can Majo                {'barceloneta': 0.9565, 'paella': 0.855, 'can': 0.8306, 'arrocser': 0.806, 'arro': 0.8013, 'arroz': 0.799, 'maritimo': 0.7856, 'playa': 0.7524, 'paello': 0.7407, 'barceloneto': 0.693}
+		arroz 0.80
+		marisco 0.54
+	[1.12] Restaurante Barceloneta {'puerto': 0.9614, 'visto': 0.8813, 'barceloneta': 0.875, 'barco': 0.85, 'aparcacoch': 0.8496, 'ramon': 0.841, 'maritimo': 0.835, 'arro': 0.835, 'mar': 0.8345, 'vista': 0.832}
+		arroz 0.52
+		marisco 0.50
+	[1.11] Casa Angelita           {'barris': 0.7515, 'nou': 0.6226, 'marisco': 0.5366, 'saludo': 0.4978, 'marisquerio': 0.4705, 'genero': 0.4495, 'fritura': 0.4456, 'arroz': 0.4448, 'pescaderia': 0.417, 'valoracion': 0.4106}
+		arroz 0.44
+		marisco 0.54
+2023-06-07 18:41:26.035270: I tensorflow/core/platform/cpu_feature_guard.cc:193] This TensorFlow binary is optimized with oneAPI Deep Neural Network Library (oneDNN) to use the following CPU instructions in performance-critical operations:  SSE3 SSE4.1 SSE4.2 AVX AVX2 FMA
+To enable them in other operations, rebuild TensorFlow with the appropriate compiler flags.
+/media/nas/pperez/miniconda3/envs/TAVtext/lib/python3.8/site-packages/tensorflow_addons/utils/tfa_eol_msg.py:23: UserWarning: 
+
+TensorFlow Addons (TFA) has ended development and introduction of new features.
+TFA has entered a minimal maintenance and release mode until a planned end of life in May 2024.
+Please modify downstream libraries to take dependencies from other repositories in our TensorFlow community (e.g. Keras, Keras-CV, and Keras-NLP). 
+
+For more information see: https://github.com/tensorflow/addons/issues/2807 
+
+  warnings.warn(
+INFO:tensorflow:Mixed precision compatibility check (mixed_float16): OK
+Your GPU will likely run quickly with dtype policy mixed_float16 as it has compute capability of at least 7.0. Your GPU: NVIDIA GeForce RTX 3090, compute capability 8.6
+Model: "WATT2VAL_0"
+__________________________________________________________________________________________________
+ Layer (type)                   Output Shape         Param #     Connected to                     
+==================================================================================================
+ input_1 (InputLayer)           [(None, None)]       0           []                               
+                                                                                                  
+ wr_att_embs (Embedding)        (None, None, 2)      17656       ['input_1[0][0]']                
+                                                                                                  
+ dropout (Dropout)              (None, None, 2)      0           ['wr_att_embs[0][0]']            
+                                                                                                  
+ tf.linalg.matmul (TFOpLambda)  (None, None, None)   0           ['dropout[0][0]',                
+                                                                  'dropout[0][0]']                
+                                                                                                  
+ activation (Activation)        (None, None, None)   0           ['tf.linalg.matmul[0][0]']       
+                                                                                                  
+ all_words (Embedding)          (None, None, 128)    1129984     ['input_1[0][0]']                
+                                                                                                  
+ input_2 (InputLayer)           [(None, 1322)]       0           []                               
+                                                                                                  
+ tf.einsum (TFOpLambda)         (None, None, 128)    0           ['activation[0][0]',             
+                                                                  'all_words[0][0]']              
+                                                                                                  
+ all_items (Embedding)          (None, 1322, 128)    169216      ['input_2[0][0]']                
+                                                                                                  
+ word_emb (Lambda)              (None, None, 128)    0           ['tf.einsum[0][0]']              
+                                                                                                  
+ rest_emb (Lambda)              (None, 1322, 128)    0           ['all_items[0][0]']              
+                                                                                                  
+ tf.math.not_equal_1 (TFOpLambd  (None, None)        0           ['input_1[0][0]']                
+ a)                                                                                               
+                                                                                                  
+ dropout_1 (Dropout)            (None, None, 128)    0           ['word_emb[0][0]']               
+                                                                                                  
+ dropout_2 (Dropout)            (None, 1322, 128)    0           ['rest_emb[0][0]']               
+                                                                                                  
+ tf.cast_1 (TFOpLambda)         (None, None)         0           ['tf.math.not_equal_1[0][0]']    
+                                                                                                  
+ dot_mul (Lambda)               (None, None, 1322)   0           ['dropout_1[0][0]',              
+                                                                  'dropout_2[0][0]']              
+                                                                                                  
+ tf.expand_dims_1 (TFOpLambda)  (None, None, 1)      0           ['tf.cast_1[0][0]']              
+                                                                                                  
+ dotprod (Activation)           (None, None, 1322)   0           ['dot_mul[0][0]']                
+                                                                                                  
+ tf.tile_1 (TFOpLambda)         (None, None, 1322)   0           ['tf.expand_dims_1[0][0]']       
+                                                                                                  
+ dot_mask (Lambda)              (None, None, 1322)   0           ['dotprod[0][0]',                
+                                                                  'tf.tile_1[0][0]']              
+                                                                                                  
+ sum (Lambda)                   (None, 1322)         0           ['dot_mask[0][0]',               
+                                                                  'tf.tile_1[0][0]']              
+                                                                                                  
+ activation_1 (Activation)      (None, 1322)         0           ['sum[0][0]']                    
+                                                                                                  
+ out (Activation)               (None, 1322)         0           ['activation_1[0][0]']           
+                                                                                                  
+==================================================================================================
+Total params: 1,316,856
+Trainable params: 1,316,856
+Non-trainable params: 0
+__________________________________________________________________________________________________
+None
+Epoch 1/1000
+2005/2005 - 18s - loss: 0.9120 - NDCG@10: 0.0199 - MAE: 0.0971 - RC@5: 0.0248 - RC@10: 0.0395 - val_loss: 0.9034 - val_NDCG@10: 0.0253 - val_MAE: 0.1229 - val_RC@5: 0.0300 - val_RC@10: 0.0507 - lr: 9.9901e-05 - e_time: 17.3432 - 18s/epoch - 9ms/step
+Epoch 2/1000
+2005/2005 - 15s - loss: 0.9012 - NDCG@10: 0.0254 - MAE: 0.1476 - RC@5: 0.0313 - RC@10: 0.0504 - val_loss: 0.8981 - val_NDCG@10: 0.0295 - val_MAE: 0.1298 - val_RC@5: 0.0338 - val_RC@10: 0.0569 - lr: 9.9802e-05 - e_time: 15.1512 - 15s/epoch - 8ms/step
+Epoch 3/1000
+2005/2005 - 15s - loss: 0.8947 - NDCG@10: 0.0319 - MAE: 0.1523 - RC@5: 0.0382 - RC@10: 0.0607 - val_loss: 0.8892 - val_NDCG@10: 0.0408 - val_MAE: 0.1323 - val_RC@5: 0.0441 - val_RC@10: 0.0762 - lr: 9.9703e-05 - e_time: 15.1603 - 15s/epoch - 8ms/step
+Epoch 4/1000
+2005/2005 - 15s - loss: 0.8849 - NDCG@10: 0.0443 - MAE: 0.1546 - RC@5: 0.0527 - RC@10: 0.0802 - val_loss: 0.8759 - val_NDCG@10: 0.0622 - val_MAE: 0.1332 - val_RC@5: 0.0724 - val_RC@10: 0.1067 - lr: 9.9604e-05 - e_time: 15.1895 - 15s/epoch - 8ms/step
+Epoch 5/1000
+2005/2005 - 15s - loss: 0.8634 - NDCG@10: 0.0795 - MAE: 0.1534 - RC@5: 0.0951 - RC@10: 0.1342 - val_loss: 0.8354 - val_NDCG@10: 0.1265 - val_MAE: 0.1297 - val_RC@5: 0.1525 - val_RC@10: 0.2051 - lr: 9.9505e-05 - e_time: 15.2185 - 15s/epoch - 8ms/step
+Epoch 6/1000
+2005/2005 - 15s - loss: 0.8211 - NDCG@10: 0.1373 - MAE: 0.1440 - RC@5: 0.1649 - RC@10: 0.2241 - val_loss: 0.7880 - val_NDCG@10: 0.1893 - val_MAE: 0.1195 - val_RC@5: 0.2237 - val_RC@10: 0.2979 - lr: 9.9406e-05 - e_time: 15.2031 - 15s/epoch - 8ms/step
+Epoch 7/1000
+2005/2005 - 15s - loss: 0.7860 - NDCG@10: 0.1835 - MAE: 0.1342 - RC@5: 0.2198 - RC@10: 0.2929 - val_loss: 0.7529 - val_NDCG@10: 0.2374 - val_MAE: 0.1114 - val_RC@5: 0.2800 - val_RC@10: 0.3655 - lr: 9.9307e-05 - e_time: 15.2990 - 15s/epoch - 8ms/step
+Epoch 8/1000
+2005/2005 - 15s - loss: 0.7589 - NDCG@10: 0.2197 - MAE: 0.1254 - RC@5: 0.2628 - RC@10: 0.3456 - val_loss: 0.7263 - val_NDCG@10: 0.2739 - val_MAE: 0.1031 - val_RC@5: 0.3249 - val_RC@10: 0.4158 - lr: 9.9208e-05 - e_time: 15.2484 - 15s/epoch - 8ms/step
+Epoch 9/1000
+2005/2005 - 15s - loss: 0.7377 - NDCG@10: 0.2484 - MAE: 0.1179 - RC@5: 0.2975 - RC@10: 0.3857 - val_loss: 0.7058 - val_NDCG@10: 0.3017 - val_MAE: 0.0961 - val_RC@5: 0.3592 - val_RC@10: 0.4534 - lr: 9.9109e-05 - e_time: 15.2333 - 15s/epoch - 8ms/step
+Epoch 10/1000
+2005/2005 - 16s - loss: 0.7204 - NDCG@10: 0.2716 - MAE: 0.1113 - RC@5: 0.3243 - RC@10: 0.4180 - val_loss: 0.6897 - val_NDCG@10: 0.3237 - val_MAE: 0.0916 - val_RC@5: 0.3850 - val_RC@10: 0.4814 - lr: 9.9010e-05 - e_time: 15.3665 - 16s/epoch - 8ms/step
+Epoch 11/1000
+2005/2005 - 15s - loss: 0.7059 - NDCG@10: 0.2919 - MAE: 0.1057 - RC@5: 0.3483 - RC@10: 0.4448 - val_loss: 0.6762 - val_NDCG@10: 0.3430 - val_MAE: 0.0898 - val_RC@5: 0.4069 - val_RC@10: 0.5043 - lr: 9.8911e-05 - e_time: 15.0916 - 15s/epoch - 8ms/step
+Epoch 12/1000
+2005/2005 - 16s - loss: 0.6936 - NDCG@10: 0.3093 - MAE: 0.1008 - RC@5: 0.3701 - RC@10: 0.4674 - val_loss: 0.6659 - val_NDCG@10: 0.3595 - val_MAE: 0.0823 - val_RC@5: 0.4266 - val_RC@10: 0.5242 - lr: 9.8812e-05 - e_time: 15.5406 - 16s/epoch - 8ms/step
+Epoch 13/1000
+2005/2005 - 16s - loss: 0.6822 - NDCG@10: 0.3249 - MAE: 0.0962 - RC@5: 0.3891 - RC@10: 0.4875 - val_loss: 0.6566 - val_NDCG@10: 0.3729 - val_MAE: 0.0808 - val_RC@5: 0.4424 - val_RC@10: 0.5388 - lr: 9.8713e-05 - e_time: 15.4968 - 16s/epoch - 8ms/step
+Epoch 14/1000
+2005/2005 - 16s - loss: 0.6723 - NDCG@10: 0.3385 - MAE: 0.0926 - RC@5: 0.4049 - RC@10: 0.5040 - val_loss: 0.6488 - val_NDCG@10: 0.3847 - val_MAE: 0.0784 - val_RC@5: 0.4557 - val_RC@10: 0.5534 - lr: 9.8614e-05 - e_time: 15.4951 - 16s/epoch - 8ms/step
+Epoch 15/1000
+2005/2005 - 16s - loss: 0.6633 - NDCG@10: 0.3512 - MAE: 0.0892 - RC@5: 0.4199 - RC@10: 0.5190 - val_loss: 0.6423 - val_NDCG@10: 0.3955 - val_MAE: 0.0748 - val_RC@5: 0.4681 - val_RC@10: 0.5643 - lr: 9.8515e-05 - e_time: 15.5854 - 16s/epoch - 8ms/step
+Epoch 16/1000
+2005/2005 - 16s - loss: 0.6557 - NDCG@10: 0.3621 - MAE: 0.0861 - RC@5: 0.4323 - RC@10: 0.5320 - val_loss: 0.6372 - val_NDCG@10: 0.4045 - val_MAE: 0.0726 - val_RC@5: 0.4783 - val_RC@10: 0.5745 - lr: 9.8416e-05 - e_time: 15.4067 - 16s/epoch - 8ms/step
+Epoch 17/1000
+2005/2005 - 16s - loss: 0.6480 - NDCG@10: 0.3725 - MAE: 0.0834 - RC@5: 0.4444 - RC@10: 0.5440 - val_loss: 0.6322 - val_NDCG@10: 0.4129 - val_MAE: 0.0703 - val_RC@5: 0.4884 - val_RC@10: 0.5838 - lr: 9.8317e-05 - e_time: 15.4036 - 16s/epoch - 8ms/step
+Epoch 18/1000
+2005/2005 - 16s - loss: 0.6414 - NDCG@10: 0.3814 - MAE: 0.0811 - RC@5: 0.4555 - RC@10: 0.5551 - val_loss: 0.6280 - val_NDCG@10: 0.4201 - val_MAE: 0.0686 - val_RC@5: 0.4949 - val_RC@10: 0.5887 - lr: 9.8218e-05 - e_time: 15.4454 - 16s/epoch - 8ms/step
+Epoch 19/1000
+2005/2005 - 16s - loss: 0.6343 - NDCG@10: 0.3913 - MAE: 0.0789 - RC@5: 0.4661 - RC@10: 0.5652 - val_loss: 0.6248 - val_NDCG@10: 0.4249 - val_MAE: 0.0693 - val_RC@5: 0.5016 - val_RC@10: 0.5947 - lr: 9.8119e-05 - e_time: 15.3971 - 16s/epoch - 8ms/step
+Epoch 20/1000
+2005/2005 - 16s - loss: 0.6285 - NDCG@10: 0.3995 - MAE: 0.0771 - RC@5: 0.4752 - RC@10: 0.5745 - val_loss: 0.6214 - val_NDCG@10: 0.4317 - val_MAE: 0.0650 - val_RC@5: 0.5082 - val_RC@10: 0.5988 - lr: 9.8020e-05 - e_time: 15.4553 - 16s/epoch - 8ms/step
+Epoch 21/1000
+2005/2005 - 16s - loss: 0.6234 - NDCG@10: 0.4064 - MAE: 0.0754 - RC@5: 0.4837 - RC@10: 0.5814 - val_loss: 0.6189 - val_NDCG@10: 0.4360 - val_MAE: 0.0659 - val_RC@5: 0.5116 - val_RC@10: 0.6028 - lr: 9.7921e-05 - e_time: 15.4804 - 16s/epoch - 8ms/step
+Epoch 22/1000
+2005/2005 - 16s - loss: 0.6180 - NDCG@10: 0.4135 - MAE: 0.0737 - RC@5: 0.4914 - RC@10: 0.5890 - val_loss: 0.6169 - val_NDCG@10: 0.4403 - val_MAE: 0.0630 - val_RC@5: 0.5160 - val_RC@10: 0.6074 - lr: 9.7822e-05 - e_time: 15.3939 - 16s/epoch - 8ms/step
+Epoch 23/1000
+2005/2005 - 16s - loss: 0.6132 - NDCG@10: 0.4202 - MAE: 0.0723 - RC@5: 0.4989 - RC@10: 0.5963 - val_loss: 0.6147 - val_NDCG@10: 0.4430 - val_MAE: 0.0628 - val_RC@5: 0.5207 - val_RC@10: 0.6092 - lr: 9.7723e-05 - e_time: 15.4431 - 16s/epoch - 8ms/step
+Epoch 24/1000
+2005/2005 - 16s - loss: 0.6084 - NDCG@10: 0.4261 - MAE: 0.0712 - RC@5: 0.5051 - RC@10: 0.6026 - val_loss: 0.6127 - val_NDCG@10: 0.4474 - val_MAE: 0.0621 - val_RC@5: 0.5240 - val_RC@10: 0.6124 - lr: 9.7624e-05 - e_time: 15.4079 - 16s/epoch - 8ms/step
+Epoch 25/1000
+2005/2005 - 16s - loss: 0.6035 - NDCG@10: 0.4328 - MAE: 0.0699 - RC@5: 0.5121 - RC@10: 0.6112 - val_loss: 0.6116 - val_NDCG@10: 0.4510 - val_MAE: 0.0601 - val_RC@5: 0.5279 - val_RC@10: 0.6154 - lr: 9.7525e-05 - e_time: 15.4428 - 16s/epoch - 8ms/step
+Epoch 26/1000
+2005/2005 - 16s - loss: 0.5998 - NDCG@10: 0.4377 - MAE: 0.0688 - RC@5: 0.5193 - RC@10: 0.6157 - val_loss: 0.6110 - val_NDCG@10: 0.4522 - val_MAE: 0.0629 - val_RC@5: 0.5290 - val_RC@10: 0.6158 - lr: 9.7426e-05 - e_time: 15.4744 - 16s/epoch - 8ms/step
+Epoch 27/1000
+2005/2005 - 16s - loss: 0.5959 - NDCG@10: 0.4428 - MAE: 0.0678 - RC@5: 0.5245 - RC@10: 0.6210 - val_loss: 0.6094 - val_NDCG@10: 0.4553 - val_MAE: 0.0609 - val_RC@5: 0.5301 - val_RC@10: 0.6184 - lr: 9.7327e-05 - e_time: 15.4149 - 16s/epoch - 8ms/step
+Epoch 28/1000
+2005/2005 - 16s - loss: 0.5922 - NDCG@10: 0.4473 - MAE: 0.0670 - RC@5: 0.5294 - RC@10: 0.6258 - val_loss: 0.6090 - val_NDCG@10: 0.4573 - val_MAE: 0.0587 - val_RC@5: 0.5346 - val_RC@10: 0.6190 - lr: 9.7228e-05 - e_time: 15.4030 - 16s/epoch - 8ms/step
+Epoch 29/1000
+2005/2005 - 16s - loss: 0.5881 - NDCG@10: 0.4527 - MAE: 0.0659 - RC@5: 0.5357 - RC@10: 0.6317 - val_loss: 0.6084 - val_NDCG@10: 0.4581 - val_MAE: 0.0595 - val_RC@5: 0.5339 - val_RC@10: 0.6197 - lr: 9.7129e-05 - e_time: 15.4483 - 16s/epoch - 8ms/step
+Epoch 30/1000
+2005/2005 - 16s - loss: 0.5850 - NDCG@10: 0.4564 - MAE: 0.0653 - RC@5: 0.5392 - RC@10: 0.6353 - val_loss: 0.6075 - val_NDCG@10: 0.4606 - val_MAE: 0.0575 - val_RC@5: 0.5356 - val_RC@10: 0.6207 - lr: 9.7030e-05 - e_time: 15.4014 - 16s/epoch - 8ms/step
+Epoch 31/1000
+2005/2005 - 16s - loss: 0.5822 - NDCG@10: 0.4591 - MAE: 0.0645 - RC@5: 0.5428 - RC@10: 0.6386 - val_loss: 0.6072 - val_NDCG@10: 0.4611 - val_MAE: 0.0556 - val_RC@5: 0.5374 - val_RC@10: 0.6197 - lr: 9.6931e-05 - e_time: 15.4524 - 16s/epoch - 8ms/step
+Epoch 32/1000
+2005/2005 - 16s - loss: 0.5790 - NDCG@10: 0.4640 - MAE: 0.0636 - RC@5: 0.5487 - RC@10: 0.6438 - val_loss: 0.6067 - val_NDCG@10: 0.4625 - val_MAE: 0.0563 - val_RC@5: 0.5381 - val_RC@10: 0.6209 - lr: 9.6832e-05 - e_time: 15.3583 - 16s/epoch - 8ms/step
+Epoch 33/1000
+2005/2005 - 16s - loss: 0.5760 - NDCG@10: 0.4674 - MAE: 0.0631 - RC@5: 0.5516 - RC@10: 0.6478 - val_loss: 0.6066 - val_NDCG@10: 0.4641 - val_MAE: 0.0569 - val_RC@5: 0.5397 - val_RC@10: 0.6221 - lr: 9.6733e-05 - e_time: 15.4729 - 16s/epoch - 8ms/step
+Epoch 34/1000
+2005/2005 - 16s - loss: 0.5729 - NDCG@10: 0.4716 - MAE: 0.0624 - RC@5: 0.5559 - RC@10: 0.6510 - val_loss: 0.6063 - val_NDCG@10: 0.4653 - val_MAE: 0.0564 - val_RC@5: 0.5408 - val_RC@10: 0.6235 - lr: 9.6634e-05 - e_time: 15.4043 - 16s/epoch - 8ms/step
+Epoch 35/1000
+2005/2005 - 16s - loss: 0.5703 - NDCG@10: 0.4745 - MAE: 0.0619 - RC@5: 0.5594 - RC@10: 0.6543 - val_loss: 0.6061 - val_NDCG@10: 0.4659 - val_MAE: 0.0546 - val_RC@5: 0.5404 - val_RC@10: 0.6230 - lr: 9.6535e-05 - e_time: 15.4797 - 16s/epoch - 8ms/step
+Epoch 36/1000
+2005/2005 - 15s - loss: 0.5682 - NDCG@10: 0.4774 - MAE: 0.0613 - RC@5: 0.5627 - RC@10: 0.6571 - val_loss: 0.6062 - val_NDCG@10: 0.4665 - val_MAE: 0.0534 - val_RC@5: 0.5420 - val_RC@10: 0.6232 - lr: 9.6436e-05 - e_time: 15.4066 - 15s/epoch - 8ms/step
+Epoch 37/1000
+2005/2005 - 15s - loss: 0.5654 - NDCG@10: 0.4800 - MAE: 0.0607 - RC@5: 0.5662 - RC@10: 0.6602 - val_loss: 0.6063 - val_NDCG@10: 0.4666 - val_MAE: 0.0559 - val_RC@5: 0.5412 - val_RC@10: 0.6238 - lr: 9.6337e-05 - e_time: 15.4586 - 15s/epoch - 8ms/step
+Epoch 38/1000
+2005/2005 - 16s - loss: 0.5630 - NDCG@10: 0.4821 - MAE: 0.0603 - RC@5: 0.5694 - RC@10: 0.6625 - val_loss: 0.6059 - val_NDCG@10: 0.4673 - val_MAE: 0.0527 - val_RC@5: 0.5419 - val_RC@10: 0.6237 - lr: 9.6238e-05 - e_time: 15.5969 - 16s/epoch - 8ms/step
+Epoch 39/1000
+2005/2005 - 15s - loss: 0.5606 - NDCG@10: 0.4850 - MAE: 0.0596 - RC@5: 0.5722 - RC@10: 0.6660 - val_loss: 0.6061 - val_NDCG@10: 0.4676 - val_MAE: 0.0514 - val_RC@5: 0.5415 - val_RC@10: 0.6226 - lr: 9.6139e-05 - e_time: 15.4007 - 15s/epoch - 8ms/step
+Epoch 40/1000
+2005/2005 - 15s - loss: 0.5583 - NDCG@10: 0.4882 - MAE: 0.0593 - RC@5: 0.5756 - RC@10: 0.6697 - val_loss: 0.6061 - val_NDCG@10: 0.4683 - val_MAE: 0.0519 - val_RC@5: 0.5433 - val_RC@10: 0.6230 - lr: 9.6040e-05 - e_time: 15.4543 - 15s/epoch - 8ms/step
+Epoch 41/1000
+2005/2005 - 15s - loss: 0.5566 - NDCG@10: 0.4900 - MAE: 0.0587 - RC@5: 0.5770 - RC@10: 0.6709 - val_loss: 0.6062 - val_NDCG@10: 0.4686 - val_MAE: 0.0524 - val_RC@5: 0.5428 - val_RC@10: 0.6234 - lr: 9.5941e-05 - e_time: 15.4406 - 15s/epoch - 8ms/step
+Epoch 42/1000
+2005/2005 - 15s - loss: 0.5544 - NDCG@10: 0.4924 - MAE: 0.0584 - RC@5: 0.5805 - RC@10: 0.6739 - val_loss: 0.6066 - val_NDCG@10: 0.4687 - val_MAE: 0.0508 - val_RC@5: 0.5427 - val_RC@10: 0.6225 - lr: 9.5842e-05 - e_time: 15.3647 - 15s/epoch - 8ms/step
+Epoch 43/1000
+2005/2005 - 15s - loss: 0.5525 - NDCG@10: 0.4947 - MAE: 0.0580 - RC@5: 0.5826 - RC@10: 0.6758 - val_loss: 0.6067 - val_NDCG@10: 0.4686 - val_MAE: 0.0513 - val_RC@5: 0.5430 - val_RC@10: 0.6211 - lr: 9.5743e-05 - e_time: 15.3674 - 15s/epoch - 8ms/step
+Epoch 44/1000
+2005/2005 - 15s - loss: 0.5509 - NDCG@10: 0.4972 - MAE: 0.0576 - RC@5: 0.5858 - RC@10: 0.6786 - val_loss: 0.6065 - val_NDCG@10: 0.4684 - val_MAE: 0.0500 - val_RC@5: 0.5422 - val_RC@10: 0.6205 - lr: 9.5644e-05 - e_time: 15.4554 - 15s/epoch - 8ms/step
+Epoch 45/1000
+2005/2005 - 16s - loss: 0.5492 - NDCG@10: 0.4990 - MAE: 0.0571 - RC@5: 0.5882 - RC@10: 0.6803 - val_loss: 0.6069 - val_NDCG@10: 0.4689 - val_MAE: 0.0506 - val_RC@5: 0.5415 - val_RC@10: 0.6215 - lr: 9.5545e-05 - e_time: 15.5443 - 16s/epoch - 8ms/step
+Epoch 46/1000
+2005/2005 - 15s - loss: 0.5473 - NDCG@10: 0.5007 - MAE: 0.0568 - RC@5: 0.5903 - RC@10: 0.6817 - val_loss: 0.6071 - val_NDCG@10: 0.4684 - val_MAE: 0.0494 - val_RC@5: 0.5414 - val_RC@10: 0.6206 - lr: 9.5446e-05 - e_time: 15.4190 - 15s/epoch - 8ms/step
+Epoch 47/1000
+2005/2005 - 15s - loss: 0.5457 - NDCG@10: 0.5033 - MAE: 0.0564 - RC@5: 0.5925 - RC@10: 0.6856 - val_loss: 0.6075 - val_NDCG@10: 0.4696 - val_MAE: 0.0511 - val_RC@5: 0.5423 - val_RC@10: 0.6203 - lr: 9.5347e-05 - e_time: 15.4264 - 15s/epoch - 8ms/step
+Epoch 48/1000
+2005/2005 - 15s - loss: 0.5433 - NDCG@10: 0.5052 - MAE: 0.0561 - RC@5: 0.5958 - RC@10: 0.6874 - val_loss: 0.6075 - val_NDCG@10: 0.4688 - val_MAE: 0.0505 - val_RC@5: 0.5399 - val_RC@10: 0.6207 - lr: 9.5248e-05 - e_time: 15.4387 - 15s/epoch - 8ms/step
+Epoch 48: early stopping
+[92m[INFO] Loading best model...[0m
+/media/nas/pperez/miniconda3/envs/TAVtext/lib/python3.8/site-packages/sklearn/manifold/_t_sne.py:795: FutureWarning: The default initialization in TSNE will change from 'random' to 'pca' in 1.2.
+  warnings.warn(
+/media/nas/pperez/miniconda3/envs/TAVtext/lib/python3.8/site-packages/sklearn/manifold/_t_sne.py:795: FutureWarning: The default initialization in TSNE will change from 'random' to 'pca' in 1.2.
+  warnings.warn(
+(1322, 2)
+[92m[QUERY] 'a el la yo en un con y'[0m
+[PREPR]         [a el el yo en uno con y]
+[TXT2ID]        [9, 1, 1, 10, 8, 5, 11, 3]
+[WORD FREQ]     [366954, 2121705, 2121705, 319015, 407041, 675003, 313255, 899271]
+[91m[ERROR] Reparar y unificar la parte de selección de palabras relevantes[0m
+	[3.03] Superpizza               {'pesima': 0.547, 'mensaje': 0.5317, 'andreu': 0.5293, 'portugal': 0.5264, 'domicilio': 0.497, 'cupon': 0.4507, 'pesimo': 0.4443, 'groupon': 0.4011, 'decepcion': 0.3665, 'buenisima': 0.3643}
+	[1.78] Vitali Pizza             {'leña': 0.4878, 'pesimo': 0.312, 'domicilio': 0.2957, 'mercado': 0.2607, 'decepcion': 0.2426, 'lamentable': 0.2355, 'buenisima': 0.2223, 'italiano': 0.2129, 'fino': 0.1931, 'pizcer': 0.1853}
+	[1.74] Cerveceria Catalana      {'boqueria': 0.762, 'empanada': 0.758, 'sants': 0.741, 'vasco': 0.714, 'can': 0.708, 'cabreado': 0.683, 'vermut': 0.6626, 'montadito': 0.6553, 'flauta': 0.629, 'mejicano': 0.617}
+	[1.67] Ciudad Condal Restaurant {'born': 0.7334, 'vermut': 0.6665, 'montadito': 0.632, 'cabreado': 0.6016, 'can': 0.589, 'vasco': 0.5806, 'boqueria': 0.5723, 'descuento': 0.5254, 'flauta': 0.5137, 'sagrado': 0.5005}
+	[1.66] Mc Donald's              {'chino': 0.3171, 'timesburg': 0.2917, 'braseria': 0.2443, 'centrico': 0.1965, 'pesima': 0.1812, 'shawarma': 0.149, 'rapidez': 0.1469, 'limpio': 0.1389, 'comprar': 0.1381, 'fiel': 0.133}
+	[1.55] 7 Portes                 {'comercial': 0.664, 'taberna': 0.5854, 'caracol': 0.524, 'mexicano': 0.4978, 'granado': 0.4814, 'port': 0.4592, 'parellado': 0.4546, 'can': 0.4297, 'asia': 0.4224, 'historia': 0.416}
+[92m[QUERY] 'quiero comer un arroz con bogavante y con buenas vistas'[0m
+[PREPR]         [querer comer uno arroz con bogavante y con buena vista]
+[TXT2ID]        [137, 37, 5, 129, 11, 722, 3, 11, 125, 276]
+[WORD FREQ]     [20479, 73909, 675003, 21133, 313255, 2593, 899271, 313255, 22042, 9065]
+[91m[ERROR] Reparar y unificar la parte de selección de palabras relevantes[0m
+	[4.51] Martinez                    {'visto': 0.5146, 'griego': 0.4907, 'vistas': 0.4236, 'vista': 0.393, 'nuri': 0.3687, 'martinez': 0.3604, 'puerto': 0.3535, 'cadena': 0.2825, 'señorito': 0.2354, 'croqueta': 0.2277}
+	[4.43] Mirandoalmar                {'meryam': 0.821, 'kobita': 0.762, 'visto': 0.505, 'cristiar': 0.4849, 'patita': 0.48, 'chino': 0.4514, 'puerto': 0.4436, 'heinz': 0.4204, 'vista': 0.4065, 'vistas': 0.374}
+	[3.84] Restaurante Barceloneta     {'puerto': 0.622, 'boqueria': 0.618, 'indio': 0.587, 'gaig': 0.526, 'empanada': 0.5215, 'barceloneta': 0.521, 'ramon': 0.4805, 'aparcacoch': 0.447, 'mejicano': 0.433, 'vasco': 0.4175}
+	[3.48] Pez Vela Chiringuito        {'tragaluz': 0.3962, 'pez': 0.3328, 'chiringuito': 0.3184, 'mar': 0.3123, 'descuento': 0.2986, 'maritimo': 0.2856, 'visto': 0.2632, 'w': 0.2615, 'chino': 0.257, 'tenedor': 0.2263}
+	[3.47] Boo Restaurant & Beach Club {'torrada': 0.365, 'diagonal': 0.3584, 'mar': 0.3384, 'boo': 0.333, 'visto': 0.2957, 'tast': 0.2715, 'poble': 0.2627, 'chino': 0.2524, 'chef': 0.2466, 'antoni': 0.2466}
+	[3.46] Mariscco                    {'griego': 0.5024, 'bogavante': 0.4375, 'chipiron': 0.267, 'brasa': 0.2617, 'marisqueria': 0.2217, 'peso': 0.2213, 'hummus': 0.2195, 'marisco': 0.1975, 'berberecho': 0.1901, 'fresco': 0.1783}
+[92m[QUERY] 'quiero comer un arroz sin bogavante y con buenas vistas'[0m
+[PREPR]         [querer comer uno arroz sin bogavante y con buena vista]
+[TXT2ID]        [137, 37, 5, 129, 38, 722, 3, 11, 125, 276]
+[WORD FREQ]     [20479, 73909, 675003, 21133, 73128, 2593, 899271, 313255, 22042, 9065]
+[91m[ERROR] Reparar y unificar la parte de selección de palabras relevantes[0m
+	[4.49] Martinez                    {'visto': 0.5146, 'griego': 0.4907, 'vistas': 0.4236, 'vista': 0.393, 'nuri': 0.3687, 'martinez': 0.3604, 'puerto': 0.3535, 'cadena': 0.2825, 'señorito': 0.2354, 'croqueta': 0.2277}
+	[4.39] Mirandoalmar                {'meryam': 0.821, 'kobita': 0.762, 'visto': 0.505, 'cristiar': 0.4849, 'patita': 0.48, 'chino': 0.4514, 'puerto': 0.4436, 'heinz': 0.4204, 'vista': 0.4065, 'vistas': 0.374}
+	[3.86] Restaurante Barceloneta     {'puerto': 0.622, 'boqueria': 0.618, 'indio': 0.587, 'gaig': 0.526, 'empanada': 0.5215, 'barceloneta': 0.521, 'ramon': 0.4805, 'aparcacoch': 0.447, 'mejicano': 0.433, 'vasco': 0.4175}
+	[3.42] Pez Vela Chiringuito        {'tragaluz': 0.3962, 'pez': 0.3328, 'chiringuito': 0.3184, 'mar': 0.3123, 'descuento': 0.2986, 'maritimo': 0.2856, 'visto': 0.2632, 'w': 0.2615, 'chino': 0.257, 'tenedor': 0.2263}
+	[3.36] Mariscco                    {'griego': 0.5024, 'bogavante': 0.4375, 'chipiron': 0.267, 'brasa': 0.2617, 'marisqueria': 0.2217, 'peso': 0.2213, 'hummus': 0.2195, 'marisco': 0.1975, 'berberecho': 0.1901, 'fresco': 0.1783}
+	[3.35] Boo Restaurant & Beach Club {'torrada': 0.365, 'diagonal': 0.3584, 'mar': 0.3384, 'boo': 0.333, 'visto': 0.2957, 'tast': 0.2715, 'poble': 0.2627, 'chino': 0.2524, 'chef': 0.2466, 'antoni': 0.2466}
+2023-06-07 20:59:26.668036: I tensorflow/core/platform/cpu_feature_guard.cc:193] This TensorFlow binary is optimized with oneAPI Deep Neural Network Library (oneDNN) to use the following CPU instructions in performance-critical operations:  SSE3 SSE4.1 SSE4.2 AVX AVX2 FMA
+To enable them in other operations, rebuild TensorFlow with the appropriate compiler flags.
+/media/nas/pperez/miniconda3/envs/TAVtext/lib/python3.8/site-packages/tensorflow_addons/utils/tfa_eol_msg.py:23: UserWarning: 
+
+TensorFlow Addons (TFA) has ended development and introduction of new features.
+TFA has entered a minimal maintenance and release mode until a planned end of life in May 2024.
+Please modify downstream libraries to take dependencies from other repositories in our TensorFlow community (e.g. Keras, Keras-CV, and Keras-NLP). 
+
+For more information see: https://github.com/tensorflow/addons/issues/2807 
+
+  warnings.warn(
+INFO:tensorflow:Mixed precision compatibility check (mixed_float16): OK
+Your GPU will likely run quickly with dtype policy mixed_float16 as it has compute capability of at least 7.0. Your GPU: NVIDIA GeForce RTX 3090, compute capability 8.6
+Model: "WATT2VAL_0"
+__________________________________________________________________________________________________
+ Layer (type)                   Output Shape         Param #     Connected to                     
+==================================================================================================
+ input_1 (InputLayer)           [(None, None)]       0           []                               
+                                                                                                  
+ wr_att_embs (Embedding)        (None, None, 2)      17656       ['input_1[0][0]']                
+                                                                                                  
+ dropout (Dropout)              (None, None, 2)      0           ['wr_att_embs[0][0]']            
+                                                                                                  
+ tf.linalg.matmul (TFOpLambda)  (None, None, None)   0           ['dropout[0][0]',                
+                                                                  'dropout[0][0]']                
+                                                                                                  
+ activation (Activation)        (None, None, None)   0           ['tf.linalg.matmul[0][0]']       
+                                                                                                  
+ all_words (Embedding)          (None, None, 128)    1129984     ['input_1[0][0]']                
+                                                                                                  
+ input_2 (InputLayer)           [(None, 1322)]       0           []                               
+                                                                                                  
+ tf.einsum (TFOpLambda)         (None, None, 128)    0           ['activation[0][0]',             
+                                                                  'all_words[0][0]']              
+                                                                                                  
+ all_items (Embedding)          (None, 1322, 128)    169216      ['input_2[0][0]']                
+                                                                                                  
+ word_emb (Lambda)              (None, None, 128)    0           ['tf.einsum[0][0]']              
+                                                                                                  
+ rest_emb (Lambda)              (None, 1322, 128)    0           ['all_items[0][0]']              
+                                                                                                  
+ tf.math.not_equal_1 (TFOpLambd  (None, None)        0           ['input_1[0][0]']                
+ a)                                                                                               
+                                                                                                  
+ dropout_1 (Dropout)            (None, None, 128)    0           ['word_emb[0][0]']               
+                                                                                                  
+ dropout_2 (Dropout)            (None, 1322, 128)    0           ['rest_emb[0][0]']               
+                                                                                                  
+ tf.cast_1 (TFOpLambda)         (None, None)         0           ['tf.math.not_equal_1[0][0]']    
+                                                                                                  
+ dot_mul (Lambda)               (None, None, 1322)   0           ['dropout_1[0][0]',              
+                                                                  'dropout_2[0][0]']              
+                                                                                                  
+ tf.expand_dims_1 (TFOpLambda)  (None, None, 1)      0           ['tf.cast_1[0][0]']              
+                                                                                                  
+ dotprod (Activation)           (None, None, 1322)   0           ['dot_mul[0][0]']                
+                                                                                                  
+ tf.tile_1 (TFOpLambda)         (None, None, 1322)   0           ['tf.expand_dims_1[0][0]']       
+                                                                                                  
+ dot_mask (Lambda)              (None, None, 1322)   0           ['dotprod[0][0]',                
+                                                                  'tf.tile_1[0][0]']              
+                                                                                                  
+ sum (Lambda)                   (None, 1322)         0           ['dot_mask[0][0]',               
+                                                                  'tf.tile_1[0][0]']              
+                                                                                                  
+ activation_1 (Activation)      (None, 1322)         0           ['sum[0][0]']                    
+                                                                                                  
+ out (Activation)               (None, 1322)         0           ['activation_1[0][0]']           
+                                                                                                  
+==================================================================================================
+Total params: 1,316,856
+Trainable params: 1,316,856
+Non-trainable params: 0
+__________________________________________________________________________________________________
+None
+Epoch 1/1000
+2005/2005 - 17s - loss: 1.2655 - NDCG@10: 0.0198 - MAE: 0.1897 - RC@5: 0.0250 - RC@10: 0.0396 - val_loss: 1.2422 - val_NDCG@10: 0.0253 - val_MAE: 0.2498 - val_RC@5: 0.0300 - val_RC@10: 0.0503 - lr: 9.9901e-05 - e_time: 17.3204 - 17s/epoch - 9ms/step
+Epoch 2/1000
+2005/2005 - 16s - loss: 1.2412 - NDCG@10: 0.0248 - MAE: 0.2767 - RC@5: 0.0308 - RC@10: 0.0493 - val_loss: 1.2331 - val_NDCG@10: 0.0281 - val_MAE: 0.2608 - val_RC@5: 0.0320 - val_RC@10: 0.0538 - lr: 9.9802e-05 - e_time: 15.6664 - 16s/epoch - 8ms/step
+Epoch 3/1000
+2005/2005 - 16s - loss: 1.2308 - NDCG@10: 0.0295 - MAE: 0.2845 - RC@5: 0.0357 - RC@10: 0.0569 - val_loss: 1.2185 - val_NDCG@10: 0.0372 - val_MAE: 0.2648 - val_RC@5: 0.0423 - val_RC@10: 0.0710 - lr: 9.9703e-05 - e_time: 15.3717 - 16s/epoch - 8ms/step
+Epoch 4/1000
+2005/2005 - 16s - loss: 1.2145 - NDCG@10: 0.0384 - MAE: 0.2867 - RC@5: 0.0459 - RC@10: 0.0720 - val_loss: 1.1994 - val_NDCG@10: 0.0505 - val_MAE: 0.2654 - val_RC@5: 0.0582 - val_RC@10: 0.0916 - lr: 9.9604e-05 - e_time: 15.6439 - 16s/epoch - 8ms/step
+Epoch 5/1000
+2005/2005 - 16s - loss: 1.1906 - NDCG@10: 0.0580 - MAE: 0.2837 - RC@5: 0.0688 - RC@10: 0.1034 - val_loss: 1.1578 - val_NDCG@10: 0.0872 - val_MAE: 0.2586 - val_RC@5: 0.1035 - val_RC@10: 0.1501 - lr: 9.9505e-05 - e_time: 15.6509 - 16s/epoch - 8ms/step
+Epoch 6/1000
+2005/2005 - 16s - loss: 1.1313 - NDCG@10: 0.1077 - MAE: 0.2657 - RC@5: 0.1296 - RC@10: 0.1830 - val_loss: 1.0723 - val_NDCG@10: 0.1574 - val_MAE: 0.2346 - val_RC@5: 0.1903 - val_RC@10: 0.2576 - lr: 9.9406e-05 - e_time: 15.7273 - 16s/epoch - 8ms/step
+Epoch 7/1000
+2005/2005 - 16s - loss: 1.0635 - NDCG@10: 0.1594 - MAE: 0.2404 - RC@5: 0.1916 - RC@10: 0.2613 - val_loss: 1.0074 - val_NDCG@10: 0.2092 - val_MAE: 0.2151 - val_RC@5: 0.2492 - val_RC@10: 0.3311 - lr: 9.9307e-05 - e_time: 15.4884 - 16s/epoch - 8ms/step
+Epoch 8/1000
+2005/2005 - 16s - loss: 1.0143 - NDCG@10: 0.1979 - MAE: 0.2213 - RC@5: 0.2373 - RC@10: 0.3183 - val_loss: 0.9618 - val_NDCG@10: 0.2496 - val_MAE: 0.1975 - val_RC@5: 0.2960 - val_RC@10: 0.3867 - lr: 9.9208e-05 - e_time: 15.8524 - 16s/epoch - 8ms/step
+Epoch 9/1000
+2005/2005 - 16s - loss: 0.9783 - NDCG@10: 0.2281 - MAE: 0.2056 - RC@5: 0.2727 - RC@10: 0.3619 - val_loss: 0.9286 - val_NDCG@10: 0.2801 - val_MAE: 0.1819 - val_RC@5: 0.3330 - val_RC@10: 0.4279 - lr: 9.9109e-05 - e_time: 15.6481 - 16s/epoch - 8ms/step
+Epoch 10/1000
+2005/2005 - 16s - loss: 0.9501 - NDCG@10: 0.2526 - MAE: 0.1924 - RC@5: 0.3023 - RC@10: 0.3965 - val_loss: 0.9039 - val_NDCG@10: 0.3042 - val_MAE: 0.1719 - val_RC@5: 0.3614 - val_RC@10: 0.4596 - lr: 9.9010e-05 - e_time: 15.3332 - 16s/epoch - 8ms/step
+Epoch 11/1000
+2005/2005 - 16s - loss: 0.9276 - NDCG@10: 0.2727 - MAE: 0.1817 - RC@5: 0.3263 - RC@10: 0.4233 - val_loss: 0.8845 - val_NDCG@10: 0.3242 - val_MAE: 0.1657 - val_RC@5: 0.3851 - val_RC@10: 0.4842 - lr: 9.8911e-05 - e_time: 15.3359 - 16s/epoch - 8ms/step
+Epoch 12/1000
+2005/2005 - 16s - loss: 0.9087 - NDCG@10: 0.2902 - MAE: 0.1727 - RC@5: 0.3481 - RC@10: 0.4470 - val_loss: 0.8692 - val_NDCG@10: 0.3417 - val_MAE: 0.1522 - val_RC@5: 0.4052 - val_RC@10: 0.5040 - lr: 9.8812e-05 - e_time: 15.3324 - 16s/epoch - 8ms/step
+Epoch 13/1000
+2005/2005 - 16s - loss: 0.8917 - NDCG@10: 0.3058 - MAE: 0.1647 - RC@5: 0.3664 - RC@10: 0.4681 - val_loss: 0.8560 - val_NDCG@10: 0.3559 - val_MAE: 0.1461 - val_RC@5: 0.4221 - val_RC@10: 0.5212 - lr: 9.8713e-05 - e_time: 15.3876 - 16s/epoch - 8ms/step
+Epoch 14/1000
+2005/2005 - 16s - loss: 0.8770 - NDCG@10: 0.3190 - MAE: 0.1581 - RC@5: 0.3820 - RC@10: 0.4838 - val_loss: 0.8454 - val_NDCG@10: 0.3684 - val_MAE: 0.1428 - val_RC@5: 0.4364 - val_RC@10: 0.5358 - lr: 9.8614e-05 - e_time: 15.3504 - 16s/epoch - 8ms/step
+Epoch 15/1000
+2005/2005 - 16s - loss: 0.8641 - NDCG@10: 0.3314 - MAE: 0.1523 - RC@5: 0.3968 - RC@10: 0.4999 - val_loss: 0.8362 - val_NDCG@10: 0.3794 - val_MAE: 0.1359 - val_RC@5: 0.4482 - val_RC@10: 0.5484 - lr: 9.8515e-05 - e_time: 15.3486 - 16s/epoch - 8ms/step
+Epoch 16/1000
+2005/2005 - 16s - loss: 0.8531 - NDCG@10: 0.3415 - MAE: 0.1470 - RC@5: 0.4089 - RC@10: 0.5123 - val_loss: 0.8293 - val_NDCG@10: 0.3870 - val_MAE: 0.1325 - val_RC@5: 0.4586 - val_RC@10: 0.5577 - lr: 9.8416e-05 - e_time: 15.3259 - 16s/epoch - 8ms/step
+Epoch 17/1000
+2005/2005 - 16s - loss: 0.8419 - NDCG@10: 0.3521 - MAE: 0.1422 - RC@5: 0.4209 - RC@10: 0.5251 - val_loss: 0.8227 - val_NDCG@10: 0.3961 - val_MAE: 0.1282 - val_RC@5: 0.4683 - val_RC@10: 0.5665 - lr: 9.8317e-05 - e_time: 15.3535 - 16s/epoch - 8ms/step
+Epoch 18/1000
+2005/2005 - 15s - loss: 0.8327 - NDCG@10: 0.3603 - MAE: 0.1384 - RC@5: 0.4314 - RC@10: 0.5352 - val_loss: 0.8169 - val_NDCG@10: 0.4041 - val_MAE: 0.1237 - val_RC@5: 0.4769 - val_RC@10: 0.5745 - lr: 9.8218e-05 - e_time: 15.3188 - 15s/epoch - 8ms/step
+Epoch 19/1000
+2005/2005 - 16s - loss: 0.8224 - NDCG@10: 0.3695 - MAE: 0.1344 - RC@5: 0.4417 - RC@10: 0.5456 - val_loss: 0.8131 - val_NDCG@10: 0.4091 - val_MAE: 0.1262 - val_RC@5: 0.4830 - val_RC@10: 0.5808 - lr: 9.8119e-05 - e_time: 15.3300 - 16s/epoch - 8ms/step
+Epoch 20/1000
+2005/2005 - 16s - loss: 0.8140 - NDCG@10: 0.3775 - MAE: 0.1311 - RC@5: 0.4511 - RC@10: 0.5549 - val_loss: 0.8085 - val_NDCG@10: 0.4165 - val_MAE: 0.1192 - val_RC@5: 0.4907 - val_RC@10: 0.5866 - lr: 9.8020e-05 - e_time: 15.3457 - 16s/epoch - 8ms/step
+Epoch 21/1000
+2005/2005 - 16s - loss: 0.8070 - NDCG@10: 0.3842 - MAE: 0.1284 - RC@5: 0.4591 - RC@10: 0.5627 - val_loss: 0.8052 - val_NDCG@10: 0.4207 - val_MAE: 0.1201 - val_RC@5: 0.4956 - val_RC@10: 0.5910 - lr: 9.7921e-05 - e_time: 15.3255 - 16s/epoch - 8ms/step
+Epoch 22/1000
+2005/2005 - 16s - loss: 0.7993 - NDCG@10: 0.3911 - MAE: 0.1253 - RC@5: 0.4664 - RC@10: 0.5702 - val_loss: 0.8024 - val_NDCG@10: 0.4253 - val_MAE: 0.1120 - val_RC@5: 0.5004 - val_RC@10: 0.5954 - lr: 9.7822e-05 - e_time: 15.5646 - 16s/epoch - 8ms/step
+Epoch 23/1000
+2005/2005 - 16s - loss: 0.7923 - NDCG@10: 0.3974 - MAE: 0.1227 - RC@5: 0.4734 - RC@10: 0.5776 - val_loss: 0.8003 - val_NDCG@10: 0.4285 - val_MAE: 0.1145 - val_RC@5: 0.5044 - val_RC@10: 0.5997 - lr: 9.7723e-05 - e_time: 15.5937 - 16s/epoch - 8ms/step
+Epoch 24/1000
+2005/2005 - 16s - loss: 0.7854 - NDCG@10: 0.4028 - MAE: 0.1206 - RC@5: 0.4809 - RC@10: 0.5838 - val_loss: 0.7977 - val_NDCG@10: 0.4333 - val_MAE: 0.1114 - val_RC@5: 0.5082 - val_RC@10: 0.6030 - lr: 9.7624e-05 - e_time: 15.5079 - 16s/epoch - 8ms/step
+Epoch 25/1000
+2005/2005 - 16s - loss: 0.7786 - NDCG@10: 0.4097 - MAE: 0.1181 - RC@5: 0.4874 - RC@10: 0.5926 - val_loss: 0.7961 - val_NDCG@10: 0.4365 - val_MAE: 0.1080 - val_RC@5: 0.5123 - val_RC@10: 0.6067 - lr: 9.7525e-05 - e_time: 15.5723 - 16s/epoch - 8ms/step
+Epoch 26/1000
+2005/2005 - 16s - loss: 0.7731 - NDCG@10: 0.4142 - MAE: 0.1163 - RC@5: 0.4931 - RC@10: 0.5976 - val_loss: 0.7961 - val_NDCG@10: 0.4383 - val_MAE: 0.1133 - val_RC@5: 0.5138 - val_RC@10: 0.6083 - lr: 9.7426e-05 - e_time: 15.5454 - 16s/epoch - 8ms/step
+Epoch 27/1000
+2005/2005 - 16s - loss: 0.7675 - NDCG@10: 0.4191 - MAE: 0.1146 - RC@5: 0.4981 - RC@10: 0.6031 - val_loss: 0.7936 - val_NDCG@10: 0.4406 - val_MAE: 0.1096 - val_RC@5: 0.5164 - val_RC@10: 0.6098 - lr: 9.7327e-05 - e_time: 15.4552 - 16s/epoch - 8ms/step
+Epoch 28/1000
+2005/2005 - 16s - loss: 0.7620 - NDCG@10: 0.4242 - MAE: 0.1130 - RC@5: 0.5037 - RC@10: 0.6090 - val_loss: 0.7927 - val_NDCG@10: 0.4438 - val_MAE: 0.1055 - val_RC@5: 0.5192 - val_RC@10: 0.6123 - lr: 9.7228e-05 - e_time: 15.3490 - 16s/epoch - 8ms/step
+Epoch 29/1000
+2005/2005 - 15s - loss: 0.7563 - NDCG@10: 0.4293 - MAE: 0.1111 - RC@5: 0.5103 - RC@10: 0.6145 - val_loss: 0.7924 - val_NDCG@10: 0.4455 - val_MAE: 0.1072 - val_RC@5: 0.5206 - val_RC@10: 0.6130 - lr: 9.7129e-05 - e_time: 15.3205 - 15s/epoch - 8ms/step
+Epoch 30/1000
+2005/2005 - 16s - loss: 0.7518 - NDCG@10: 0.4329 - MAE: 0.1098 - RC@5: 0.5144 - RC@10: 0.6184 - val_loss: 0.7910 - val_NDCG@10: 0.4479 - val_MAE: 0.1031 - val_RC@5: 0.5227 - val_RC@10: 0.6146 - lr: 9.7030e-05 - e_time: 15.8018 - 16s/epoch - 8ms/step
+Epoch 31/1000
+2005/2005 - 16s - loss: 0.7478 - NDCG@10: 0.4355 - MAE: 0.1084 - RC@5: 0.5175 - RC@10: 0.6218 - val_loss: 0.7905 - val_NDCG@10: 0.4485 - val_MAE: 0.1015 - val_RC@5: 0.5238 - val_RC@10: 0.6143 - lr: 9.6931e-05 - e_time: 15.6045 - 16s/epoch - 8ms/step
+Epoch 32/1000
+2005/2005 - 16s - loss: 0.7436 - NDCG@10: 0.4402 - MAE: 0.1070 - RC@5: 0.5226 - RC@10: 0.6265 - val_loss: 0.7901 - val_NDCG@10: 0.4502 - val_MAE: 0.1000 - val_RC@5: 0.5272 - val_RC@10: 0.6152 - lr: 9.6832e-05 - e_time: 15.5872 - 16s/epoch - 8ms/step
+Epoch 33/1000
+2005/2005 - 16s - loss: 0.7390 - NDCG@10: 0.4434 - MAE: 0.1058 - RC@5: 0.5265 - RC@10: 0.6312 - val_loss: 0.7902 - val_NDCG@10: 0.4515 - val_MAE: 0.1006 - val_RC@5: 0.5279 - val_RC@10: 0.6173 - lr: 9.6733e-05 - e_time: 15.7206 - 16s/epoch - 8ms/step
+Epoch 34/1000
+2005/2005 - 16s - loss: 0.7346 - NDCG@10: 0.4478 - MAE: 0.1047 - RC@5: 0.5312 - RC@10: 0.6348 - val_loss: 0.7897 - val_NDCG@10: 0.4533 - val_MAE: 0.0994 - val_RC@5: 0.5296 - val_RC@10: 0.6181 - lr: 9.6634e-05 - e_time: 15.3437 - 16s/epoch - 8ms/step
+Epoch 35/1000
+2005/2005 - 16s - loss: 0.7308 - NDCG@10: 0.4507 - MAE: 0.1036 - RC@5: 0.5343 - RC@10: 0.6379 - val_loss: 0.7897 - val_NDCG@10: 0.4543 - val_MAE: 0.0965 - val_RC@5: 0.5302 - val_RC@10: 0.6171 - lr: 9.6535e-05 - e_time: 15.3417 - 16s/epoch - 8ms/step
+Epoch 36/1000
+2005/2005 - 15s - loss: 0.7277 - NDCG@10: 0.4532 - MAE: 0.1028 - RC@5: 0.5375 - RC@10: 0.6405 - val_loss: 0.7901 - val_NDCG@10: 0.4548 - val_MAE: 0.0968 - val_RC@5: 0.5303 - val_RC@10: 0.6179 - lr: 9.6436e-05 - e_time: 15.3459 - 15s/epoch - 8ms/step
+Epoch 37/1000
+2005/2005 - 15s - loss: 0.7238 - NDCG@10: 0.4557 - MAE: 0.1016 - RC@5: 0.5408 - RC@10: 0.6442 - val_loss: 0.7902 - val_NDCG@10: 0.4554 - val_MAE: 0.1002 - val_RC@5: 0.5304 - val_RC@10: 0.6185 - lr: 9.6337e-05 - e_time: 15.3507 - 15s/epoch - 8ms/step
+Epoch 38/1000
+2005/2005 - 15s - loss: 0.7205 - NDCG@10: 0.4582 - MAE: 0.1007 - RC@5: 0.5435 - RC@10: 0.6473 - val_loss: 0.7898 - val_NDCG@10: 0.4566 - val_MAE: 0.0967 - val_RC@5: 0.5323 - val_RC@10: 0.6194 - lr: 9.6238e-05 - e_time: 15.3412 - 15s/epoch - 8ms/step
+Epoch 39/1000
+2005/2005 - 15s - loss: 0.7167 - NDCG@10: 0.4612 - MAE: 0.0995 - RC@5: 0.5473 - RC@10: 0.6507 - val_loss: 0.7900 - val_NDCG@10: 0.4576 - val_MAE: 0.0914 - val_RC@5: 0.5325 - val_RC@10: 0.6202 - lr: 9.6139e-05 - e_time: 15.3435 - 15s/epoch - 8ms/step
+Epoch 40/1000
+2005/2005 - 15s - loss: 0.7137 - NDCG@10: 0.4639 - MAE: 0.0989 - RC@5: 0.5501 - RC@10: 0.6540 - val_loss: 0.7900 - val_NDCG@10: 0.4580 - val_MAE: 0.0922 - val_RC@5: 0.5335 - val_RC@10: 0.6202 - lr: 9.6040e-05 - e_time: 15.3303 - 15s/epoch - 8ms/step
+Epoch 41/1000
+2005/2005 - 16s - loss: 0.7111 - NDCG@10: 0.4659 - MAE: 0.0980 - RC@5: 0.5514 - RC@10: 0.6558 - val_loss: 0.7897 - val_NDCG@10: 0.4589 - val_MAE: 0.0918 - val_RC@5: 0.5331 - val_RC@10: 0.6199 - lr: 9.5941e-05 - e_time: 15.5814 - 16s/epoch - 8ms/step
+Epoch 42/1000
+2005/2005 - 16s - loss: 0.7077 - NDCG@10: 0.4680 - MAE: 0.0973 - RC@5: 0.5548 - RC@10: 0.6588 - val_loss: 0.7907 - val_NDCG@10: 0.4591 - val_MAE: 0.0899 - val_RC@5: 0.5333 - val_RC@10: 0.6186 - lr: 9.5842e-05 - e_time: 15.6506 - 16s/epoch - 8ms/step
+Epoch 43/1000
+2005/2005 - 16s - loss: 0.7054 - NDCG@10: 0.4703 - MAE: 0.0965 - RC@5: 0.5569 - RC@10: 0.6605 - val_loss: 0.7911 - val_NDCG@10: 0.4596 - val_MAE: 0.0904 - val_RC@5: 0.5335 - val_RC@10: 0.6187 - lr: 9.5743e-05 - e_time: 15.7617 - 16s/epoch - 8ms/step
+Epoch 44/1000
+2005/2005 - 16s - loss: 0.7029 - NDCG@10: 0.4727 - MAE: 0.0959 - RC@5: 0.5608 - RC@10: 0.6631 - val_loss: 0.7908 - val_NDCG@10: 0.4595 - val_MAE: 0.0895 - val_RC@5: 0.5329 - val_RC@10: 0.6193 - lr: 9.5644e-05 - e_time: 15.5085 - 16s/epoch - 8ms/step
+Epoch 45/1000
+2005/2005 - 16s - loss: 0.7003 - NDCG@10: 0.4744 - MAE: 0.0951 - RC@5: 0.5615 - RC@10: 0.6653 - val_loss: 0.7911 - val_NDCG@10: 0.4602 - val_MAE: 0.0858 - val_RC@5: 0.5327 - val_RC@10: 0.6191 - lr: 9.5545e-05 - e_time: 15.8189 - 16s/epoch - 8ms/step
+Epoch 45: early stopping
+[92m[INFO] Loading best model...[0m
+/media/nas/pperez/miniconda3/envs/TAVtext/lib/python3.8/site-packages/sklearn/manifold/_t_sne.py:795: FutureWarning: The default initialization in TSNE will change from 'random' to 'pca' in 1.2.
+  warnings.warn(
+/media/nas/pperez/miniconda3/envs/TAVtext/lib/python3.8/site-packages/sklearn/manifold/_t_sne.py:795: FutureWarning: The default initialization in TSNE will change from 'random' to 'pca' in 1.2.
+  warnings.warn(
+(1322, 2)
+[92m[QUERY] 'a el la yo en un con y'[0m
+[PREPR]         [a el el yo en uno con y]
+[TXT2ID]        [9, 1, 1, 10, 8, 5, 11, 3]
+[WORD FREQ]     [366954, 2121705, 2121705, 319015, 407041, 675003, 313255, 899271]
+[91m[ERROR] Reparar y unificar la parte de selección de palabras relevantes[0m
+	[3.74] Superpizza               {'pesima': 0.4849, 'domicilio': 0.4705, 'andreu': 0.4683, 'portugal': 0.4475, 'cupon': 0.43, 'buenisima': 0.4065, 'pesimo': 0.4006, 'italiano': 0.4, 'pizcer': 0.3928, 'mensaje': 0.3508}
+	[2.88] Cerveceria Catalana      {'empanada': 0.832, 'can': 0.7617, 'boqueria': 0.738, 'montadito': 0.7295, 'vasco': 0.7017, 'sants': 0.691, 'mejicano': 0.688, 'flauta': 0.6655, 'vermut': 0.6577, 'cabreado': 0.6206}
+	[2.72] Ciudad Condal Restaurant {'montadito': 0.762, 'born': 0.7363, 'descuento': 0.691, 'vermut': 0.6665, 'can': 0.638, 'cabreado': 0.5845, 'flauta': 0.5654, 'boqueria': 0.536, 'vasco': 0.5234, 'playa': 0.4863}
+	[2.47] 7 Portes                 {'mexicano': 0.6733, 'comercial': 0.6553, 'caracol': 0.5596, 'paella': 0.5522, 'historia': 0.442, 'brasa': 0.4128, 'asia': 0.3923, 'port': 0.3916, 'italiano': 0.389, 'clasico': 0.3823}
+	[2.44] El Nacional              {'mexicano': 0.8, 'ostra': 0.5967, 'boqueria': 0.5547, 'empanada': 0.4773, 'andreu': 0.4497, 'pizza': 0.4185, 'chino': 0.4033, 'trago': 0.4033, 'precioso': 0.3987, 'playa': 0.3875}
+	[2.30] Mc Donald's              {'chino': 0.3254, 'rambla': 0.2177, 'centrico': 0.2094, 'braseria': 0.1678, 'rapidez': 0.1642, 'limpio': 0.1617, 'rapir': 0.1552, 'paseo': 0.1514, 'fiel': 0.1433, 'pesima': 0.1387}
+[92m[QUERY] 'quiero comer un arroz con bogavante y con buenas vistas'[0m
+[PREPR]         [querer comer uno arroz con bogavante y con buena vista]
+[TXT2ID]        [137, 37, 5, 129, 11, 722, 3, 11, 125, 276]
+[WORD FREQ]     [20479, 73909, 675003, 21133, 313255, 2593, 899271, 313255, 22042, 9065]
+[91m[ERROR] Reparar y unificar la parte de selección de palabras relevantes[0m
+	[4.69] Martinez                    {'visto': 0.5713, 'vistas': 0.4607, 'vista': 0.4446, 'griego': 0.4397, 'puerto': 0.396, 'croqueta': 0.291, 'martinez': 0.2812, 'cadena': 0.2727, 'nuri': 0.2472, 'verguenza': 0.2355}
+	[4.62] Mirandoalmar                {'meryam': 0.761, 'kobita': 0.691, 'visto': 0.6064, 'chino': 0.5293, 'puerto': 0.5195, 'vista': 0.4836, 'heinz': 0.473, 'vistas': 0.4463, 'cristiar': 0.4258, 'mar': 0.4062}
+	[4.37] Restaurante Barceloneta     {'indio': 0.739, 'empanada': 0.6895, 'puerto': 0.6323, 'barceloneta': 0.608, 'boqueria': 0.594, 'mejicano': 0.4968, 'gaig': 0.477, 'vasco': 0.4375, 'ramon': 0.4314, 'visto': 0.4255}
+	[4.19] Pez Vela Chiringuito        {'mar': 0.416, 'chiringuito': 0.325, 'paella': 0.3215, 'tragaluz': 0.3203, 'maritimo': 0.3167, 'visto': 0.314, 'arroz': 0.2976, 'descuento': 0.2969, 'chino': 0.274, 'pez': 0.2466}
+	[3.93] Mariscco                    {'bogavante': 0.4526, 'griego': 0.4438, 'brasa': 0.3035, 'italiano': 0.286, 'marisco': 0.2805, 'chipiron': 0.2795, 'fresco': 0.2306, 'marisqueria': 0.2036, 'caldoso': 0.1989, 'peso': 0.169}
+	[3.87] Boo Restaurant & Beach Club {'mar': 0.3745, 'visto': 0.3342, 'chino': 0.3228, 'torrada': 0.3225, 'diagonal': 0.3037, 'boo': 0.2573, 'poble': 0.257, 'tast': 0.2451, 'antoni': 0.2358, 'frankfurt': 0.2289}
+[92m[QUERY] 'quiero comer un arroz sin bogavante y con buenas vistas'[0m
+[PREPR]         [querer comer uno arroz sin bogavante y con buena vista]
+[TXT2ID]        [137, 37, 5, 129, 38, 722, 3, 11, 125, 276]
+[WORD FREQ]     [20479, 73909, 675003, 21133, 73128, 2593, 899271, 313255, 22042, 9065]
+[91m[ERROR] Reparar y unificar la parte de selección de palabras relevantes[0m
+	[4.67] Martinez                {'visto': 0.5713, 'vistas': 0.4607, 'vista': 0.4446, 'griego': 0.4397, 'puerto': 0.396, 'croqueta': 0.291, 'martinez': 0.2812, 'cadena': 0.2727, 'nuri': 0.2472, 'verguenza': 0.2355}
+	[4.59] Mirandoalmar            {'meryam': 0.761, 'kobita': 0.691, 'visto': 0.6064, 'chino': 0.5293, 'puerto': 0.5195, 'vista': 0.4836, 'heinz': 0.473, 'vistas': 0.4463, 'cristiar': 0.4258, 'mar': 0.4062}
+	[4.34] Restaurante Barceloneta {'indio': 0.739, 'empanada': 0.6895, 'puerto': 0.6323, 'barceloneta': 0.608, 'boqueria': 0.594, 'mejicano': 0.4968, 'gaig': 0.477, 'vasco': 0.4375, 'ramon': 0.4314, 'visto': 0.4255}
+	[4.14] Pez Vela Chiringuito    {'mar': 0.416, 'chiringuito': 0.325, 'paella': 0.3215, 'tragaluz': 0.3203, 'maritimo': 0.3167, 'visto': 0.314, 'arroz': 0.2976, 'descuento': 0.2969, 'chino': 0.274, 'pez': 0.2466}
+	[3.83] Mariscco                {'bogavante': 0.4526, 'griego': 0.4438, 'brasa': 0.3035, 'italiano': 0.286, 'marisco': 0.2805, 'chipiron': 0.2795, 'fresco': 0.2306, 'marisqueria': 0.2036, 'caldoso': 0.1989, 'peso': 0.169}
+	[3.74] El Cangrejo Loco        {'puerto': 0.5044, 'mar': 0.4473, 'estimado': 0.4248, 'visto': 0.382, 'buffet': 0.3804, 'cangrejo': 0.3657, 'estimar': 0.3062, 'loco': 0.2852, 'vista': 0.27, 'vistas': 0.2544}

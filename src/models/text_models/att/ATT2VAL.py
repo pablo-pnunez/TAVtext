@@ -32,7 +32,7 @@ class ATT2VAL(ATT2ITM):
         true_ones = (y_true/true_max) # multiplica por 1 los items no activos y por 2 el actual
         mse = mse * ((true_ones*(mul_factor-1))+1)
         
-        mse = tf.sqrt(tf.reduce_mean(mse))
+        mse = tf.cast(tf.sqrt(tf.reduce_mean(mse)), tf.float32)
         return mse  # Devolver la pérdida calculada
     
     def custom_activation_sigmoid(self, x):
@@ -83,7 +83,7 @@ class ATT2VAL(ATT2ITM):
 
         if mv == "0": # Se añade la estandarización a la salida y se simplifica el modelo
             emb_size = 128  # 128
-            dropout = .4
+            dropout = .3 # .3
 
             use_bias = True
             emb_regu = None # tf.keras.regularizers.L2()
@@ -120,8 +120,9 @@ class ATT2VAL(ATT2ITM):
             # model = tf.keras.layers.Lambda(lambda x: x[0] / x[1], name="norm")([model, mask_sum])
             # model = tf.keras.layers.Dense(rst_no, use_bias=False)(model)
 
-            model = tf.keras.layers.Activation(self.custom_activation_smoothstep)(model) # Sigmoide entre 1 y 5                                 
-            model_out = tf.keras.layers.Activation("linear", name="out", dtype='float32')(model)
+            # model = tf.keras.layers.Activation(self.custom_activation_smoothstep)(model) # Sigmoide entre 1 y 5     
+            model = tf.keras.layers.ReLU(max_value=5)(model)                         
+            model_out = tf.keras.layers.Activation("linear", name="out", dtype=tf.float32)(model)
                         
             model = tf.keras.models.Model(inputs=[text_in, rest_in], outputs=[model_out], name=f"{self.MODEL_NAME}_{self.MODEL_VERSION}")
             optimizer = tf.keras.optimizers.legacy.Adam(self.CONFIG["model"]["learning_rate"])
@@ -139,8 +140,11 @@ class ATT2VAL(ATT2ITM):
 
         # Hay que obtener las valoraciones y quedarse con la última si hay varias
         all_data = pd.read_pickle(self.DATASET.DATASET_PATH+"ALL_DATA").sort_values("date")
+        all_data.loc[all_data.reviewId==277285706, "rating"] = 10
+
         rating_data = all_data[["reviewId", "rating"]].drop_duplicates(keep='last', inplace=False)
         rating_data = rating_data.set_index("reviewId").loc[dataframe.reviewId.values]["rating"].values/10
+        rating_data = tf.cast(rating_data, tf.float32)
 
         seq_data = self.DATASET.DATA["TEXT_SEQUENCES"][dataframe.seq.values]
         rst_data = dataframe.id_item.values
@@ -150,8 +154,15 @@ class ATT2VAL(ATT2ITM):
         data_x = tf.data.Dataset.zip((data_x1, data_x2))
 
         # Hacer un onehot y multiplicar por el score cada vector -> todo ceros menos el score
-        data_y = tf.one_hot(rst_data,self.DATASET.DATA["N_ITEMS"])*tf.cast(tf.reshape(rating_data,(len(dataframe),1)), "float")
-        data_y = tf.data.Dataset.from_tensor_slices(data_y)
+        # data_y = tf.one_hot(rst_data,self.DATASET.DATA["N_ITEMS"])*tf.cast(tf.reshape(rating_data,(len(dataframe),1)), "float")
+        
+        data_y_rst = tf.data.Dataset.from_tensor_slices(rst_data)
+        data_y_rat = tf.data.Dataset.from_tensor_slices(rating_data)
+        data_y = tf.data.Dataset.zip((data_y_rst, data_y_rat))
+        data_y = data_y.map(lambda x,y: tf.one_hot(x, self.DATASET.DATA["N_ITEMS"]) * y, num_parallel_calls=tf.data.AUTOTUNE)
+        # data_y = data_y * tf.cast(tf.reshape(rating_data,(len(dataframe),1)), tf.float16)
+        # data_y = tf.one_hot(rst_data,self.DATASET.DATA["N_ITEMS"], dtype=tf.float16) * tf.cast(tf.reshape(rating_data,(len(dataframe),1)), tf.float16)
+        # data_y = tf.data.Dataset.from_tensor_slices(data_y)
 
         return tf.data.Dataset.zip((data_x, data_y))
     
