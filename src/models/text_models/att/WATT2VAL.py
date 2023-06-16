@@ -59,10 +59,6 @@ class WATT2VAL(ATT2VAL):
             query_emb = tf.keras.layers.Embedding(vocab_size, emb_size , mask_zero=True, name="all_words")
             ht_emb = query_emb(text_in)      
 
-            position_embeddings = keras_nlp.layers.PositionEmbedding(sequence_length=pad_len)(ht_emb)
-            # position_embeddings = keras_nlp.layers.SinePositionEncoding()(ht_emb)
-            ht_emb = ht_emb + position_embeddings
-
             '''
             # Crear una capa de MultiHeadAttention
             # Máscara de la query
@@ -72,7 +68,7 @@ class WATT2VAL(ATT2VAL):
             ht_emb, attention = att_ly(ht_emb, ht_emb, return_attention_scores=True)
             '''
             
-            wr_att_embs = tf.keras.layers.Embedding(vocab_size, 8, mask_zero=True, name="wr_att_embs")
+            wr_att_embs = tf.keras.layers.Embedding(vocab_size, emb_size, mask_zero=True, name="wr_att_embs")
             wr_att_embs = wr_att_embs(text_in)
             # wr_att_embs = tf.keras.layers.Dense(8, activation="tanh")(ht_emb)
             wr_att_embs = tf.keras.layers.Dropout(dropout)(wr_att_embs)     
@@ -82,7 +78,7 @@ class WATT2VAL(ATT2VAL):
             # Esto está copiado y adaptado de la attention. Se supone que cada embedding se obtiene como combinación lineal
             # de los scores por los embeddings anteriores
             ht_emb = tf.einsum("abc,acd->abd", wr_attention_scores, ht_emb)
-            
+
             ## Aprender un peso para cada palabra que represente su importancia
             # word_relevance = tf.keras.layers.Embedding(vocab_size, 1, mask_zero=True, name="wr_rel_weight", embeddings_initializer="ones")
             # wr_rel = word_relevance(text_in)
@@ -94,6 +90,10 @@ class WATT2VAL(ATT2VAL):
             ht_emb = tf.keras.layers.Lambda(lambda x: x, name="word_emb")(ht_emb)
             ht_emb = tf.keras.layers.Dropout(dropout)(ht_emb)
             
+            # position_embeddings = keras_nlp.layers.PositionEmbedding(sequence_length=pad_len)(ht_emb)
+            position_embeddings = keras_nlp.layers.SinePositionEncoding()(ht_emb)
+            ht_emb = ht_emb + position_embeddings
+
             # ITEMS
             items_emb = tf.keras.layers.Embedding(rst_no, emb_size, name="all_items")
             hr_emb = items_emb(rest_in)                      
@@ -106,7 +106,6 @@ class WATT2VAL(ATT2VAL):
             mask_query = tf.tile(tf.expand_dims(mask_query, axis=-1),[1,1,rst_no]) # Se repite para todos los items
             model = tf.keras.layers.Activation("sigmoid", name="dotprod")(model)
             
-            
             """
             word_relevance = tf.keras.layers.Embedding(vocab_size, 1, mask_zero=True, name="wr_rel_weight", embeddings_initializer="ones")
             wr_rel = word_relevance(text_in)
@@ -118,14 +117,16 @@ class WATT2VAL(ATT2VAL):
             # model = tf.keras.layers.Lambda(lambda x: tf.math.reduce_sum(x, 1), name="sum")(model)
             # model = tf.keras.layers.ReLU(max_value=5)(model)                                    
 
-            # model = tf.keras.layers.Lambda(lambda x: tf.math.reduce_sum(x[0], 1)/tf.math.reduce_sum(x[1], 1), name="sum")([model, mask_query])
-            model = tf.keras.layers.Lambda(lambda x: tf.math.reduce_sum(x[0], 1), name="sum")([model, mask_query])
+            model = tf.keras.layers.Lambda(lambda x: tf.math.reduce_sum(x[0], 1)/tf.math.reduce_sum(x[1], 1), name="sum")([model, mask_query])
+            # model = tf.keras.layers.Lambda(lambda x: tf.math.reduce_sum(x[0], 1), name="sum")([model, mask_query])
 
-            # model = model * 5 # Esto obliga a que siempre exista uno igual a 5
-            model = tf.nn.l2_normalize(model, axis=1) * 5 # Esto obliga a que siempre exista uno igual a 5
+            model = model * 5 # Esto obliga a que siempre exista uno igual a 5
+            # model = tf.nn.l2_normalize(model, axis=1) * 5 # Esto obliga a que siempre exista uno igual a 5
 
             # model = tf.keras.layers.Activation(self.custom_activation_smoothstep)(model)
             # model = tf.keras.layers.Lambda(lambda x: x * 5.0 )(model)
+            # model = tf.keras.layers.ReLU(max_value=5)(model)
+
 
             model_out = tf.keras.layers.Activation("linear", name="out", dtype=tf.float32)(model)
                         

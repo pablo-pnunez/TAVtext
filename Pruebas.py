@@ -57,7 +57,7 @@ class TelegramCallback(tf.keras.callbacks.Callback):
 
 
 dataset = "restaurants".lower().replace(" ", "") if args.dst is None else args.dst
-subset = "gijon".lower().replace(" ", "") if args.sst is None else args.sst
+subset = "newyorkcity".lower().replace(" ", "") if args.sst is None else args.sst
 
 seed = 100 if args.sd is None else args.sd
 
@@ -127,7 +127,7 @@ elif "W2VATT2ITM" == model: mdl = W2VATT2ITM(mdl_cfg, text_dataset)
 elif "WATT2VAL" == model: mdl = WATT2VAL(mdl_cfg, text_dataset)
 else: raise ValueError
 
-mdl.train(dev=True, save_model=False, callbacks=[])
+mdl.train(dev=False, save_model=True, callbacks=[])
 mdl.emb_tsne()
 
 if language == "es": 
@@ -138,11 +138,16 @@ if language == "es":
     # mdl.evaluate_text("quiero arroz y quiero marisco")
     # mdl.evaluate_text("quiero arroz y no quiero marisco")
 
-if language == "en": mdl.evaluate_text("Where can not i eat the typical pastrami sandwich")
+if language == "en":
+    mdl.evaluate_text("he she it am are they")
+    mdl.evaluate_text("Where can not i eat the typical pastrami sandwich")
 
 # TODO: Parece que la lemmatización depende mucho de la posición de la palabra. 
 # Por ejemplo quiero puede transformarse en "querer" o "quiero". 
 
+# TODO: Semantic similarity embeddings parece que si dan uno por cada palabra
+# TODO: food2vec
+# TODO: No poner que word2vec no va y ya, añadir resultado.
 
 
 
