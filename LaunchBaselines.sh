@@ -6,7 +6,7 @@ declare -A DATASETS
 
 DATASETS["restaurants"]="gijon barcelona madrid newyorkcity paris"
 DATASETS["pois"]="barcelona madrid newyorkcity paris london"
-DATASETS["amazon"]="digital_music fashion"
+DATASETS["amazon"]="digital_music fashion" 
 
 
 for DATASET_NAME in ${!DATASETS[@]}; do 
