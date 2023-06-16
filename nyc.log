@@ -103,3 +103,43 @@ Epoch 11/19
 Epoch 12/19
 5803/5803 - 60s - loss: nan - NDCG@10: 0.5055 - MAE: nan - RC@5: 0.5817 - RC@10: 0.6643 - lr: 9.8812e-05 - e_time: 60.3549 - 60s/epoch - 10ms/step
 Epoch 13/19
+5803/5803 - 60s - loss: nan - NDCG@10: 0.5106 - MAE: nan - RC@5: 0.5870 - RC@10: 0.6694 - lr: 9.8713e-05 - e_time: 60.3948 - 60s/epoch - 10ms/step
+Epoch 14/19
+5803/5803 - 60s - loss: nan - NDCG@10: 0.5158 - MAE: nan - RC@5: 0.5927 - RC@10: 0.6746 - lr: 9.8614e-05 - e_time: 60.3762 - 60s/epoch - 10ms/step
+Epoch 15/19
+5803/5803 - 60s - loss: nan - NDCG@10: 0.5195 - MAE: nan - RC@5: 0.5966 - RC@10: 0.6780 - lr: 9.8515e-05 - e_time: 60.3189 - 60s/epoch - 10ms/step
+Epoch 16/19
+5803/5803 - 60s - loss: nan - NDCG@10: 0.5227 - MAE: nan - RC@5: 0.6003 - RC@10: 0.6818 - lr: 9.8416e-05 - e_time: 60.3394 - 60s/epoch - 10ms/step
+Epoch 17/19
+5803/5803 - 60s - loss: nan - NDCG@10: 0.5264 - MAE: nan - RC@5: 0.6040 - RC@10: 0.6852 - lr: 9.8317e-05 - e_time: 60.3812 - 60s/epoch - 10ms/step
+Epoch 18/19
+5803/5803 - 60s - loss: nan - NDCG@10: 0.5293 - MAE: nan - RC@5: 0.6074 - RC@10: 0.6883 - lr: 9.8218e-05 - e_time: 60.3179 - 60s/epoch - 10ms/step
+Epoch 19/19
+5803/5803 - 60s - loss: nan - NDCG@10: 0.5317 - MAE: nan - RC@5: 0.6102 - RC@10: 0.6908 - lr: 9.8119e-05 - e_time: 60.3382 - 60s/epoch - 10ms/step
+Traceback (most recent call last):
+  File "/media/nas/pperez/miniconda3/envs/TAVtext/lib/python3.8/site-packages/pandas/core/indexes/base.py", line 3621, in get_loc
+    return self._engine.get_loc(casted_key)
+  File "pandas/_libs/index.pyx", line 136, in pandas._libs.index.IndexEngine.get_loc
+  File "pandas/_libs/index.pyx", line 163, in pandas._libs.index.IndexEngine.get_loc
+  File "pandas/_libs/hashtable_class_helper.pxi", line 5198, in pandas._libs.hashtable.PyObjectHashTable.get_item
+  File "pandas/_libs/hashtable_class_helper.pxi", line 5206, in pandas._libs.hashtable.PyObjectHashTable.get_item
+KeyError: 'y'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/media/nas/pperez/code/TAVtext/Pruebas.py", line 130, in <module>
+    mdl.train(dev=False, save_model=True, callbacks=[])
+  File "/media/nas/pperez/code/TAVtext/src/models/KerasModelClass.py", line 53, in train
+    self.__train_model__(train_sequence=train_dev_seq, dev_sequence=None, save_model=save_model, train_cfg=train_cfg, callbacks=callbacks)
+  File "/media/nas/pperez/code/TAVtext/src/models/KerasModelClass.py", line 176, in __train_model__
+    hplt = sns.lineplot(x=range(done_epochs), y=hist.history[self.CONFIG["model"]["early_st_monitor"].replace("val_", "")], label=self.CONFIG["model"]["early_st_monitor"].replace("val_", ""))
+  File "/media/nas/pperez/miniconda3/envs/TAVtext/lib/python3.8/site-packages/seaborn/relational.py", line 645, in lineplot
+    p.plot(ax, kwargs)
+  File "/media/nas/pperez/miniconda3/envs/TAVtext/lib/python3.8/site-packages/seaborn/relational.py", line 459, in plot
+    lines = ax.plot(sub_data["x"], sub_data["y"], **kws)
+  File "/media/nas/pperez/miniconda3/envs/TAVtext/lib/python3.8/site-packages/pandas/core/frame.py", line 3505, in __getitem__
+    indexer = self.columns.get_loc(key)
+  File "/media/nas/pperez/miniconda3/envs/TAVtext/lib/python3.8/site-packages/pandas/core/indexes/base.py", line 3623, in get_loc
+    raise KeyError(key) from err
+KeyError: 'y'

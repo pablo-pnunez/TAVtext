@@ -52,7 +52,7 @@ class WATT2VAL(ATT2VAL):
         model = None
 
         if mv == "0": # Se añade la estandarización a la salida y se simplifica el modelo
-            emb_size = 128  # 128
+            emb_size = 64  # 128
             dropout = .4
                  
             # PALABRAS            

@@ -57,7 +57,7 @@ class TelegramCallback(tf.keras.callbacks.Callback):
 
 
 dataset = "restaurants".lower().replace(" ", "") if args.dst is None else args.dst
-subset = "newyorkcity".lower().replace(" ", "") if args.sst is None else args.sst
+subset = "barcelona".lower().replace(" ", "") if args.sst is None else args.sst
 
 seed = 100 if args.sd is None else args.sd
 
@@ -127,7 +127,17 @@ elif "W2VATT2ITM" == model: mdl = W2VATT2ITM(mdl_cfg, text_dataset)
 elif "WATT2VAL" == model: mdl = WATT2VAL(mdl_cfg, text_dataset)
 else: raise ValueError
 
-mdl.train(dev=False, save_model=True, callbacks=[])
+
+mdl.train(dev=True, save_model=False, callbacks=[])
+
+"""
+train_dev_users = mdl.DATASET.DATA["TRAIN_DEV"].userId.unique()
+mdl.DATASET.DATA["TEST"] = mdl.DATASET.DATA["TEST"][mdl.DATASET.DATA["TEST"]["userId"].isin(train_dev_users)]
+mdl.DATASET.DATA["TEST"] = mdl.DATASET.DATA["TEST"].drop_duplicates(subset=["userId", "id_item"], keep='last', inplace=False)
+mdl.evaluate(test=True)
+"""
+
+exit()
 mdl.emb_tsne()
 
 if language == "es": 
