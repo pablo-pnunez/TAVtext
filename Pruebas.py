@@ -20,6 +20,9 @@ from src.models.text_models.att.ATT2ITM import ATT2ITM
 from src.models.text_models.att.bert.tf_BERTATT2VAL import tf_BERTATT2VAL
 from src.models.text_models.att.bert.BERTATT2ITM import BERTATT2ITM
 
+from src.models.text_models.att.semanticsim.SSATT2VAL import SSATT2VAL
+from src.models.text_models.att.semanticsim.SSATT2ITM import SSATT2ITM
+
 from src.models.text_models.att.w2v.W2VATT2VAL import W2VATT2VAL
 from src.models.text_models.att.w2v.W2VATT2ITM import W2VATT2ITM
 
@@ -57,7 +60,7 @@ class TelegramCallback(tf.keras.callbacks.Callback):
 
 
 dataset = "restaurants".lower().replace(" ", "") if args.dst is None else args.dst
-subset = "barcelona".lower().replace(" ", "") if args.sst is None else args.sst
+subset = "gijon".lower().replace(" ", "") if args.sst is None else args.sst
 
 seed = 100 if args.sd is None else args.sd
 
@@ -120,6 +123,8 @@ elif "BERTATT2VAL" == model: mdl = BERTATT2VAL(mdl_cfg, text_dataset)
 elif "ATT2ITM" == model: mdl = ATT2ITM(mdl_cfg, text_dataset)
 elif "BERTATT2ITM" == model: mdl = BERTATT2ITM(mdl_cfg, text_dataset)
 elif "tf_BERTATT2VAL" == model: mdl = tf_BERTATT2VAL(mdl_cfg, text_dataset)
+elif "SSATT2VAL" == model: mdl = SSATT2VAL(mdl_cfg, text_dataset)
+elif "SSATT2ITM" == model: mdl = SSATT2ITM(mdl_cfg, text_dataset)
 
 elif "W2VATT2VAL" == model: mdl = W2VATT2VAL(mdl_cfg, text_dataset)
 elif "W2VATT2ITM" == model: mdl = W2VATT2ITM(mdl_cfg, text_dataset)
@@ -156,7 +161,7 @@ if language == "en":
 # Por ejemplo quiero puede transformarse en "querer" o "quiero". 
 
 # TODO: Semantic similarity embeddings parece que si dan uno por cada palabra
-# TODO: food2vec
+# TODO: food2vec?
 # TODO: No poner que word2vec no va y ya, añadir resultado.
 
 
