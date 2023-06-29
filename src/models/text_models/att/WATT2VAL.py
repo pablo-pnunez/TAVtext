@@ -53,20 +53,19 @@ class WATT2VAL(ATT2VAL):
             att_ly = tf.keras.layers.MultiHeadAttention(num_heads=2, key_dim=8, name="att", dropout=dropout)
             ht_emb, attention = att_ly(ht_emb, ht_emb, return_attention_scores=True)
             '''
-            
-            """
+
             wr_att_embs = tf.keras.layers.Embedding(vocab_size, emb_size, mask_zero=True, name="wr_att_embs")
             wr_att_embs = wr_att_embs(text_in)
             # wr_att_embs = tf.keras.layers.Dense(8, activation="tanh")(ht_emb)
             wr_att_embs = tf.keras.layers.Dropout(dropout)(wr_att_embs)     
             wr_attention_scores = tf.matmul(wr_att_embs, wr_att_embs, transpose_b=True)
             # wr_attention_scores = tf.matmul(ht_emb, ht_emb, transpose_b=True)
-            # wr_attention_scores = tf.keras.layers.Activation("tanh")(wr_attention_scores)
+            wr_attention_scores = tf.keras.layers.Activation("tanh")(wr_attention_scores)
             # Esto está copiado y adaptado de la attention. Se supone que cada embedding se obtiene como combinación lineal
             # de los scores por los embeddings anteriores
             ht_emb = tf.einsum("abc,acd->abd", wr_attention_scores, ht_emb)
-            """
             
+
             ## Aprender un peso para cada palabra que represente su importancia
             # word_relevance = tf.keras.layers.Embedding(vocab_size, 1, mask_zero=True, name="wr_rel_weight", embeddings_initializer="ones")
             # wr_rel = word_relevance(text_in)
@@ -116,7 +115,7 @@ class WATT2VAL(ATT2VAL):
 
             # model = tf.keras.layers.Activation(self.custom_activation_smoothstep)(model)
             # model = tf.keras.layers.Lambda(lambda x: x * 5.0 )(model)
-            model = tf.keras.layers.ReLU(max_value=5)(model)
+            # model = tf.keras.layers.ReLU(max_value=5)(model)
 
 
             model_out = tf.keras.layers.Activation("linear", name="out", dtype=tf.float32)(model)

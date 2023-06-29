@@ -14,7 +14,7 @@ from src.datasets.text_datasets.RestaurantDataset import RestaurantDataset
 from src.datasets.text_datasets.AmazonDataset import AmazonDataset
 from src.datasets.text_datasets.POIDataset import POIDataset
 
-from models.text_models.att.ATT2ITM import ATT2ITM
+from src.models.text_models.att.ATT2ITM import ATT2ITM
 from src.models.text_models.BOW2ITM import BOW2ITM
 from src.models.text_models.USEM2ITM import USEM2ITM
 
@@ -22,7 +22,7 @@ from src.models.text_models.USEM2ITM import USEM2ITM
 
 model = "ATT2ITM" if args.mn is None else args.mn
 dataset = "restaurants".lower().replace(" ", "") if args.dst is None else args.dst
-subset = "newyorkcity".lower().replace(" ", "") if args.sst is None else args.sst
+subset = "gijon".lower().replace(" ", "") if args.sst is None else args.sst
 
 from src.experiments.Common import load_best_model
 

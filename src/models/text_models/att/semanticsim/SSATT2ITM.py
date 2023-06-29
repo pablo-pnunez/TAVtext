@@ -45,7 +45,7 @@ class SSATT2ITM(ATT2VAL):
 
             # init = tf.keras.initializers.RandomUniform(minval=-0.05, maxval=0.05, seed=None)
             use_bias = True
-            dropout = .3
+            dropout = .4
             
             # word_importance = tf.keras.layers.Embedding(vocab_size, 1, name="word_importance", embeddings_initializer="ones", mask_zero=True)(text_in)
 
@@ -162,7 +162,7 @@ class SSATT2ITM(ATT2VAL):
         
         vocab = pd.DataFrame(self.tokenizer.vocab.items(), columns=["token", "id"]).sort_values("id").reset_index(drop=True).set_index("id")
         word_names = vocab.token.values
-        wrd_embs = wrd_embs.predict(vocab.index.values, verbose=0).numpy()
+        wrd_embs = wrd_embs.predict(np.expand_dims(vocab.index.values,-1), verbose=0, batch_size=2**13)
         wrd_embs = np.concatenate(wrd_embs)
 
         if rst_embs.shape[1] > 2:

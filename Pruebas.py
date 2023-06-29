@@ -103,10 +103,10 @@ elif dataset == "pois": text_dataset = POIDataset(dts_cfg)
 elif dataset == "amazon": text_dataset = AmazonDataset(dts_cfg)
 else: raise ValueError
 
-model = "WATT2VAL"
+model = "SSATT2ITM"
 model_v = "0" if args.mv is None else args.mv
 
-l_rate = 1e-4 if args.lr is None else args.lr
+l_rate = 5e-6 if args.lr is None else args.lr
 n_epochs = 1000 if args.ep is None else args.eps
 b_size = 128 if args.bs is None else args.bs
 early_stop_patience = 10 if args.esp is None else args.esp
@@ -133,7 +133,7 @@ elif "WATT2VAL" == model: mdl = WATT2VAL(mdl_cfg, text_dataset)
 else: raise ValueError
 
 
-mdl.train(dev=True, save_model=False, callbacks=[])
+mdl.train(dev=True, save_model=True, callbacks=[telegram_callback])
 
 """
 train_dev_users = mdl.DATASET.DATA["TRAIN_DEV"].userId.unique()
@@ -142,8 +142,8 @@ mdl.DATASET.DATA["TEST"] = mdl.DATASET.DATA["TEST"].drop_duplicates(subset=["use
 mdl.evaluate(test=True)
 """
 
-exit()
 mdl.emb_tsne()
+exit()
 
 if language == "es": 
     mdl.evaluate_text("a el la yo en un con y") # HAY QUE USAR UNA RELU o RELUTAN SI NO ESTO DA VALORES ALTOS
