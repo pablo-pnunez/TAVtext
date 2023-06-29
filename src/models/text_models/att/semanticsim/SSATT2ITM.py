@@ -38,6 +38,7 @@ class SSATT2ITM(ATT2VAL):
         self.encoding_model.trainable = True
 
         text_in = tf.keras.Input(shape=(pad_len), dtype='int32')
+        text_msk_in = tf.keras.Input(shape=(pad_len), dtype='int32')
         rest_in = tf.keras.Input(shape=(rst_no), dtype='int32')
         
         model = None
@@ -49,13 +50,14 @@ class SSATT2ITM(ATT2VAL):
             
             # word_importance = tf.keras.layers.Embedding(vocab_size, 1, name="word_importance", embeddings_initializer="ones", mask_zero=True)(text_in)
 
-            mask_query = tf.cast(tf.math.not_equal(text_in, 0), tf.float32) # Se obtiene la máscara del texto para un solo item
-            mask_query = tf.tile(tf.expand_dims(mask_query, axis=-1),[1,1,rst_no]) # Se repite para todos los items
+            mask_query_one = tf.cast(tf.math.not_equal(text_msk_in, 0), tf.float32) # Se obtiene la máscara del texto para un solo item
+            mask_query = tf.tile(tf.expand_dims(mask_query_one, axis=-1),[1,1,rst_no]) # Se repite para todos los items
 
-            ht_emb = self.encoding_model(text_in)[0]
+            ht_emb = self.encoding_model((text_in, text_msk_in))[0]
+            
             emb_size = ht_emb.shape[-1]
             
-            use_bert = False
+            use_bert = True
 
             if not use_bert:            
                 words_emb = tf.keras.layers.Embedding(self.tokenizer.vocab_size, emb_size, name="all_words")
@@ -105,7 +107,7 @@ class SSATT2ITM(ATT2VAL):
 
             model_out = tf.keras.layers.Activation("sigmoid", name="out", dtype='float32')(model)
 
-            model = tf.keras.models.Model(inputs=[text_in, rest_in], outputs=[model_out], name=f"{self.MODEL_NAME}_{self.MODEL_VERSION}")
+            model = tf.keras.models.Model(inputs=[text_in, text_msk_in, rest_in], outputs=[model_out], name=f"{self.MODEL_NAME}_{self.MODEL_VERSION}")
 
             optimizer = tf.keras.optimizers.legacy.Adam(self.CONFIG["model"]["learning_rate"])
 
@@ -133,18 +135,23 @@ class SSATT2ITM(ATT2VAL):
         text_data = all_data[["reviewId", "text"]]
         text_data = text_data.set_index("reviewId").loc[dataframe.reviewId.values]["text"].values
         # tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
-        text_seqs = self.tokenizer.batch_encode_plus(text_data.tolist(), max_length=self.DATASET.DATA["MAX_LEN_PADDING"], truncation=True)
-        text_seqs = text_seqs.data["input_ids"]
-        seq_data = tf.keras.preprocessing.sequence.pad_sequences(text_seqs, maxlen=self.DATASET.DATA["MAX_LEN_PADDING"], padding='pre')
+        text_seqs = self.tokenizer.batch_encode_plus(text_data.tolist(), max_length=self.DATASET.DATA["MAX_LEN_PADDING"], truncation=True, padding=True, return_tensors='tf')
+        # text_seqs = self.tokenizer.batch_encode_plus(text_data.tolist(),  padding=True, truncation=True, return_tensors='tf')
+
+        text_seqs_ids = text_seqs.data["input_ids"]
+        text_seqs_msk = text_seqs.data["attention_mask"]
+
+        # seq_data = tf.keras.preprocessing.sequence.pad_sequences(text_seqs, maxlen=self.DATASET.DATA["MAX_LEN_PADDING"], padding='pre')
         # to_pickle(self.DATASET.DATASET_PATH, bertoken_path, seq_data)
         # else:
         #    seq_data = get_pickle(self.DATASET.DATASET_PATH, bertoken_path)
        
         rst_data = dataframe.id_item.values
         
-        data_x1 = tf.data.Dataset.from_tensor_slices(seq_data)
-        data_x2 = tf.data.Dataset.from_tensor_slices([range(self.DATASET.DATA["N_ITEMS"])]).repeat(len(dataframe))
-        data_x = tf.data.Dataset.zip((data_x1, data_x2))
+        data_x1 = tf.data.Dataset.from_tensor_slices(text_seqs_ids)
+        data_x2 = tf.data.Dataset.from_tensor_slices(text_seqs_msk)
+        data_x3 = tf.data.Dataset.from_tensor_slices([range(self.DATASET.DATA["N_ITEMS"])]).repeat(len(dataframe))
+        data_x = tf.data.Dataset.zip((data_x1, data_x2, data_x3))
 
         data_y = tf.data.Dataset.from_tensor_slices(rst_data)
         data_y = data_y.map(lambda x: tf.one_hot(x, self.DATASET.DATA["N_ITEMS"]), num_parallel_calls=tf.data.AUTOTUNE)

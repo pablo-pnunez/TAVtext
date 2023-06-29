@@ -106,7 +106,7 @@ else: raise ValueError
 model = "SSATT2ITM"
 model_v = "0" if args.mv is None else args.mv
 
-l_rate = 5e-6 if args.lr is None else args.lr
+l_rate = 1e-5 if args.lr is None else args.lr
 n_epochs = 1000 if args.ep is None else args.eps
 b_size = 128 if args.bs is None else args.bs
 early_stop_patience = 10 if args.esp is None else args.esp
@@ -132,6 +132,7 @@ elif "W2VATT2ITM" == model: mdl = W2VATT2ITM(mdl_cfg, text_dataset)
 elif "WATT2VAL" == model: mdl = WATT2VAL(mdl_cfg, text_dataset)
 else: raise ValueError
 
+# ToDo: Ojo con la mascara del bert y semantic similarity
 
 mdl.train(dev=True, save_model=True, callbacks=[telegram_callback])
 
