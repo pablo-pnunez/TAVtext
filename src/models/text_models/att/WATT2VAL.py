@@ -13,6 +13,7 @@ import pandas as pd
 import numpy as np
 
 import keras_nlp
+import tensorflow.keras.backend as K
 
 from src.Common import print_g, print_e
 from src.models.text_models.att.ATT2VAL import ATT2VAL
@@ -22,6 +23,7 @@ class WATT2VAL(ATT2VAL):
 
     def __init__(self, config, dataset):
         ATT2VAL.__init__(self, config=config, dataset=dataset)
+   
    
     def get_sub_model(self):
 
@@ -36,12 +38,70 @@ class WATT2VAL(ATT2VAL):
         rest_in = tf.keras.Input(shape=(rst_no), dtype='int32')
         
         model = None
+        if mv == "0":
+            emb_size = 64  # 128
+            dropout = .3
+                
+            # PALABRAS --------------------------          
+            query_emb = tf.keras.layers.Embedding(vocab_size, emb_size , mask_zero=True, name="all_words")
+            ht_emb = query_emb(text_in)      
 
-        if mv == "0": # Se añade la estandarización a la salida y se simplifica el modelo
-            emb_size = 128  # 128
-            dropout = .25
+            wr_att_embs = tf.keras.layers.Embedding(vocab_size, 6, mask_zero=True, name="wr_att_embs")
+            wr_att_embs = wr_att_embs(text_in)
+            wr_attention_scores = tf.matmul(wr_att_embs, wr_att_embs, transpose_b=True)
+            ht_emb = tf.einsum("abc,acd->abd", wr_attention_scores, ht_emb)
+            ht_emb = tf.keras.layers.BatchNormalization()(ht_emb)      
+            ht_emb = tf.keras.layers.Lambda(lambda x: x, name="word_emb")(ht_emb)
+            ht_emb = tf.keras.layers.Dropout(dropout)(ht_emb)
+
+            position_embeddings = keras_nlp.layers.PositionEmbedding(sequence_length=pad_len)(ht_emb)
+            ht_emb = ht_emb + position_embeddings
+
+            # Calcula el embedding promedio de las palabras para analisis de sentimientos
+            average_emb = tf.reduce_mean(ht_emb, axis=1)
+            sentiment_layer = tf.keras.layers.Dense(1, activation='relu', name='sentiment')(average_emb)
+
+            # ITEMS --------------------------
+            items_emb = tf.keras.layers.Embedding(rst_no, emb_size, name="all_items")
+            hr_emb = items_emb(rest_in)      
+
+            it_att_embs = tf.keras.layers.Embedding(rst_no, 8, mask_zero=True, name="it_att_embs")
+            it_att_embs = it_att_embs(rest_in)
+            hr_emb = tf.keras.layers.Lambda(lambda x: x, name="rest_emb")(hr_emb)
+            hr_emb = tf.keras.layers.Dropout(dropout)(hr_emb)
+
+            # ATT MATRIX --------------------------
+            model = tf.keras.layers.Lambda(lambda x: tf.matmul(x[0], x[1], transpose_b=True), name="dot_mul")([ht_emb, hr_emb])
+            mask_query = tf.cast(tf.math.not_equal(text_in, 0), tf.float16) # Se obtiene la máscara del texto para un solo item
+            mask_query = tf.tile(tf.expand_dims(mask_query, axis=-1),[1,1,rst_no]) # Se repite para todos los items
+            model = tf.keras.layers.Activation("tanh", name="dotprod")(model)
+
+            model = tf.keras.layers.Lambda(lambda x: x[0] * x[1] , name="dot_mask")([model, mask_query])
+            model = tf.keras.layers.Lambda(lambda x: tf.math.reduce_sum(x[0], 1) + tf.math.reduce_std(x[0], 1), name="sum")([model, mask_query])
+
+            model_out = tf.keras.layers.Activation("linear", name="out", dtype=tf.float32)(model)
+
+            model = tf.keras.models.Model(inputs=[text_in, rest_in], outputs=[model_out, sentiment_layer], name=f"{self.MODEL_NAME}_{self.MODEL_VERSION}")
+            optimizer = tf.keras.optimizers.legacy.Adam(self.CONFIG["model"]["learning_rate"])
+
+            metrics = [tfr.keras.metrics.NDCGMetric(topn=10, name="NDCG@10"),
+                      tfr.keras.metrics.RecallMetric(topn=5, name='RC@5'), tfr.keras.metrics.RecallMetric(topn=10, name='RC@10')]
+                    
+            # model.compile(loss=[self.custom_preference_loss, 'mean_squared_error'], metrics=metrics, optimizer=optimizer)
+
+            def root_mean_squared_error(y_true, y_pred):
+                return K.sqrt(K.mean(K.square(y_pred - y_true)))
+
+            model.compile(optimizer=optimizer,
+                loss={'out': self.custom_preference_loss, 'sentiment': root_mean_squared_error},
+                metrics={'out': metrics, 'sentiment': ['mae']},
+                loss_weights={'out': 1, 'sentiment': 1})
+
+        if mv == "-1": # Se añade la estandarización a la salida y se simplifica el modelo
+            emb_size = 64  # 128
+            dropout = .3
                  
-            # PALABRAS            
+            # PALABRAS --------------------------          
             query_emb = tf.keras.layers.Embedding(vocab_size, emb_size , mask_zero=True, name="all_words")
             ht_emb = query_emb(text_in)      
 
@@ -54,17 +114,13 @@ class WATT2VAL(ATT2VAL):
             ht_emb, attention = att_ly(ht_emb, ht_emb, return_attention_scores=True)
             '''
 
-            wr_att_embs = tf.keras.layers.Embedding(vocab_size, emb_size, mask_zero=True, name="wr_att_embs")
+            wr_att_embs = tf.keras.layers.Embedding(vocab_size, 6, mask_zero=True, name="wr_att_embs")
             wr_att_embs = wr_att_embs(text_in)
-            # wr_att_embs = tf.keras.layers.Dense(8, activation="tanh")(ht_emb)
-            wr_att_embs = tf.keras.layers.Dropout(dropout)(wr_att_embs)     
             wr_attention_scores = tf.matmul(wr_att_embs, wr_att_embs, transpose_b=True)
-            # wr_attention_scores = tf.matmul(ht_emb, ht_emb, transpose_b=True)
-            wr_attention_scores = tf.keras.layers.Activation("tanh")(wr_attention_scores)
             # Esto está copiado y adaptado de la attention. Se supone que cada embedding se obtiene como combinación lineal
             # de los scores por los embeddings anteriores
             ht_emb = tf.einsum("abc,acd->abd", wr_attention_scores, ht_emb)
-            
+            ht_emb = tf.keras.layers.BatchNormalization()(ht_emb)      
 
             ## Aprender un peso para cada palabra que represente su importancia
             # word_relevance = tf.keras.layers.Embedding(vocab_size, 1, mask_zero=True, name="wr_rel_weight", embeddings_initializer="ones")
@@ -77,18 +133,28 @@ class WATT2VAL(ATT2VAL):
             ht_emb = tf.keras.layers.Lambda(lambda x: x, name="word_emb")(ht_emb)
             ht_emb = tf.keras.layers.Dropout(dropout)(ht_emb)
             
-            # position_embeddings = keras_nlp.layers.PositionEmbedding(sequence_length=pad_len)(ht_emb)
+            position_embeddings = keras_nlp.layers.PositionEmbedding(sequence_length=pad_len)(ht_emb)
             # position_embeddings = keras_nlp.layers.SinePositionEncoding()(ht_emb)
-            # ht_emb = ht_emb + position_embeddings
+            ht_emb = ht_emb + position_embeddings
 
-            # ITEMS
+
+            # ITEMS --------------------------
             items_emb = tf.keras.layers.Embedding(rst_no, emb_size, name="all_items")
-            hr_emb = items_emb(rest_in)                      
+            hr_emb = items_emb(rest_in)      
+
+            it_att_embs = tf.keras.layers.Embedding(rst_no, 8, mask_zero=True, name="it_att_embs")
+            it_att_embs = it_att_embs(rest_in)
+            # it_attention_scores = tf.matmul(it_att_embs, it_att_embs, transpose_b=True)
+            # # Esto está copiado y adaptado de la attention. Se supone que cada embedding se obtiene como combinación lineal
+            # # de los scores por los embeddings anteriores
+            # hr_emb = tf.einsum("abc,acd->abd", it_attention_scores, hr_emb)
+            # hr_emb = tf.keras.layers.BatchNormalization()(hr_emb)      
             hr_emb = tf.keras.layers.Lambda(lambda x: x, name="rest_emb")(hr_emb)
             hr_emb = tf.keras.layers.Dropout(dropout)(hr_emb)
 
-            # ATT MATRIX
+            # ATT MATRIX --------------------------
             model = tf.keras.layers.Lambda(lambda x: tf.matmul(x[0], x[1], transpose_b=True), name="dot_mul")([ht_emb, hr_emb])
+            # model = model = tf.keras.layers.Lambda(lambda x: tf.matmul(x[0], x[1], transpose_b=True) / tf.sqrt(tf.cast(emb_size, tf.float16)), name="dot_mul")([ht_emb, hr_emb])
             mask_query = tf.cast(tf.math.not_equal(text_in, 0), tf.float16) # Se obtiene la máscara del texto para un solo item
             mask_query = tf.tile(tf.expand_dims(mask_query, axis=-1),[1,1,rst_no]) # Se repite para todos los items
             model = tf.keras.layers.Activation("tanh", name="dotprod")(model)
@@ -105,7 +171,7 @@ class WATT2VAL(ATT2VAL):
             # model = tf.keras.layers.ReLU(max_value=5)(model)                                    
 
             # model = tf.keras.layers.Lambda(lambda x: tf.math.reduce_sum(x[0], 1)/tf.math.reduce_sum(x[1], 1), name="sum")([model, mask_query])
-            model = tf.keras.layers.Lambda(lambda x: tf.math.reduce_sum(x[0], 1), name="sum")([model, mask_query])
+            model = tf.keras.layers.Lambda(lambda x: tf.math.reduce_sum(x[0], 1) + tf.math.reduce_std(x[0], 1), name="sum")([model, mask_query])
 
             # model = model * 5 
             # model = tf.nn.l2_normalize(model, axis=1) * 5 # Esto obliga a que siempre exista uno igual a 5
@@ -118,15 +184,16 @@ class WATT2VAL(ATT2VAL):
             # model = tf.keras.layers.ReLU(max_value=5)(model)
 
 
+            # model_out = tf.keras.layers.Activation(self.custom_activation_relu1, name="out", dtype=tf.float32)(model)
             model_out = tf.keras.layers.Activation("linear", name="out", dtype=tf.float32)(model)
-                        
+     
             model = tf.keras.models.Model(inputs=[text_in, rest_in], outputs=[model_out], name=f"{self.MODEL_NAME}_{self.MODEL_VERSION}")
             optimizer = tf.keras.optimizers.legacy.Adam(self.CONFIG["model"]["learning_rate"])
 
             metrics = [tfr.keras.metrics.NDCGMetric(topn=10, name="NDCG@10"), tf.keras.metrics.MeanAbsoluteError(name="MAE"),
                        tfr.keras.metrics.RecallMetric(topn=5, name='RC@5'), tfr.keras.metrics.RecallMetric(topn=10, name='RC@10')]
                      
-        model.compile(loss=self.custom_loss, metrics=metrics, optimizer=optimizer)
+            model.compile(loss=self.custom_preference_loss, metrics=metrics, optimizer=optimizer)
 
         print(model.summary())
 

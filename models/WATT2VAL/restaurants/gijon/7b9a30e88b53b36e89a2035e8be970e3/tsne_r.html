@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>t-SNE restaurantes</title>
+    <style>
+      html, body {
+        box-sizing: border-box;
+        display: flow-root;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+    <script type="text/javascript" src="https://cdn.bokeh.org/bokeh/release/bokeh-3.3.3.min.js"></script>
+    <script type="text/javascript">
+        Bokeh.set_log_level("info");
+    </script>
+  </head>
+  <body>
+    <div id="aa37731e-61c1-422b-97d9-edf4a8280705" data-root-id="p1052" style="display: contents;"></div>
+  
+    <script type="application/json" id="p1096">
+      {"aa2d595d-838a-41d6-bf98-16453ca8943b":{"version":"3.3.3","title":"Bokeh Application","roots":[{"type":"object","name":"Figure","id":"p1052","attributes":{"width":800,"height":800,"x_range":{"type":"object","name":"DataRange1d","id":"p1053"},"y_range":{"type":"object","name":"DataRange1d","id":"p1054"},"x_scale":{"type":"object","name":"LinearScale","id":"p1061"},"y_scale":{"type":"object","name":"LinearScale","id":"p1062"},"title":{"type":"object","name":"Title","id":"p1059"},"renderers":[{"type":"object","name":"GlyphRenderer","id":"p1091","attributes":{"data_source":{"type":"object","name":"ColumnDataSource","id":"p1004","attributes":{"selected":{"type":"object","name":"Selection","id":"p1005","attributes":{"indices":[],"line_indices":[]}},"selection_policy":{"type":"object","name":"UnionRenderers","id":"p1006"},"data":{"type":"map","entries":[["x",{"type":"ndarray","array":{"type":"bytes","data":"c3oAwQLXuMD9vgrBWV7CQJB660A/MJk/5gqMQPOj174OIf9AnlFxwLYg3sDSh0TA7d6pwPLaJsEZxGlA1/6JwNX9IL+PN5zAK9otwMQUoT9KP3A/PHAEwLtpmr+VFnrAOMW0QPprMcHWHMo/83Y0wTbZMcCYDgNBCsvDv4VqmcAON4fAug+8wIp1QsE4v/M+wp0/wCpCsECzq8vAry6MQNKjCEECYzNAVATfQCyhF0BtORjBqpbZPtIn5cD/ECZABTq1ProvsEAHw67Aqu0lv/vuAcCwP4dAbAUCwVbwl0C5wUHBzpTzwKBdy8AfJ7u+UEIRQA6mvUAh9nLAx8HgwFPImsCFBhjBWA6EQM5l68Dz8MS/2M/bwOlqoUCKGd8/v4eSQPy4xcCWckHB4P/wQLSirUDwPY9AeL6mQJF4WEArqgFB2dghwSCJ68CPIrVAcFf0QOo8Z0CZFGRAANOhP+f7nUCMhd7ABg+DQPCIIsEiSE7ABcxAwH5DdUACoA/B5v6rQG19Jj/VvlE/nUS7QGSPGcEtkR3BMv2PQJDjQMFR9+K/wQeCQAQ6zECqex7BDcqdwCWvX8B+L8k/SYnDwOoGR0AdRp/AT9s5wf61AMBmPvLAidcjwUmAmUBDHZJAvVsawVwSDcH6jrFAsRH1wCfGxEDLWTrBBJwiP5C/zMBMNufAMAxHQJH7E8FmrJPAok/JwFFv4r8aFoS/7MQBwRPa2cBQBjRAcNTCwGWkGsFR8c7AOMAiwdlp/L8/7jrBXNvhwGmUssDiw7jAYKwpwWo7v8A="},"shape":[149],"dtype":"float32","order":"little"}],["y",{"type":"ndarray","array":{"type":"bytes","data":"fYGywBwvcsC3l4LAv8xdQHNe1L/Rrdg/w5xmwMQo2r85XXbAYvl4wOFN2z/rNxRA6XuFwKvx1j43ri1AIontv3G5GD6JyETAwo6BwCTmCcC9aRbAvSUxvM7fikDM2pzAiW4jQJjKZT9CYiNAgkToP+5EWsAMyO4/3brBP1cKCcBmIJnALPhIv9j1F0CuHh9ACAWNv9O7sD/gR9vAyS1vQHJmpT9p8hVAu+JaQDF8S8BWYrLAjxm4wDh2eEAsP01AKRVsP6ZcEcBj+Oc/IPikwHw7YL/vzkq/ETeoQP9yY0CPqcY/+oMXQLXDUcCUUJ7An2WAwMjXq8DjPFO/0/YIwLTl9sAUNGbAasYcwA5IYD9Ofne/eg6IwNolVcCc11o/r9muQPXS3sDc9H0/8XIpwJ2ancAoQ4vAXSmUv2dbzMAN3Py/bxGtP/0X3UDUkqjAQB4kwH5DwL+K96bALnG9QN+EgT/bof8/dYIwv7dIVUBCtE/AU+rkwO1Z/D+Td8xAuV5vv7QFtr5V643AFUjpP+kmhcCXyg4//E6nwP/ui0AbwKVAc37KwCtwEr56mThAVhIDQFZgfb9mMb6/C0qqwFF9iL9OQTZAt/+uP/teqUCMPqY8UGK+QARPEEC1FhJAH8/FQAy3h7/XXE9AGeSLQCH+fMAPoYM+TFgWQM3tyEBZF0o/tMF1P9y4yz/2fsE/u5geQL0sFcAcTsfAIzMRQA4vrMCiYyPAKjadPlQAhUAsZtlAi6VcQIT6okAFFyZAJUOVQJQarEBsWYFA75q3QCKjp0A="},"shape":[149],"dtype":"float32","order":"little"}],["desc",["La Posada del Mar Restaurante","Ciudadela","Topolino","El Palacio","Casa Arturo","Casa Ataulfo","Casa Ferino","Restaurante La Nieta","Casa Trabanco","Restaurante Casa Zabala","los Vikingos","Terrazas del Pery","V. Crespo","Pizzeria La Pergola","Restaurante El Centenario","La Tabla","Los Nogales","Restaurante Auga","El Candil","Restaurante Sidrer\u00eda El Mancu","La Carbayera","Bella Vista","A Caldeira","La Pondala","La Casona de Jovellanos - El Chigre","Restaurante Vesuvio","Casa Zarracina","Gepetto Arena","La Casa del Parque","Restaurante Sidreria La Galana","Sancho Meson Restaurante","La Salgar","El Perro que Fuma","Taberna El Perejil","La Casa Pompeyana","Restaurante Marinamar","Restaurante Las Delicias","Restaurante La Farola","As de Picas","El Lavaderu","Tierra Astur Poniente","Sidreria El Globo","Entreplazas","Parrilla Mu\u00f1o","La Cuadra de Ant\u00f3n","Sidreria Parrilla La Costa","El Medio Lleno","El Planeta","Sidrer\u00eda El Restallu","Sidrer\u00eda Nava","Varsovia bar","Restaurante Asador La Bolera","La Quinta del Ynfanz\u00f3n","SIDRERIA CANDASU","El Quinto","La Tabacalera","Al Boccalino","Big Joe Caf\u00e9","Restaurante El Cencerro","EL Sueve","El Rincon\u00edn de Deva","SIDRER\u00cdA CASA CARMEN","Avant Garde","La Mar De Tapas","El Jamonar","El Mirador de la Playa","El llavianu","Cerveceria Vinateria Arde Lucus","La Solana Mareo","El Feudo","Sidreria Celorio","Sidreria Mayador","Sidreria El Requexu","La Gitana","D Aldo","Casa Segundo","El Trasgu Farton","meson Les Ruedes","Sidreria El Sauco","Casa Dulce","El Cruce","Pizzeria La Competencia","Pizcas de Sal","Restaurante Sidreria Tropical","Casa Yoli","Sidrer\u00eda Sobi\u00f1agu","Casa Tino","Cafe Restaurante Ebano","Sidrer\u00eda Restaurante San Bernardo IV","Gilda Bar&amp;Dinner","Sidreria El Otru Mallu","Aguila o Sol","Casa Victor","La Taberna Zingara","Sidreria Casa Fede","Crocante","Sidrer\u00eda Los Campinos","El Faro Del Piles","Restaurante-Parrilla El Asador","Restaurante El Antiguo","La Taberna Del Piano","Restaurante Pizzer\u00eda Las Candelas","Bar Bego\u00f1a","Taberna Gigia","A Feira Do Pulpo","Sidreria la Caleya","Los Pomares","Los Molcajetes","Ambig\u00fa Gij\u00f3n","Somio Park","Llagar de Cabue\u00f1es","Bomarzo Restaurante","Sidreria La Tonada","Carling Goal","Restaurante Geppeto","Meson Pulperia Tierras Gallegas","Hat Trick Molinon","Go Sushi","Casa Fernando","Sidreria Plaza Mayor","KAUSA NIKKEI","Dosmasuno Gastro","El Mercante","Que No Te Lo Cuenten Gastrobar","Sidreria la mareona","Padrino - Comida Sobre Masa","Bar Casa Gabriel","El Tomate Bistr\u00f3","Las Tapas y la Sartenuca","Sidrer\u00eda Asturias","Galipizza &amp; Cia","Labuenavida Fomento","Raw Coco","Restaurante Los Pisones","Restaurante Parrilla Los patios","Foster Hollywood Jardines Del Nautico","La Cocina de Lolo","Sidreria La Tonada De La Guia","Coalla Gourmet Gijon","Burasari Gij\u00f3n","Gloria Gij\u00f3n","Las Calacas","A Feira Pulper\u00edas (Barrio del Carmen, Gij\u00f3n)","Scaletta5","Egb Gastrochenta","Restaurante Ume","Restaurante 11Guajes","Sibuya Urban Sushi Bar","El Recetario"]]]}}},"view":{"type":"object","name":"CDSView","id":"p1092","attributes":{"filter":{"type":"object","name":"AllIndices","id":"p1093"}}},"glyph":{"type":"object","name":"Scatter","id":"p1088","attributes":{"x":{"type":"field","field":"x"},"y":{"type":"field","field":"y"},"size":{"type":"value","value":5},"line_color":{"type":"value","value":"#1f77b4"},"fill_color":{"type":"value","value":"#1f77b4"}}},"nonselection_glyph":{"type":"object","name":"Scatter","id":"p1089","attributes":{"x":{"type":"field","field":"x"},"y":{"type":"field","field":"y"},"size":{"type":"value","value":5},"line_color":{"type":"value","value":"#1f77b4"},"line_alpha":{"type":"value","value":0.1},"fill_color":{"type":"value","value":"#1f77b4"},"fill_alpha":{"type":"value","value":0.1},"hatch_alpha":{"type":"value","value":0.1}}},"muted_glyph":{"type":"object","name":"Scatter","id":"p1090","attributes":{"x":{"type":"field","field":"x"},"y":{"type":"field","field":"y"},"size":{"type":"value","value":5},"line_color":{"type":"value","value":"#1f77b4"},"line_alpha":{"type":"value","value":0.2},"fill_color":{"type":"value","value":"#1f77b4"},"fill_alpha":{"type":"value","value":0.2},"hatch_alpha":{"type":"value","value":0.2}}}}}],"toolbar":{"type":"object","name":"Toolbar","id":"p1060","attributes":{"tools":[{"type":"object","name":"PanTool","id":"p1073"},{"type":"object","name":"WheelZoomTool","id":"p1074","attributes":{"renderers":"auto"}},{"type":"object","name":"BoxZoomTool","id":"p1075","attributes":{"overlay":{"type":"object","name":"BoxAnnotation","id":"p1076","attributes":{"syncable":false,"level":"overlay","visible":false,"left":{"type":"number","value":"nan"},"right":{"type":"number","value":"nan"},"top":{"type":"number","value":"nan"},"bottom":{"type":"number","value":"nan"},"left_units":"canvas","right_units":"canvas","top_units":"canvas","bottom_units":"canvas","line_color":"black","line_alpha":1.0,"line_width":2,"line_dash":[4,4],"fill_color":"lightgrey","fill_alpha":0.5}}}},{"type":"object","name":"SaveTool","id":"p1081"},{"type":"object","name":"ResetTool","id":"p1082"},{"type":"object","name":"HelpTool","id":"p1083"},{"type":"object","name":"HoverTool","id":"p1084","attributes":{"renderers":"auto","tooltips":[["Name","@desc"]]}}]}},"left":[{"type":"object","name":"LinearAxis","id":"p1068","attributes":{"ticker":{"type":"object","name":"BasicTicker","id":"p1069","attributes":{"mantissas":[1,2,5]}},"formatter":{"type":"object","name":"BasicTickFormatter","id":"p1070"},"major_label_policy":{"type":"object","name":"AllLabels","id":"p1071"}}}],"below":[{"type":"object","name":"LinearAxis","id":"p1063","attributes":{"ticker":{"type":"object","name":"BasicTicker","id":"p1064","attributes":{"mantissas":[1,2,5]}},"formatter":{"type":"object","name":"BasicTickFormatter","id":"p1065"},"major_label_policy":{"type":"object","name":"AllLabels","id":"p1066"}}}],"center":[{"type":"object","name":"Grid","id":"p1067","attributes":{"axis":{"id":"p1063"}}},{"type":"object","name":"Grid","id":"p1072","attributes":{"dimension":1,"axis":{"id":"p1068"}}}]}}]}}
+    </script>
+    <script type="text/javascript">
+      (function() {
+        const fn = function() {
+          Bokeh.safely(function() {
+            (function(root) {
+              function embed_document(root) {
+              const docs_json = document.getElementById('p1096').textContent;
+              const render_items = [{"docid":"aa2d595d-838a-41d6-bf98-16453ca8943b","roots":{"p1052":"aa37731e-61c1-422b-97d9-edf4a8280705"},"root_ids":["p1052"]}];
+              root.Bokeh.embed.embed_items(docs_json, render_items);
+              }
+              if (root.Bokeh !== undefined) {
+                embed_document(root);
+              } else {
+                let attempts = 0;
+                const timer = setInterval(function(root) {
+                  if (root.Bokeh !== undefined) {
+                    clearInterval(timer);
+                    embed_document(root);
+                  } else {
+                    attempts++;
+                    if (attempts > 100) {
+                      clearInterval(timer);
+                      console.log("Bokeh: ERROR: Unable to run BokehJS code because BokehJS library is missing");
+                    }
+                  }
+                }, 10, root)
+              }
+            })(window);
+          });
+        };
+        if (document.readyState != "loading") fn();
+        else document.addEventListener("DOMContentLoaded", fn);
+      })();
+    </script>
+  </body>
+</html>

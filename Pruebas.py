@@ -28,6 +28,10 @@ from src.models.text_models.att.w2v.W2VATT2ITM import W2VATT2ITM
 
 from src.models.text_models.att.WATT2VAL import WATT2VAL
 
+from src.models.text_models.USEM2ITM import USEM2ITM
+from src.models.text_models.LEALLA2ITM import LEALLA2ITM
+
+
 import tensorflow as tf
 import urllib.parse
 import requests
@@ -75,11 +79,11 @@ remove_numbers = True
 truncate_padding = True
 lemmatization = True
 
-'''
+
 print_e("OJO: NO HAY LEMATIZACIÓN")
 lemmatization = False
 remove_stopwords = 0  # 2 # 0, 1 o 2 (No quitar, quitar manual, quitar automático)
-'''
+
 
 if dataset == "restaurants":
     base_path = "/media/nas/datasets/tripadvisor/restaurants/"
@@ -103,18 +107,17 @@ elif dataset == "pois": text_dataset = POIDataset(dts_cfg)
 elif dataset == "amazon": text_dataset = AmazonDataset(dts_cfg)
 else: raise ValueError
 
-model = "SSATT2ITM"
+model = "LEALLA2ITM" # "WATT2VAL"
 model_v = "0" if args.mv is None else args.mv
 
-l_rate = 1e-5 if args.lr is None else args.lr
+l_rate = 1e-4 if args.lr is None else args.lr
 n_epochs = 1000 if args.ep is None else args.eps
-b_size = 128 if args.bs is None else args.bs
+b_size = 256 if args.bs is None else args.bs
 early_stop_patience = 10 if args.esp is None else args.esp
 
 mdl_cfg = {"model": {"model_version": model_v, "learning_rate": l_rate, "final_learning_rate": l_rate/100, "epochs": n_epochs, "batch_size": b_size, "seed": seed,
                         "early_st_first_epoch": 0, "early_st_monitor": "val_loss", "early_st_monitor_mode": "min", "early_st_patience": early_stop_patience},
             "session": {"gpu": gpu, "mixed_precision": True, "in_md5": False}}
-
 
 telegram_callback = TelegramCallback(subset=subset, token="kP3QuLoUv0b_yZ28rK3GNMesAW12e9KiEAA:0245328206", chat_id=717499654)
 
@@ -130,40 +133,53 @@ elif "W2VATT2VAL" == model: mdl = W2VATT2VAL(mdl_cfg, text_dataset)
 elif "W2VATT2ITM" == model: mdl = W2VATT2ITM(mdl_cfg, text_dataset)
 
 elif "WATT2VAL" == model: mdl = WATT2VAL(mdl_cfg, text_dataset)
+
+elif "USEM2ITM" == model: mdl = USEM2ITM(mdl_cfg, text_dataset)
+elif "LEALLA2ITM" == model: mdl = LEALLA2ITM(mdl_cfg, text_dataset)
+
 else: raise ValueError
 
 # ToDo: Ojo con la mascara del bert y semantic similarity
 
-mdl.train(dev=True, save_model=True, callbacks=[telegram_callback])
+mdl.train(dev=True, save_model=False, callbacks=[])
 
-"""
+
+print_b("Evaluación, solo con usuarios conocidos ------")
 train_dev_users = mdl.DATASET.DATA["TRAIN_DEV"].userId.unique()
 mdl.DATASET.DATA["TEST"] = mdl.DATASET.DATA["TEST"][mdl.DATASET.DATA["TEST"]["userId"].isin(train_dev_users)]
 mdl.DATASET.DATA["TEST"] = mdl.DATASET.DATA["TEST"].drop_duplicates(subset=["userId", "id_item"], keep='last', inplace=False)
 mdl.evaluate(test=True)
-"""
+print_b("-"*50)
+
 
 mdl.emb_tsne()
-exit()
+#exit()
 
-if language == "es": 
-    mdl.evaluate_text("a el la yo en un con y") # HAY QUE USAR UNA RELU o RELUTAN SI NO ESTO DA VALORES ALTOS
-    mdl.evaluate_text("quiero un con y con bogavante buenas arroz vistas comer")
-    mdl.evaluate_text("quiero comer un arroz con bogavante y con buenas vistas")
-    mdl.evaluate_text("quiero comer un arroz con bogavante y con malas vistas")
-    # mdl.evaluate_text("quiero arroz y quiero marisco")
-    # mdl.evaluate_text("quiero arroz y no quiero marisco")
+if dataset == "restaurants":
+    if language == "es": 
+        mdl.evaluate_text("Bien bueno fantastico mejor peor horrible mal malo fatal lamentable")
+        mdl.evaluate_text("a el la yo en un con y") # HAY QUE USAR UNA RELU o RELUTAN SI NO ESTO DA VALORES ALTOS
+        mdl.evaluate_text("quiero un con y con bogavante buenas arroz vistas comer")
+        mdl.evaluate_text("quiero comer un arroz con bogavante y con buenas vistas")
+        mdl.evaluate_text("quiero comer un arroz con bogavante y con malas vistas")
+        # mdl.evaluate_text("quiero arroz y quiero marisco")
+        # mdl.evaluate_text("quiero arroz y no quiero marisco")
 
-if language == "en":
-    mdl.evaluate_text("he she it am are they")
-    mdl.evaluate_text("Where can not i eat the typical pastrami sandwich")
+    if language == "en":
+        mdl.evaluate_text("he she it am are they")
+        mdl.evaluate_text("Where can not i eat the typical pastrami sandwich")
 
-# TODO: Parece que la lemmatización depende mucho de la posición de la palabra. 
-# Por ejemplo quiero puede transformarse en "querer" o "quiero". 
+    # TODO: Parece que la lemmatización depende mucho de la posición de la palabra. 
+    # Por ejemplo quiero puede transformarse en "querer" o "quiero". 
 
-# TODO: Semantic similarity embeddings parece que si dan uno por cada palabra
-# TODO: food2vec?
-# TODO: No poner que word2vec no va y ya, añadir resultado.
+    # TODO: Semantic similarity embeddings parece que si dan uno por cada palabra
+    # TODO: food2vec?
+    # TODO: No poner que word2vec no va y ya, añadir resultado.
 
 
+if dataset == "pois":
+    if language == "es": 
+        mdl.evaluate_text("Quiero visitar los mejores monumentos de Gaudí") 
+        mdl.evaluate_text("Quiero visitar edificios relacionados con el deporte") 
+        mdl.evaluate_text("Quiero visitar museos") 
 

@@ -50,10 +50,10 @@ class SSATT2ITM(ATT2VAL):
             
             # word_importance = tf.keras.layers.Embedding(vocab_size, 1, name="word_importance", embeddings_initializer="ones", mask_zero=True)(text_in)
 
-            mask_query_one = tf.cast(tf.math.not_equal(text_msk_in, 0), tf.float32) # Se obtiene la máscara del texto para un solo item
+            mask_query_one = tf.cast(tf.math.not_equal(text_in, 1), tf.float32) # Se obtiene la máscara del texto para un solo item
             mask_query = tf.tile(tf.expand_dims(mask_query_one, axis=-1),[1,1,rst_no]) # Se repite para todos los items
 
-            ht_emb = self.encoding_model((text_in, text_msk_in))[0]
+            ht_emb = self.encoding_model((text_in, mask_query_one))[0]
             
             emb_size = ht_emb.shape[-1]
             
@@ -107,7 +107,7 @@ class SSATT2ITM(ATT2VAL):
 
             model_out = tf.keras.layers.Activation("sigmoid", name="out", dtype='float32')(model)
 
-            model = tf.keras.models.Model(inputs=[text_in, text_msk_in, rest_in], outputs=[model_out], name=f"{self.MODEL_NAME}_{self.MODEL_VERSION}")
+            model = tf.keras.models.Model(inputs=[text_in, rest_in], outputs=[model_out], name=f"{self.MODEL_NAME}_{self.MODEL_VERSION}")
 
             optimizer = tf.keras.optimizers.legacy.Adam(self.CONFIG["model"]["learning_rate"])
 
@@ -149,9 +149,11 @@ class SSATT2ITM(ATT2VAL):
         rst_data = dataframe.id_item.values
         
         data_x1 = tf.data.Dataset.from_tensor_slices(text_seqs_ids)
-        data_x2 = tf.data.Dataset.from_tensor_slices(text_seqs_msk)
-        data_x3 = tf.data.Dataset.from_tensor_slices([range(self.DATASET.DATA["N_ITEMS"])]).repeat(len(dataframe))
-        data_x = tf.data.Dataset.zip((data_x1, data_x2, data_x3))
+        # data_x2 = tf.data.Dataset.from_tensor_slices(text_seqs_msk)
+        # data_x3 = tf.data.Dataset.from_tensor_slices([range(self.DATASET.DATA["N_ITEMS"])]).repeat(len(dataframe))
+        data_x2 = tf.data.Dataset.from_tensor_slices([range(self.DATASET.DATA["N_ITEMS"])]).repeat(len(dataframe))
+        
+        data_x = tf.data.Dataset.zip((data_x1, data_x2))
 
         data_y = tf.data.Dataset.from_tensor_slices(rst_data)
         data_y = data_y.map(lambda x: tf.one_hot(x, self.DATASET.DATA["N_ITEMS"]), num_parallel_calls=tf.data.AUTOTUNE)

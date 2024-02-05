@@ -16,7 +16,7 @@ from src.models.text_models.att.ATT2ITM import ATT2ITM
 
 
 class ATT2VAL(ATT2ITM):
-    """ Predecir, a partir de los embeddings de una review y los de los items, el restaurante de la review """
+    """ Predecir, a partir de los embeddings de una review y los de los items, el rating del restaurante de la review """
 
     def __init__(self, config, dataset):
         ATT2ITM.__init__(self, config=config, dataset=dataset)
@@ -35,6 +35,38 @@ class ATT2VAL(ATT2ITM):
         mse = tf.cast(tf.sqrt(tf.reduce_mean(mse)), tf.float32)
         return mse  # Devolver la pérdida calculada
     
+
+    def custom_preference_loss(self, y_true, y_pred):
+
+        # Convierte los valores no cero de y_true a 1 (productos reales) y los demás a 0
+        y_true_ones = tf.cast(tf.not_equal(y_true, 0), tf.float32)
+
+        # Calcula la suma de los valores de y_pred correspondientes a los productos reales
+        real_product_value = tf.reduce_sum(y_pred * y_true_ones, axis=-1)
+
+        # Calcula la suma de los valores en y_true para usarlo como margen
+        # margin_value = tf.reduce_sum(y_true, axis=-1, keepdims=True)
+        margin_value = 2
+
+        # Cambia la forma de real_product_value para que coincida con la de y_pred
+        real_product_value = tf.reshape(real_product_value, (-1, 1))
+
+        # Calcula la diferencia entre el valor del producto real y los demás productos
+        diff = y_pred - real_product_value
+
+        # Añade un margen de 1 solo a aquellos productos que no son el producto real
+        mask = tf.cast(tf.equal(y_true, 0), tf.float32) * margin_value
+
+        # Crea una máscara que tiene el valor de margin_value donde y_true es 0 (productos no reales) y 0 en otros lugares
+        # diff_margin = tf.maximum(0., diff + mask)
+        diff_margin = tf.nn.leaky_relu(diff + mask, alpha=0.01)
+
+        # Penaliza a aquellos productos a los que se da más valoración que al producto real
+        # Calcula la suma de todas las diferencias de margen (que son mayores que cero)
+        loss = tf.reduce_sum(diff_margin, axis=-1)
+
+        return loss
+
     def custom_activation_sigmoid(self, x):
         min_value = 0.0
         max_value = 5.0
@@ -59,6 +91,12 @@ class ATT2VAL(ATT2ITM):
     def custom_activation_relu5(self, x):
         min_value = 0.0
         max_value = 5.0
+        x = tf.cast(x, 'float32')  # Convertir a float32
+        return tf.maximum(0.0, x) * max_value
+
+    def custom_activation_relu1(self, x):
+        min_value = 0.0
+        max_value = 1.0
         x = tf.cast(x, 'float32')  # Convertir a float32
         return tf.maximum(0.0, x) * max_value
 
@@ -143,7 +181,7 @@ class ATT2VAL(ATT2ITM):
         all_data.loc[all_data.reviewId==277285706, "rating"] = 10
 
         rating_data = all_data[["reviewId", "rating"]].drop_duplicates(keep='last', inplace=False)
-        rating_data = rating_data.set_index("reviewId").loc[dataframe.reviewId.values]["rating"].values/10
+        rating_data = rating_data.set_index("reviewId").loc[dataframe.reviewId.values]["rating"].values/10 # [1]*len(rating_data)# 
         rating_data = tf.cast(rating_data, tf.float32)
 
         seq_data = self.DATASET.DATA["TEXT_SEQUENCES"][dataframe.seq.values]
@@ -163,6 +201,8 @@ class ATT2VAL(ATT2ITM):
         # data_y = data_y * tf.cast(tf.reshape(rating_data,(len(dataframe),1)), tf.float16)
         # data_y = tf.one_hot(rst_data,self.DATASET.DATA["N_ITEMS"], dtype=tf.float16) * tf.cast(tf.reshape(rating_data,(len(dataframe),1)), tf.float16)
         # data_y = tf.data.Dataset.from_tensor_slices(data_y)
+
+        data_y = tf.data.Dataset.zip((data_y, data_y_rat))
 
         return tf.data.Dataset.zip((data_x, data_y))
     
@@ -252,6 +292,9 @@ class ATT2VAL(ATT2ITM):
 
         print_e("Reparar y unificar la parte de selección de palabras relevantes")
 
+        if len(self.MODEL.loss)>1: # Si hay más de una loss hay que adaptar el código
+            return False
+            
         # Obtener, para la review al completo, el top "n_rsts" de items predichos por el modelo
         preds_rst = self.MODEL.predict([lstm_text_pad, np.arange(self.DATASET.DATA["N_ITEMS"])[None, :]], verbose=0)
         preds_rst_arg = np.argsort(-preds_rst.flatten())[:n_rsts]

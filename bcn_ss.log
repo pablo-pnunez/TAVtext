@@ -1,0 +1,130 @@
+2023-06-29 22:48:19.285060: I tensorflow/core/platform/cpu_feature_guard.cc:193] This TensorFlow binary is optimized with oneAPI Deep Neural Network Library (oneDNN) to use the following CPU instructions in performance-critical operations:  SSE3 SSE4.1 SSE4.2 AVX AVX2 FMA
+To enable them in other operations, rebuild TensorFlow with the appropriate compiler flags.
+/media/nas/pperez/miniconda3/envs/TAVtext/lib/python3.8/site-packages/tensorflow_addons/utils/tfa_eol_msg.py:23: UserWarning: 
+
+TensorFlow Addons (TFA) has ended development and introduction of new features.
+TFA has entered a minimal maintenance and release mode until a planned end of life in May 2024.
+Please modify downstream libraries to take dependencies from other repositories in our TensorFlow community (e.g. Keras, Keras-CV, and Keras-NLP). 
+
+For more information see: https://github.com/tensorflow/addons/issues/2807 
+
+  warnings.warn(
+INFO:tensorflow:Mixed precision compatibility check (mixed_float16): OK
+Your GPU will likely run quickly with dtype policy mixed_float16 as it has compute capability of at least 7.0. Your GPU: NVIDIA GeForce RTX 3090, compute capability 8.6
+All model checkpoint layers were used when initializing TFBertModel.
+
+All the layers of TFBertModel were initialized from the model checkpoint at sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2.
+If your task is similar to the task the model of the checkpoint was trained on, you can already use TFBertModel for predictions without further training.
+Model: "SSATT2ITM_0"
+__________________________________________________________________________________________________
+ Layer (type)                   Output Shape         Param #     Connected to                     
+==================================================================================================
+ input_1 (InputLayer)           [(None, 172)]        0           []                               
+                                                                                                  
+ tf.math.not_equal (TFOpLambda)  (None, 172)         0           ['input_1[0][0]']                
+                                                                                                  
+ tf.cast (TFOpLambda)           (None, 172)          0           ['tf.math.not_equal[0][0]']      
+                                                                                                  
+ input_3 (InputLayer)           [(None, 1322)]       0           []                               
+                                                                                                  
+ tf_bert_model (TFBertModel)    TFBaseModelOutputWi  117653760   ['input_1[0][0]',                
+                                thPoolingAndCrossAt               'tf.cast[0][0]']                
+                                tentions(last_hidde                                               
+                                n_state=(None, 172,                                               
+                                 384),                                                            
+                                 pooler_output=(Non                                               
+                                e, 384),                                                          
+                                 past_key_values=No                                               
+                                ne, hidden_states=N                                               
+                                one, attentions=Non                                               
+                                e, cross_attentions                                               
+                                =None)                                                            
+                                                                                                  
+ in_rsts (Embedding)            (None, 1322, 384)    507648      ['input_3[0][0]']                
+                                                                                                  
+ word_emb (Lambda)              (None, 172, 384)     0           ['tf_bert_model[0][0]']          
+                                                                                                  
+ rest_emb (Lambda)              (None, 1322, 384)    0           ['in_rsts[0][0]']                
+                                                                                                  
+ tf.expand_dims (TFOpLambda)    (None, 172, 1)       0           ['tf.cast[0][0]']                
+                                                                                                  
+ lambda (Lambda)                (None, 172, 1322)    0           ['word_emb[0][0]',               
+                                                                  'rest_emb[0][0]']               
+                                                                                                  
+ tf.tile (TFOpLambda)           (None, 172, 1322)    0           ['tf.expand_dims[0][0]']         
+                                                                                                  
+ lambda_1 (Lambda)              (None, 172, 1322)    0           ['lambda[0][0]',                 
+                                                                  'tf.tile[0][0]']                
+                                                                                                  
+ dotprod (Activation)           (None, 172, 1322)    0           ['lambda_1[0][0]']               
+                                                                                                  
+ dropout_37 (Dropout)           (None, 172, 1322)    0           ['dotprod[0][0]']                
+                                                                                                  
+ sum (Lambda)                   (None, 1322)         0           ['dropout_37[0][0]']             
+                                                                                                  
+ out (Activation)               (None, 1322)         0           ['sum[0][0]']                    
+                                                                                                  
+==================================================================================================
+Total params: 118,161,408
+Trainable params: 118,161,408
+Non-trainable params: 0
+__________________________________________________________________________________________________
+None
+Epoch 1/1000
+WARNING:tensorflow:Gradients do not exist for variables ['tf_bert_model/bert/pooler/dense/kernel:0', 'tf_bert_model/bert/pooler/dense/bias:0'] when minimizing the loss. If you're using `model.compile()`, did you forget to provide a `loss` argument?
+WARNING:tensorflow:Gradients do not exist for variables ['tf_bert_model/bert/pooler/dense/kernel:0', 'tf_bert_model/bert/pooler/dense/bias:0'] when minimizing the loss. If you're using `model.compile()`, did you forget to provide a `loss` argument?
+2005/2005 - 638s - loss: 7.2037 - NDCG@10: 0.0278 - r1: 0.0116 - r5: 0.0328 - r10: 0.0503 - p5: 0.0065 - p10: 0.0050 - val_loss: 6.7174 - val_NDCG@10: 0.0712 - val_r1: 0.0342 - val_r5: 0.0865 - val_r10: 0.1191 - val_p5: 0.0173 - val_p10: 0.0119 - lr: 9.9901e-06 - e_time: 625.0111 - 638s/epoch - 318ms/step
+Epoch 2/1000
+2005/2005 - 626s - loss: 5.8798 - NDCG@10: 0.1485 - r1: 0.0818 - r5: 0.1759 - r10: 0.2319 - p5: 0.0352 - p10: 0.0232 - val_loss: 5.3899 - val_NDCG@10: 0.2068 - val_r1: 0.1229 - val_r5: 0.2438 - val_r10: 0.3100 - val_p5: 0.0487 - val_p10: 0.0310 - lr: 9.9802e-06 - e_time: 612.3480 - 626s/epoch - 312ms/step
+Epoch 3/1000
+2005/2005 - 626s - loss: 4.9964 - NDCG@10: 0.2434 - r1: 0.1472 - r5: 0.2853 - r10: 0.3610 - p5: 0.0571 - p10: 0.0361 - val_loss: 4.7763 - val_NDCG@10: 0.2771 - val_r1: 0.1724 - val_r5: 0.3246 - val_r10: 0.4029 - val_p5: 0.0649 - val_p10: 0.0403 - lr: 9.9703e-06 - e_time: 612.5594 - 626s/epoch - 312ms/step
+Epoch 4/1000
+2005/2005 - 626s - loss: 4.5379 - NDCG@10: 0.2988 - r1: 0.1886 - r5: 0.3488 - r10: 0.4310 - p5: 0.0697 - p10: 0.0431 - val_loss: 4.4278 - val_NDCG@10: 0.3222 - val_r1: 0.2103 - val_r5: 0.3755 - val_r10: 0.4538 - val_p5: 0.0751 - val_p10: 0.0454 - lr: 9.9604e-06 - e_time: 612.2956 - 626s/epoch - 312ms/step
+Epoch 5/1000
+2005/2005 - 626s - loss: 4.2283 - NDCG@10: 0.3395 - r1: 0.2205 - r5: 0.3954 - r10: 0.4804 - p5: 0.0791 - p10: 0.0480 - val_loss: 4.2160 - val_NDCG@10: 0.3494 - val_r1: 0.2309 - val_r5: 0.4072 - val_r10: 0.4874 - val_p5: 0.0814 - val_p10: 0.0487 - lr: 9.9505e-06 - e_time: 612.2825 - 626s/epoch - 312ms/step
+Epoch 6/1000
+2005/2005 - 625s - loss: 3.9911 - NDCG@10: 0.3715 - r1: 0.2449 - r5: 0.4321 - r10: 0.5192 - p5: 0.0864 - p10: 0.0519 - val_loss: 4.0232 - val_NDCG@10: 0.3763 - val_r1: 0.2546 - val_r5: 0.4352 - val_r10: 0.5176 - val_p5: 0.0871 - val_p10: 0.0518 - lr: 9.9406e-06 - e_time: 612.2684 - 625s/epoch - 312ms/step
+Epoch 7/1000
+2005/2005 - 626s - loss: 3.7988 - NDCG@10: 0.3983 - r1: 0.2666 - r5: 0.4625 - r10: 0.5500 - p5: 0.0925 - p10: 0.0550 - val_loss: 3.9107 - val_NDCG@10: 0.3905 - val_r1: 0.2630 - val_r5: 0.4551 - val_r10: 0.5356 - val_p5: 0.0911 - val_p10: 0.0535 - lr: 9.9307e-06 - e_time: 612.2728 - 626s/epoch - 312ms/step
+Epoch 8/1000
+2005/2005 - 626s - loss: 3.6376 - NDCG@10: 0.4227 - r1: 0.2880 - r5: 0.4894 - r10: 0.5761 - p5: 0.0979 - p10: 0.0576 - val_loss: 3.8219 - val_NDCG@10: 0.4051 - val_r1: 0.2788 - val_r5: 0.4693 - val_r10: 0.5483 - val_p5: 0.0939 - val_p10: 0.0549 - lr: 9.9208e-06 - e_time: 612.2567 - 626s/epoch - 312ms/step
+Epoch 9/1000
+2005/2005 - 624s - loss: 3.4899 - NDCG@10: 0.4452 - r1: 0.3095 - r5: 0.5128 - r10: 0.5991 - p5: 0.1026 - p10: 0.0599 - val_loss: 3.7907 - val_NDCG@10: 0.4117 - val_r1: 0.2848 - val_r5: 0.4775 - val_r10: 0.5551 - val_p5: 0.0956 - val_p10: 0.0555 - lr: 9.9109e-06 - e_time: 610.4212 - 624s/epoch - 311ms/step
+Epoch 10/1000
+2005/2005 - 625s - loss: 3.3564 - NDCG@10: 0.4670 - r1: 0.3308 - r5: 0.5353 - r10: 0.6209 - p5: 0.1071 - p10: 0.0621 - val_loss: 3.7415 - val_NDCG@10: 0.4235 - val_r1: 0.2982 - val_r5: 0.4868 - val_r10: 0.5651 - val_p5: 0.0973 - val_p10: 0.0565 - lr: 9.9010e-06 - e_time: 611.0419 - 625s/epoch - 312ms/step
+Epoch 11/1000
+2005/2005 - 611s - loss: 3.2305 - NDCG@10: 0.4871 - r1: 0.3521 - r5: 0.5552 - r10: 0.6394 - p5: 0.1110 - p10: 0.0639 - val_loss: 3.7428 - val_NDCG@10: 0.4281 - val_r1: 0.3041 - val_r5: 0.4902 - val_r10: 0.5685 - val_p5: 0.0980 - val_p10: 0.0568 - lr: 9.8911e-06 - e_time: 611.1339 - 611s/epoch - 305ms/step
+Epoch 12/1000
+2005/2005 - 625s - loss: 3.1255 - NDCG@10: 0.5049 - r1: 0.3698 - r5: 0.5742 - r10: 0.6559 - p5: 0.1148 - p10: 0.0656 - val_loss: 3.7106 - val_NDCG@10: 0.4380 - val_r1: 0.3148 - val_r5: 0.4988 - val_r10: 0.5783 - val_p5: 0.0998 - val_p10: 0.0578 - lr: 9.8812e-06 - e_time: 611.1333 - 625s/epoch - 312ms/step
+Epoch 13/1000
+2005/2005 - 625s - loss: 3.0301 - NDCG@10: 0.5204 - r1: 0.3859 - r5: 0.5899 - r10: 0.6699 - p5: 0.1180 - p10: 0.0670 - val_loss: 3.6947 - val_NDCG@10: 0.4418 - val_r1: 0.3176 - val_r5: 0.5027 - val_r10: 0.5821 - val_p5: 0.1005 - val_p10: 0.0582 - lr: 9.8713e-06 - e_time: 611.0502 - 625s/epoch - 312ms/step
+Epoch 14/1000
+2005/2005 - 625s - loss: 2.9425 - NDCG@10: 0.5336 - r1: 0.3989 - r5: 0.6038 - r10: 0.6826 - p5: 0.1208 - p10: 0.0683 - val_loss: 3.6659 - val_NDCG@10: 0.4476 - val_r1: 0.3246 - val_r5: 0.5094 - val_r10: 0.5874 - val_p5: 0.1019 - val_p10: 0.0587 - lr: 9.8614e-06 - e_time: 610.9735 - 625s/epoch - 312ms/step
+Epoch 15/1000
+2005/2005 - 611s - loss: 2.8613 - NDCG@10: 0.5466 - r1: 0.4128 - r5: 0.6166 - r10: 0.6943 - p5: 0.1233 - p10: 0.0694 - val_loss: 3.6696 - val_NDCG@10: 0.4532 - val_r1: 0.3301 - val_r5: 0.5149 - val_r10: 0.5931 - val_p5: 0.1030 - val_p10: 0.0593 - lr: 9.8515e-06 - e_time: 611.2301 - 611s/epoch - 305ms/step
+Epoch 16/1000
+2005/2005 - 611s - loss: 2.7880 - NDCG@10: 0.5579 - r1: 0.4234 - r5: 0.6290 - r10: 0.7053 - p5: 0.1258 - p10: 0.0705 - val_loss: 3.6675 - val_NDCG@10: 0.4544 - val_r1: 0.3305 - val_r5: 0.5177 - val_r10: 0.5943 - val_p5: 0.1036 - val_p10: 0.0594 - lr: 9.8416e-06 - e_time: 610.7649 - 611s/epoch - 305ms/step
+Epoch 17/1000
+2005/2005 - 611s - loss: 2.7160 - NDCG@10: 0.5696 - r1: 0.4363 - r5: 0.6405 - r10: 0.7151 - p5: 0.1281 - p10: 0.0715 - val_loss: 3.6881 - val_NDCG@10: 0.4592 - val_r1: 0.3358 - val_r5: 0.5226 - val_r10: 0.5979 - val_p5: 0.1045 - val_p10: 0.0598 - lr: 9.8317e-06 - e_time: 611.2549 - 611s/epoch - 305ms/step
+Epoch 18/1000
+2005/2005 - 611s - loss: 2.6446 - NDCG@10: 0.5804 - r1: 0.4474 - r5: 0.6513 - r10: 0.7251 - p5: 0.1303 - p10: 0.0725 - val_loss: 3.6811 - val_NDCG@10: 0.4623 - val_r1: 0.3378 - val_r5: 0.5242 - val_r10: 0.6026 - val_p5: 0.1048 - val_p10: 0.0603 - lr: 9.8218e-06 - e_time: 610.9145 - 611s/epoch - 305ms/step
+Epoch 19/1000
+2005/2005 - 611s - loss: 2.5768 - NDCG@10: 0.5906 - r1: 0.4571 - r5: 0.6622 - r10: 0.7346 - p5: 0.1324 - p10: 0.0735 - val_loss: 3.6919 - val_NDCG@10: 0.4626 - val_r1: 0.3387 - val_r5: 0.5258 - val_r10: 0.6013 - val_p5: 0.1052 - val_p10: 0.0601 - lr: 9.8119e-06 - e_time: 610.5628 - 611s/epoch - 305ms/step
+Epoch 20/1000
+2005/2005 - 611s - loss: 2.5133 - NDCG@10: 0.6015 - r1: 0.4693 - r5: 0.6721 - r10: 0.7438 - p5: 0.1344 - p10: 0.0744 - val_loss: 3.7139 - val_NDCG@10: 0.4638 - val_r1: 0.3383 - val_r5: 0.5269 - val_r10: 0.6035 - val_p5: 0.1054 - val_p10: 0.0604 - lr: 9.8020e-06 - e_time: 610.6652 - 611s/epoch - 305ms/step
+Epoch 21/1000
+2005/2005 - 611s - loss: 2.4476 - NDCG@10: 0.6116 - r1: 0.4807 - r5: 0.6821 - r10: 0.7522 - p5: 0.1364 - p10: 0.0752 - val_loss: 3.7431 - val_NDCG@10: 0.4664 - val_r1: 0.3424 - val_r5: 0.5294 - val_r10: 0.6051 - val_p5: 0.1059 - val_p10: 0.0605 - lr: 9.7921e-06 - e_time: 610.6026 - 611s/epoch - 305ms/step
+Epoch 22/1000
+2005/2005 - 611s - loss: 2.3882 - NDCG@10: 0.6207 - r1: 0.4905 - r5: 0.6907 - r10: 0.7600 - p5: 0.1381 - p10: 0.0760 - val_loss: 3.7682 - val_NDCG@10: 0.4654 - val_r1: 0.3424 - val_r5: 0.5280 - val_r10: 0.6040 - val_p5: 0.1056 - val_p10: 0.0604 - lr: 9.7822e-06 - e_time: 610.5206 - 611s/epoch - 304ms/step
+Epoch 23/1000
+2005/2005 - 611s - loss: 2.3303 - NDCG@10: 0.6306 - r1: 0.5009 - r5: 0.7007 - r10: 0.7685 - p5: 0.1401 - p10: 0.0769 - val_loss: 3.8211 - val_NDCG@10: 0.4686 - val_r1: 0.3454 - val_r5: 0.5284 - val_r10: 0.6074 - val_p5: 0.1057 - val_p10: 0.0607 - lr: 9.7723e-06 - e_time: 610.6202 - 611s/epoch - 305ms/step
+Epoch 24/1000
+2005/2005 - 611s - loss: 2.2711 - NDCG@10: 0.6394 - r1: 0.5108 - r5: 0.7098 - r10: 0.7756 - p5: 0.1420 - p10: 0.0776 - val_loss: 3.8543 - val_NDCG@10: 0.4691 - val_r1: 0.3438 - val_r5: 0.5308 - val_r10: 0.6092 - val_p5: 0.1062 - val_p10: 0.0609 - lr: 9.7624e-06 - e_time: 610.5466 - 611s/epoch - 305ms/step
+Epoch 24: early stopping
+[92m[INFO] Loading best model...[0m
+WARNING:tensorflow:Model was constructed with shape (None, 172) for input KerasTensor(type_spec=TensorSpec(shape=(None, 172), dtype=tf.int32, name='input_1'), name='input_1', description="created by layer 'input_1'"), but it was called on an input with incompatible shape (None, 1).
+/media/nas/pperez/miniconda3/envs/TAVtext/lib/python3.8/site-packages/sklearn/manifold/_t_sne.py:991: FutureWarning: The PCA initialization in TSNE will change to have the standard deviation of PC1 equal to 1e-4 in 1.2. This will ensure better convergence.
+  warnings.warn(
+/media/nas/pperez/miniconda3/envs/TAVtext/lib/python3.8/site-packages/sklearn/manifold/_t_sne.py:991: FutureWarning: The PCA initialization in TSNE will change to have the standard deviation of PC1 equal to 1e-4 in 1.2. This will ensure better convergence.
+  warnings.warn(
+(1322, 2)

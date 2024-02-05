@@ -98,7 +98,11 @@ class RSTModel(KerasModelClass):
 
         print_g(f"There are {len(test_data)} evaluation examples.")
 
-        self.MODEL.compile(loss=self.MODEL.loss, optimizer=self.MODEL.optimizer, metrics=metrics)
+        if len(self.MODEL.loss)==1: # Si hay más de una loss hay que adaptar el código
+            self.MODEL.compile(loss=self.MODEL.loss, optimizer=self.MODEL.optimizer, metrics=metrics)
+        else:
+            return False
+        
         ret = self.MODEL.evaluate(test_gn.cache().batch(self.CONFIG["model"]['batch_size']).prefetch(tf.data.AUTOTUNE), verbose=0, return_dict=True)
         
         if user_info:
