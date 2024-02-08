@@ -16,7 +16,7 @@ for DATASET_NAME in ${!DATASETS[@]}; do
     # source /media/nas/pperez/miniconda3/etc/profile.d/conda.sh
     # conda activate TAV_text
 
-    nohup /media/nas/pperez/miniconda3/envs/TAVtext/bin/python -u Baselines.py -dst $DATASET_NAME -sst $SUBSET_NAME &
+    nohup /media/nas/pperez/conda/ns3/envs/TAVtext/bin/python -u Baselines.py -dst $DATASET_NAME -sst $SUBSET_NAME &
   
     # Si se alcanza el máximo de procesos simultaneos, esperar
     while [ $(jobs -r | wc -l) -eq $MAXTSTS ];

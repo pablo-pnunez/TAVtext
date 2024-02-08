@@ -1,0 +1,334 @@
+Using TensorFlow backend
+Model: "model"
+__________________________________________________________________________________________________
+ Layer (type)                Output Shape                 Param #   Connected to                  
+==================================================================================================
+ padding_mask (InputLayer)   [(None, None)]               0         []                            
+                                                                                                  
+ segment_ids (InputLayer)    [(None, None)]               0         []                            
+                                                                                                  
+ token_ids (InputLayer)      [(None, None)]               0         []                            
+                                                                                                  
+ bert_backbone (BertBackbon  {'sequence_output': (None,   4385920   ['padding_mask[0][0]',        
+ e)                           None, 128),                            'segment_ids[0][0]',         
+                              'pooled_output': (None, 1              'token_ids[0][0]']           
+                             28)}                                                                 
+                                                                                                  
+ dropout (Dropout)           (None, None, 128)            0         ['bert_backbone[0][1]']       
+                                                                                                  
+ tf.__operators__.getitem_1  (None, 128)                  0         ['dropout[0][0]']             
+  (SlicingOpLambda)                                                                               
+                                                                                                  
+ out (Dense)                 (None, 86)                   11094     ['tf.__operators__.getitem_1[0
+                                                                    ][0]']                        
+                                                                                                  
+==================================================================================================
+Total params: 4397014 (16.77 MB)
+Trainable params: 4397014 (16.77 MB)
+Non-trainable params: 0 (0.00 Byte)
+__________________________________________________________________________________________________
+None
+Epoch 1/1000
+92/92 - 42s - loss: 5.2839 - NDCG@10: 0.1968 - MAE: 0.5009 - RC@5: 0.2369 - RC@10: 0.3570 - val_loss: 3.4057 - val_NDCG@10: 0.4105 - val_MAE: 0.4811 - val_RC@5: 0.4836 - val_RC@10: 0.6724 - lr: 9.9901e-05 - e_time: 40.9327 - 42s/epoch - 452ms/step
+Epoch 2/1000
+92/92 - 37s - loss: 4.2598 - NDCG@10: 0.3046 - MAE: 0.4879 - RC@5: 0.3626 - RC@10: 0.4825 - val_loss: 2.8191 - val_NDCG@10: 0.5396 - val_MAE: 0.4748 - val_RC@5: 0.6406 - val_RC@10: 0.7203 - lr: 9.9802e-05 - e_time: 35.8950 - 37s/epoch - 397ms/step
+Epoch 3/1000
+92/92 - 37s - loss: 3.4174 - NDCG@10: 0.4625 - MAE: 0.4813 - RC@5: 0.5300 - RC@10: 0.6232 - val_loss: 2.1968 - val_NDCG@10: 0.6555 - val_MAE: 0.4664 - val_RC@5: 0.7387 - val_RC@10: 0.8057 - lr: 9.9703e-05 - e_time: 35.9630 - 37s/epoch - 398ms/step
+Epoch 4/1000
+92/92 - 37s - loss: 2.8684 - NDCG@10: 0.5621 - MAE: 0.4788 - RC@5: 0.6321 - RC@10: 0.7116 - val_loss: 1.9014 - val_NDCG@10: 0.7065 - val_MAE: 0.4628 - val_RC@5: 0.7906 - val_RC@10: 0.8451 - lr: 9.9604e-05 - e_time: 36.0182 - 37s/epoch - 398ms/step
+Epoch 5/1000
+92/92 - 37s - loss: 2.5384 - NDCG@10: 0.6157 - MAE: 0.4762 - RC@5: 0.6868 - RC@10: 0.7608 - val_loss: 1.7296 - val_NDCG@10: 0.7384 - val_MAE: 0.4604 - val_RC@5: 0.8183 - val_RC@10: 0.8723 - lr: 9.9505e-05 - e_time: 36.0089 - 37s/epoch - 398ms/step
+Epoch 6/1000
+92/92 - 37s - loss: 2.3405 - NDCG@10: 0.6491 - MAE: 0.4741 - RC@5: 0.7246 - RC@10: 0.7905 - val_loss: 1.6199 - val_NDCG@10: 0.7575 - val_MAE: 0.4568 - val_RC@5: 0.8358 - val_RC@10: 0.8899 - lr: 9.9406e-05 - e_time: 36.0053 - 37s/epoch - 398ms/step
+Epoch 7/1000
+92/92 - 37s - loss: 2.1951 - NDCG@10: 0.6732 - MAE: 0.4726 - RC@5: 0.7468 - RC@10: 0.8109 - val_loss: 1.5251 - val_NDCG@10: 0.7715 - val_MAE: 0.4549 - val_RC@5: 0.8491 - val_RC@10: 0.9023 - lr: 9.9307e-05 - e_time: 36.0112 - 37s/epoch - 398ms/step
+Epoch 8/1000
+92/92 - 37s - loss: 2.0569 - NDCG@10: 0.6941 - MAE: 0.4704 - RC@5: 0.7685 - RC@10: 0.8290 - val_loss: 1.4586 - val_NDCG@10: 0.7825 - val_MAE: 0.4535 - val_RC@5: 0.8599 - val_RC@10: 0.9116 - lr: 9.9208e-05 - e_time: 36.0413 - 37s/epoch - 399ms/step
+Epoch 9/1000
+92/92 - 37s - loss: 1.9743 - NDCG@10: 0.7066 - MAE: 0.4707 - RC@5: 0.7818 - RC@10: 0.8399 - val_loss: 1.3989 - val_NDCG@10: 0.7914 - val_MAE: 0.4506 - val_RC@5: 0.8699 - val_RC@10: 0.9194 - lr: 9.9109e-05 - e_time: 36.0364 - 37s/epoch - 399ms/step
+Epoch 10/1000
+92/92 - 37s - loss: 1.8896 - NDCG@10: 0.7201 - MAE: 0.4686 - RC@5: 0.7950 - RC@10: 0.8507 - val_loss: 1.3556 - val_NDCG@10: 0.7968 - val_MAE: 0.4520 - val_RC@5: 0.8768 - val_RC@10: 0.9237 - lr: 9.9010e-05 - e_time: 36.0210 - 37s/epoch - 398ms/step
+Epoch 11/1000
+92/92 - 37s - loss: 1.8144 - NDCG@10: 0.7318 - MAE: 0.4684 - RC@5: 0.8062 - RC@10: 0.8610 - val_loss: 1.3184 - val_NDCG@10: 0.8036 - val_MAE: 0.4527 - val_RC@5: 0.8824 - val_RC@10: 0.9302 - lr: 9.8911e-05 - e_time: 36.0109 - 37s/epoch - 398ms/step
+Epoch 12/1000
+92/92 - 37s - loss: 1.7511 - NDCG@10: 0.7406 - MAE: 0.4674 - RC@5: 0.8157 - RC@10: 0.8697 - val_loss: 1.2796 - val_NDCG@10: 0.8089 - val_MAE: 0.4501 - val_RC@5: 0.8880 - val_RC@10: 0.9339 - lr: 9.8812e-05 - e_time: 36.0025 - 37s/epoch - 398ms/step
+Epoch 13/1000
+92/92 - 37s - loss: 1.7001 - NDCG@10: 0.7491 - MAE: 0.4660 - RC@5: 0.8246 - RC@10: 0.8765 - val_loss: 1.2559 - val_NDCG@10: 0.8137 - val_MAE: 0.4487 - val_RC@5: 0.8926 - val_RC@10: 0.9369 - lr: 9.8713e-05 - e_time: 36.0074 - 37s/epoch - 398ms/step
+Epoch 14/1000
+92/92 - 37s - loss: 1.6392 - NDCG@10: 0.7573 - MAE: 0.4656 - RC@5: 0.8319 - RC@10: 0.8820 - val_loss: 1.2263 - val_NDCG@10: 0.8171 - val_MAE: 0.4464 - val_RC@5: 0.8964 - val_RC@10: 0.9398 - lr: 9.8614e-05 - e_time: 35.9849 - 37s/epoch - 398ms/step
+Epoch 15/1000
+92/92 - 37s - loss: 1.6023 - NDCG@10: 0.7640 - MAE: 0.4636 - RC@5: 0.8383 - RC@10: 0.8884 - val_loss: 1.2021 - val_NDCG@10: 0.8213 - val_MAE: 0.4450 - val_RC@5: 0.9010 - val_RC@10: 0.9433 - lr: 9.8515e-05 - e_time: 36.0059 - 37s/epoch - 398ms/step
+Epoch 16/1000
+92/92 - 37s - loss: 1.5579 - NDCG@10: 0.7707 - MAE: 0.4631 - RC@5: 0.8445 - RC@10: 0.8944 - val_loss: 1.1807 - val_NDCG@10: 0.8253 - val_MAE: 0.4435 - val_RC@5: 0.9033 - val_RC@10: 0.9462 - lr: 9.8416e-05 - e_time: 36.0145 - 37s/epoch - 398ms/step
+Epoch 17/1000
+92/92 - 37s - loss: 1.5208 - NDCG@10: 0.7765 - MAE: 0.4617 - RC@5: 0.8503 - RC@10: 0.8994 - val_loss: 1.1649 - val_NDCG@10: 0.8265 - val_MAE: 0.4402 - val_RC@5: 0.9039 - val_RC@10: 0.9460 - lr: 9.8317e-05 - e_time: 36.0225 - 37s/epoch - 399ms/step
+Epoch 18/1000
+92/92 - 37s - loss: 1.4838 - NDCG@10: 0.7815 - MAE: 0.4600 - RC@5: 0.8565 - RC@10: 0.9041 - val_loss: 1.1497 - val_NDCG@10: 0.8303 - val_MAE: 0.4376 - val_RC@5: 0.9091 - val_RC@10: 0.9500 - lr: 9.8218e-05 - e_time: 36.0200 - 37s/epoch - 398ms/step
+Epoch 19/1000
+92/92 - 37s - loss: 1.4480 - NDCG@10: 0.7874 - MAE: 0.4591 - RC@5: 0.8612 - RC@10: 0.9078 - val_loss: 1.1327 - val_NDCG@10: 0.8321 - val_MAE: 0.4361 - val_RC@5: 0.9108 - val_RC@10: 0.9500 - lr: 9.8119e-05 - e_time: 36.0064 - 37s/epoch - 398ms/step
+Epoch 20/1000
+92/92 - 37s - loss: 1.4200 - NDCG@10: 0.7916 - MAE: 0.4573 - RC@5: 0.8657 - RC@10: 0.9114 - val_loss: 1.1178 - val_NDCG@10: 0.8349 - val_MAE: 0.4356 - val_RC@5: 0.9151 - val_RC@10: 0.9517 - lr: 9.8020e-05 - e_time: 36.0291 - 37s/epoch - 399ms/step
+Epoch 21/1000
+92/92 - 37s - loss: 1.3918 - NDCG@10: 0.7957 - MAE: 0.4572 - RC@5: 0.8694 - RC@10: 0.9141 - val_loss: 1.1074 - val_NDCG@10: 0.8371 - val_MAE: 0.4355 - val_RC@5: 0.9154 - val_RC@10: 0.9533 - lr: 9.7921e-05 - e_time: 36.0282 - 37s/epoch - 399ms/step
+Epoch 22/1000
+92/92 - 37s - loss: 1.3594 - NDCG@10: 0.8010 - MAE: 0.4564 - RC@5: 0.8740 - RC@10: 0.9192 - val_loss: 1.0937 - val_NDCG@10: 0.8382 - val_MAE: 0.4315 - val_RC@5: 0.9166 - val_RC@10: 0.9539 - lr: 9.7822e-05 - e_time: 36.0212 - 37s/epoch - 399ms/step
+Epoch 23/1000
+92/92 - 37s - loss: 1.3368 - NDCG@10: 0.8049 - MAE: 0.4549 - RC@5: 0.8778 - RC@10: 0.9218 - val_loss: 1.0826 - val_NDCG@10: 0.8403 - val_MAE: 0.4324 - val_RC@5: 0.9190 - val_RC@10: 0.9545 - lr: 9.7723e-05 - e_time: 36.0121 - 37s/epoch - 398ms/step
+Epoch 24/1000
+92/92 - 37s - loss: 1.3185 - NDCG@10: 0.8079 - MAE: 0.4538 - RC@5: 0.8816 - RC@10: 0.9260 - val_loss: 1.0707 - val_NDCG@10: 0.8408 - val_MAE: 0.4296 - val_RC@5: 0.9198 - val_RC@10: 0.9555 - lr: 9.7624e-05 - e_time: 36.0037 - 37s/epoch - 398ms/step
+Epoch 25/1000
+92/92 - 37s - loss: 1.2949 - NDCG@10: 0.8110 - MAE: 0.4525 - RC@5: 0.8833 - RC@10: 0.9262 - val_loss: 1.0631 - val_NDCG@10: 0.8434 - val_MAE: 0.4286 - val_RC@5: 0.9214 - val_RC@10: 0.9578 - lr: 9.7525e-05 - e_time: 36.0248 - 37s/epoch - 399ms/step
+Epoch 26/1000
+92/92 - 37s - loss: 1.2689 - NDCG@10: 0.8149 - MAE: 0.4518 - RC@5: 0.8866 - RC@10: 0.9299 - val_loss: 1.0576 - val_NDCG@10: 0.8445 - val_MAE: 0.4270 - val_RC@5: 0.9217 - val_RC@10: 0.9579 - lr: 9.7426e-05 - e_time: 36.0192 - 37s/epoch - 399ms/step
+Epoch 27/1000
+92/92 - 37s - loss: 1.2519 - NDCG@10: 0.8182 - MAE: 0.4516 - RC@5: 0.8899 - RC@10: 0.9328 - val_loss: 1.0481 - val_NDCG@10: 0.8457 - val_MAE: 0.4303 - val_RC@5: 0.9228 - val_RC@10: 0.9582 - lr: 9.7327e-05 - e_time: 36.0430 - 37s/epoch - 399ms/step
+Epoch 28/1000
+92/92 - 37s - loss: 1.2376 - NDCG@10: 0.8205 - MAE: 0.4505 - RC@5: 0.8927 - RC@10: 0.9335 - val_loss: 1.0391 - val_NDCG@10: 0.8472 - val_MAE: 0.4266 - val_RC@5: 0.9238 - val_RC@10: 0.9592 - lr: 9.7228e-05 - e_time: 36.0104 - 37s/epoch - 398ms/step
+Epoch 29/1000
+92/92 - 37s - loss: 1.2127 - NDCG@10: 0.8234 - MAE: 0.4498 - RC@5: 0.8965 - RC@10: 0.9373 - val_loss: 1.0372 - val_NDCG@10: 0.8470 - val_MAE: 0.4228 - val_RC@5: 0.9247 - val_RC@10: 0.9591 - lr: 9.7129e-05 - e_time: 36.0265 - 37s/epoch - 398ms/step
+Epoch 30/1000
+92/92 - 37s - loss: 1.1964 - NDCG@10: 0.8265 - MAE: 0.4486 - RC@5: 0.8978 - RC@10: 0.9387 - val_loss: 1.0289 - val_NDCG@10: 0.8484 - val_MAE: 0.4236 - val_RC@5: 0.9260 - val_RC@10: 0.9599 - lr: 9.7030e-05 - e_time: 36.0323 - 37s/epoch - 398ms/step
+Epoch 31/1000
+92/92 - 37s - loss: 1.1833 - NDCG@10: 0.8289 - MAE: 0.4483 - RC@5: 0.8997 - RC@10: 0.9396 - val_loss: 1.0236 - val_NDCG@10: 0.8493 - val_MAE: 0.4251 - val_RC@5: 0.9252 - val_RC@10: 0.9603 - lr: 9.6931e-05 - e_time: 36.0333 - 37s/epoch - 398ms/step
+Epoch 32/1000
+92/92 - 36s - loss: 1.1670 - NDCG@10: 0.8316 - MAE: 0.4469 - RC@5: 0.9024 - RC@10: 0.9419 - val_loss: 1.0243 - val_NDCG@10: 0.8499 - val_MAE: 0.4212 - val_RC@5: 0.9263 - val_RC@10: 0.9598 - lr: 9.6832e-05 - e_time: 36.0218 - 36s/epoch - 392ms/step
+Epoch 33/1000
+92/92 - 37s - loss: 1.1511 - NDCG@10: 0.8338 - MAE: 0.4463 - RC@5: 0.9042 - RC@10: 0.9438 - val_loss: 1.0203 - val_NDCG@10: 0.8508 - val_MAE: 0.4182 - val_RC@5: 0.9267 - val_RC@10: 0.9603 - lr: 9.6733e-05 - e_time: 36.0283 - 37s/epoch - 399ms/step
+Epoch 34/1000
+92/92 - 37s - loss: 1.1373 - NDCG@10: 0.8365 - MAE: 0.4457 - RC@5: 0.9068 - RC@10: 0.9448 - val_loss: 1.0184 - val_NDCG@10: 0.8512 - val_MAE: 0.4207 - val_RC@5: 0.9262 - val_RC@10: 0.9610 - lr: 9.6634e-05 - e_time: 36.0364 - 37s/epoch - 398ms/step
+Epoch 35/1000
+92/92 - 37s - loss: 1.1275 - NDCG@10: 0.8377 - MAE: 0.4457 - RC@5: 0.9083 - RC@10: 0.9454 - val_loss: 1.0119 - val_NDCG@10: 0.8517 - val_MAE: 0.4203 - val_RC@5: 0.9268 - val_RC@10: 0.9610 - lr: 9.6535e-05 - e_time: 36.0366 - 37s/epoch - 399ms/step
+Epoch 36/1000
+92/92 - 36s - loss: 1.1069 - NDCG@10: 0.8410 - MAE: 0.4438 - RC@5: 0.9104 - RC@10: 0.9474 - val_loss: 1.0129 - val_NDCG@10: 0.8515 - val_MAE: 0.4168 - val_RC@5: 0.9273 - val_RC@10: 0.9604 - lr: 9.6436e-05 - e_time: 36.0144 - 36s/epoch - 391ms/step
+Epoch 37/1000
+92/92 - 37s - loss: 1.0946 - NDCG@10: 0.8428 - MAE: 0.4432 - RC@5: 0.9116 - RC@10: 0.9486 - val_loss: 1.0101 - val_NDCG@10: 0.8520 - val_MAE: 0.4144 - val_RC@5: 0.9272 - val_RC@10: 0.9607 - lr: 9.6337e-05 - e_time: 36.0452 - 37s/epoch - 399ms/step
+Epoch 38/1000
+92/92 - 36s - loss: 1.0802 - NDCG@10: 0.8453 - MAE: 0.4423 - RC@5: 0.9147 - RC@10: 0.9505 - val_loss: 1.0113 - val_NDCG@10: 0.8520 - val_MAE: 0.4131 - val_RC@5: 0.9263 - val_RC@10: 0.9603 - lr: 9.6238e-05 - e_time: 36.0254 - 36s/epoch - 392ms/step
+Epoch 39/1000
+92/92 - 37s - loss: 1.0716 - NDCG@10: 0.8460 - MAE: 0.4421 - RC@5: 0.9153 - RC@10: 0.9503 - val_loss: 1.0050 - val_NDCG@10: 0.8536 - val_MAE: 0.4128 - val_RC@5: 0.9287 - val_RC@10: 0.9615 - lr: 9.6139e-05 - e_time: 36.0403 - 37s/epoch - 399ms/step
+Epoch 40/1000
+92/92 - 37s - loss: 1.0538 - NDCG@10: 0.8489 - MAE: 0.4416 - RC@5: 0.9173 - RC@10: 0.9533 - val_loss: 1.0038 - val_NDCG@10: 0.8535 - val_MAE: 0.4137 - val_RC@5: 0.9272 - val_RC@10: 0.9617 - lr: 9.6040e-05 - e_time: 36.0428 - 37s/epoch - 399ms/step
+Epoch 41/1000
+92/92 - 37s - loss: 1.0460 - NDCG@10: 0.8501 - MAE: 0.4401 - RC@5: 0.9184 - RC@10: 0.9541 - val_loss: 1.0026 - val_NDCG@10: 0.8534 - val_MAE: 0.4109 - val_RC@5: 0.9286 - val_RC@10: 0.9610 - lr: 9.5941e-05 - e_time: 36.0258 - 37s/epoch - 399ms/step
+Epoch 42/1000
+92/92 - 36s - loss: 1.0327 - NDCG@10: 0.8523 - MAE: 0.4393 - RC@5: 0.9214 - RC@10: 0.9550 - val_loss: 1.0041 - val_NDCG@10: 0.8541 - val_MAE: 0.4094 - val_RC@5: 0.9292 - val_RC@10: 0.9615 - lr: 9.5842e-05 - e_time: 36.0281 - 36s/epoch - 392ms/step
+Epoch 43/1000
+92/92 - 37s - loss: 1.0260 - NDCG@10: 0.8546 - MAE: 0.4396 - RC@5: 0.9219 - RC@10: 0.9548 - val_loss: 0.9999 - val_NDCG@10: 0.8542 - val_MAE: 0.4082 - val_RC@5: 0.9286 - val_RC@10: 0.9615 - lr: 9.5743e-05 - e_time: 36.0389 - 37s/epoch - 399ms/step
+Epoch 44/1000
+92/92 - 36s - loss: 1.0093 - NDCG@10: 0.8568 - MAE: 0.4384 - RC@5: 0.9235 - RC@10: 0.9571 - val_loss: 1.0001 - val_NDCG@10: 0.8549 - val_MAE: 0.4106 - val_RC@5: 0.9286 - val_RC@10: 0.9618 - lr: 9.5644e-05 - e_time: 36.0397 - 36s/epoch - 392ms/step
+Epoch 45/1000
+92/92 - 37s - loss: 1.0048 - NDCG@10: 0.8574 - MAE: 0.4385 - RC@5: 0.9243 - RC@10: 0.9575 - val_loss: 0.9972 - val_NDCG@10: 0.8556 - val_MAE: 0.4074 - val_RC@5: 0.9290 - val_RC@10: 0.9616 - lr: 9.5545e-05 - e_time: 36.0376 - 37s/epoch - 399ms/step
+Epoch 46/1000
+92/92 - 36s - loss: 0.9936 - NDCG@10: 0.8582 - MAE: 0.4381 - RC@5: 0.9252 - RC@10: 0.9578 - val_loss: 0.9988 - val_NDCG@10: 0.8562 - val_MAE: 0.4072 - val_RC@5: 0.9287 - val_RC@10: 0.9618 - lr: 9.5446e-05 - e_time: 36.0364 - 36s/epoch - 392ms/step
+Epoch 47/1000
+92/92 - 36s - loss: 0.9802 - NDCG@10: 0.8610 - MAE: 0.4373 - RC@5: 0.9276 - RC@10: 0.9596 - val_loss: 0.9998 - val_NDCG@10: 0.8560 - val_MAE: 0.4074 - val_RC@5: 0.9286 - val_RC@10: 0.9609 - lr: 9.5347e-05 - e_time: 36.0315 - 36s/epoch - 392ms/step
+Epoch 48/1000
+92/92 - 37s - loss: 0.9735 - NDCG@10: 0.8622 - MAE: 0.4375 - RC@5: 0.9281 - RC@10: 0.9596 - val_loss: 0.9964 - val_NDCG@10: 0.8550 - val_MAE: 0.4069 - val_RC@5: 0.9290 - val_RC@10: 0.9611 - lr: 9.5248e-05 - e_time: 36.0295 - 37s/epoch - 398ms/step
+Epoch 49/1000
+92/92 - 37s - loss: 0.9678 - NDCG@10: 0.8631 - MAE: 0.4365 - RC@5: 0.9293 - RC@10: 0.9600 - val_loss: 0.9963 - val_NDCG@10: 0.8556 - val_MAE: 0.4033 - val_RC@5: 0.9292 - val_RC@10: 0.9620 - lr: 9.5149e-05 - e_time: 36.0173 - 37s/epoch - 398ms/step
+Epoch 50/1000
+92/92 - 37s - loss: 0.9590 - NDCG@10: 0.8644 - MAE: 0.4356 - RC@5: 0.9296 - RC@10: 0.9616 - val_loss: 0.9946 - val_NDCG@10: 0.8564 - val_MAE: 0.4043 - val_RC@5: 0.9285 - val_RC@10: 0.9617 - lr: 9.5050e-05 - e_time: 36.0224 - 37s/epoch - 398ms/step
+Epoch 51/1000
+92/92 - 36s - loss: 0.9460 - NDCG@10: 0.8658 - MAE: 0.4354 - RC@5: 0.9310 - RC@10: 0.9610 - val_loss: 0.9966 - val_NDCG@10: 0.8573 - val_MAE: 0.4027 - val_RC@5: 0.9307 - val_RC@10: 0.9616 - lr: 9.4951e-05 - e_time: 36.0121 - 36s/epoch - 391ms/step
+Epoch 52/1000
+92/92 - 36s - loss: 0.9385 - NDCG@10: 0.8676 - MAE: 0.4346 - RC@5: 0.9329 - RC@10: 0.9627 - val_loss: 0.9983 - val_NDCG@10: 0.8569 - val_MAE: 0.4030 - val_RC@5: 0.9293 - val_RC@10: 0.9621 - lr: 9.4852e-05 - e_time: 36.0456 - 36s/epoch - 392ms/step
+Epoch 53/1000
+92/92 - 37s - loss: 0.9320 - NDCG@10: 0.8680 - MAE: 0.4353 - RC@5: 0.9334 - RC@10: 0.9624 - val_loss: 0.9940 - val_NDCG@10: 0.8567 - val_MAE: 0.4032 - val_RC@5: 0.9292 - val_RC@10: 0.9612 - lr: 9.4753e-05 - e_time: 36.0306 - 37s/epoch - 399ms/step
+Epoch 54/1000
+92/92 - 36s - loss: 0.9212 - NDCG@10: 0.8698 - MAE: 0.4349 - RC@5: 0.9346 - RC@10: 0.9641 - val_loss: 1.0030 - val_NDCG@10: 0.8570 - val_MAE: 0.4021 - val_RC@5: 0.9288 - val_RC@10: 0.9615 - lr: 9.4654e-05 - e_time: 36.0212 - 36s/epoch - 392ms/step
+Epoch 55/1000
+92/92 - 36s - loss: 0.9139 - NDCG@10: 0.8708 - MAE: 0.4347 - RC@5: 0.9354 - RC@10: 0.9647 - val_loss: 0.9986 - val_NDCG@10: 0.8568 - val_MAE: 0.4020 - val_RC@5: 0.9303 - val_RC@10: 0.9616 - lr: 9.4555e-05 - e_time: 36.0376 - 36s/epoch - 392ms/step
+Epoch 56/1000
+92/92 - 36s - loss: 0.9033 - NDCG@10: 0.8722 - MAE: 0.4332 - RC@5: 0.9372 - RC@10: 0.9657 - val_loss: 0.9994 - val_NDCG@10: 0.8577 - val_MAE: 0.3988 - val_RC@5: 0.9291 - val_RC@10: 0.9616 - lr: 9.4456e-05 - e_time: 36.0290 - 36s/epoch - 392ms/step
+Epoch 57/1000
+92/92 - 36s - loss: 0.9005 - NDCG@10: 0.8730 - MAE: 0.4323 - RC@5: 0.9371 - RC@10: 0.9655 - val_loss: 1.0063 - val_NDCG@10: 0.8570 - val_MAE: 0.4001 - val_RC@5: 0.9298 - val_RC@10: 0.9611 - lr: 9.4357e-05 - e_time: 36.0216 - 36s/epoch - 392ms/step
+Epoch 58/1000
+92/92 - 36s - loss: 0.8916 - NDCG@10: 0.8745 - MAE: 0.4332 - RC@5: 0.9386 - RC@10: 0.9662 - val_loss: 1.0068 - val_NDCG@10: 0.8571 - val_MAE: 0.3970 - val_RC@5: 0.9294 - val_RC@10: 0.9619 - lr: 9.4258e-05 - e_time: 36.0276 - 36s/epoch - 392ms/step
+Epoch 59/1000
+92/92 - 36s - loss: 0.8839 - NDCG@10: 0.8754 - MAE: 0.4323 - RC@5: 0.9379 - RC@10: 0.9664 - val_loss: 1.0072 - val_NDCG@10: 0.8570 - val_MAE: 0.3967 - val_RC@5: 0.9297 - val_RC@10: 0.9618 - lr: 9.4159e-05 - e_time: 36.0403 - 36s/epoch - 392ms/step
+Epoch 60/1000
+92/92 - 36s - loss: 0.8798 - NDCG@10: 0.8763 - MAE: 0.4324 - RC@5: 0.9400 - RC@10: 0.9673 - val_loss: 1.0094 - val_NDCG@10: 0.8570 - val_MAE: 0.3979 - val_RC@5: 0.9302 - val_RC@10: 0.9613 - lr: 9.4060e-05 - e_time: 36.0642 - 36s/epoch - 392ms/step
+Epoch 61/1000
+92/92 - 36s - loss: 0.8731 - NDCG@10: 0.8776 - MAE: 0.4327 - RC@5: 0.9408 - RC@10: 0.9675 - val_loss: 0.9972 - val_NDCG@10: 0.8575 - val_MAE: 0.4008 - val_RC@5: 0.9303 - val_RC@10: 0.9605 - lr: 9.3961e-05 - e_time: 36.0434 - 36s/epoch - 392ms/step
+Epoch 62/1000
+92/92 - 36s - loss: 0.8671 - NDCG@10: 0.8781 - MAE: 0.4314 - RC@5: 0.9414 - RC@10: 0.9682 - val_loss: 1.0111 - val_NDCG@10: 0.8564 - val_MAE: 0.3956 - val_RC@5: 0.9299 - val_RC@10: 0.9614 - lr: 9.3862e-05 - e_time: 36.0495 - 36s/epoch - 392ms/step
+Epoch 63/1000
+92/92 - 36s - loss: 0.8577 - NDCG@10: 0.8794 - MAE: 0.4320 - RC@5: 0.9427 - RC@10: 0.9686 - val_loss: 1.0085 - val_NDCG@10: 0.8573 - val_MAE: 0.3976 - val_RC@5: 0.9301 - val_RC@10: 0.9610 - lr: 9.3763e-05 - e_time: 36.0467 - 36s/epoch - 392ms/step
+Epoch 64/1000
+92/92 - 36s - loss: 0.8473 - NDCG@10: 0.8818 - MAE: 0.4311 - RC@5: 0.9432 - RC@10: 0.9698 - val_loss: 1.0149 - val_NDCG@10: 0.8566 - val_MAE: 0.3933 - val_RC@5: 0.9292 - val_RC@10: 0.9611 - lr: 9.3664e-05 - e_time: 36.0501 - 36s/epoch - 392ms/step
+Epoch 65/1000
+92/92 - 36s - loss: 0.8468 - NDCG@10: 0.8813 - MAE: 0.4297 - RC@5: 0.9430 - RC@10: 0.9684 - val_loss: 1.0151 - val_NDCG@10: 0.8574 - val_MAE: 0.3935 - val_RC@5: 0.9299 - val_RC@10: 0.9617 - lr: 9.3565e-05 - e_time: 36.0356 - 36s/epoch - 392ms/step
+Epoch 66/1000
+92/92 - 36s - loss: 0.8417 - NDCG@10: 0.8827 - MAE: 0.4301 - RC@5: 0.9445 - RC@10: 0.9699 - val_loss: 1.0096 - val_NDCG@10: 0.8573 - val_MAE: 0.3940 - val_RC@5: 0.9292 - val_RC@10: 0.9614 - lr: 9.3466e-05 - e_time: 36.0327 - 36s/epoch - 392ms/step
+Epoch 67/1000
+92/92 - 36s - loss: 0.8308 - NDCG@10: 0.8839 - MAE: 0.4291 - RC@5: 0.9453 - RC@10: 0.9701 - val_loss: 1.0174 - val_NDCG@10: 0.8575 - val_MAE: 0.3924 - val_RC@5: 0.9286 - val_RC@10: 0.9613 - lr: 9.3367e-05 - e_time: 36.0458 - 36s/epoch - 392ms/step
+Epoch 68/1000
+92/92 - 36s - loss: 0.8224 - NDCG@10: 0.8850 - MAE: 0.4297 - RC@5: 0.9453 - RC@10: 0.9709 - val_loss: 1.0151 - val_NDCG@10: 0.8582 - val_MAE: 0.3942 - val_RC@5: 0.9298 - val_RC@10: 0.9613 - lr: 9.3268e-05 - e_time: 36.0555 - 36s/epoch - 392ms/step
+Epoch 69/1000
+92/92 - 36s - loss: 0.8216 - NDCG@10: 0.8852 - MAE: 0.4291 - RC@5: 0.9462 - RC@10: 0.9711 - val_loss: 1.0141 - val_NDCG@10: 0.8584 - val_MAE: 0.3946 - val_RC@5: 0.9295 - val_RC@10: 0.9609 - lr: 9.3169e-05 - e_time: 36.0359 - 36s/epoch - 392ms/step
+Epoch 70/1000
+92/92 - 36s - loss: 0.8206 - NDCG@10: 0.8856 - MAE: 0.4294 - RC@5: 0.9463 - RC@10: 0.9711 - val_loss: 1.0243 - val_NDCG@10: 0.8580 - val_MAE: 0.3912 - val_RC@5: 0.9290 - val_RC@10: 0.9608 - lr: 9.3070e-05 - e_time: 36.0378 - 36s/epoch - 392ms/step
+Epoch 71/1000
+92/92 - 36s - loss: 0.8078 - NDCG@10: 0.8876 - MAE: 0.4284 - RC@5: 0.9477 - RC@10: 0.9719 - val_loss: 1.0149 - val_NDCG@10: 0.8581 - val_MAE: 0.3921 - val_RC@5: 0.9295 - val_RC@10: 0.9619 - lr: 9.2971e-05 - e_time: 36.0439 - 36s/epoch - 392ms/step
+Epoch 72/1000
+92/92 - 36s - loss: 0.7992 - NDCG@10: 0.8878 - MAE: 0.4279 - RC@5: 0.9478 - RC@10: 0.9722 - val_loss: 1.0120 - val_NDCG@10: 0.8576 - val_MAE: 0.3929 - val_RC@5: 0.9286 - val_RC@10: 0.9617 - lr: 9.2872e-05 - e_time: 36.0397 - 36s/epoch - 392ms/step
+Epoch 73/1000
+92/92 - 36s - loss: 0.7980 - NDCG@10: 0.8888 - MAE: 0.4284 - RC@5: 0.9487 - RC@10: 0.9723 - val_loss: 1.0178 - val_NDCG@10: 0.8569 - val_MAE: 0.3939 - val_RC@5: 0.9274 - val_RC@10: 0.9610 - lr: 9.2773e-05 - e_time: 36.0415 - 36s/epoch - 392ms/step
+Epoch 74/1000
+92/92 - 36s - loss: 0.7910 - NDCG@10: 0.8896 - MAE: 0.4278 - RC@5: 0.9494 - RC@10: 0.9727 - val_loss: 1.0263 - val_NDCG@10: 0.8574 - val_MAE: 0.3921 - val_RC@5: 0.9286 - val_RC@10: 0.9603 - lr: 9.2674e-05 - e_time: 36.0434 - 36s/epoch - 392ms/step
+Epoch 75/1000
+92/92 - 36s - loss: 0.7881 - NDCG@10: 0.8902 - MAE: 0.4283 - RC@5: 0.9496 - RC@10: 0.9730 - val_loss: 1.0319 - val_NDCG@10: 0.8582 - val_MAE: 0.3894 - val_RC@5: 0.9304 - val_RC@10: 0.9608 - lr: 9.2575e-05 - e_time: 36.0365 - 36s/epoch - 392ms/step
+Epoch 76/1000
+92/92 - 36s - loss: 0.7795 - NDCG@10: 0.8913 - MAE: 0.4276 - RC@5: 0.9504 - RC@10: 0.9738 - val_loss: 1.0328 - val_NDCG@10: 0.8572 - val_MAE: 0.3907 - val_RC@5: 0.9285 - val_RC@10: 0.9599 - lr: 9.2476e-05 - e_time: 36.0358 - 36s/epoch - 392ms/step
+Epoch 77/1000
+92/92 - 36s - loss: 0.7753 - NDCG@10: 0.8921 - MAE: 0.4274 - RC@5: 0.9514 - RC@10: 0.9739 - val_loss: 1.0317 - val_NDCG@10: 0.8576 - val_MAE: 0.3904 - val_RC@5: 0.9284 - val_RC@10: 0.9606 - lr: 9.2377e-05 - e_time: 36.0023 - 36s/epoch - 391ms/step
+Epoch 78/1000
+92/92 - 36s - loss: 0.7685 - NDCG@10: 0.8932 - MAE: 0.4274 - RC@5: 0.9512 - RC@10: 0.9742 - val_loss: 1.0389 - val_NDCG@10: 0.8582 - val_MAE: 0.3894 - val_RC@5: 0.9275 - val_RC@10: 0.9614 - lr: 9.2278e-05 - e_time: 36.0244 - 36s/epoch - 392ms/step
+Epoch 79/1000
+92/92 - 36s - loss: 0.7639 - NDCG@10: 0.8936 - MAE: 0.4273 - RC@5: 0.9523 - RC@10: 0.9744 - val_loss: 1.0329 - val_NDCG@10: 0.8589 - val_MAE: 0.3891 - val_RC@5: 0.9291 - val_RC@10: 0.9621 - lr: 9.2179e-05 - e_time: 36.0242 - 36s/epoch - 392ms/step
+Epoch 80/1000
+92/92 - 36s - loss: 0.7558 - NDCG@10: 0.8945 - MAE: 0.4271 - RC@5: 0.9522 - RC@10: 0.9750 - val_loss: 1.0376 - val_NDCG@10: 0.8583 - val_MAE: 0.3896 - val_RC@5: 0.9288 - val_RC@10: 0.9610 - lr: 9.2080e-05 - e_time: 36.0305 - 36s/epoch - 392ms/step
+Epoch 81/1000
+92/92 - 36s - loss: 0.7515 - NDCG@10: 0.8958 - MAE: 0.4259 - RC@5: 0.9530 - RC@10: 0.9759 - val_loss: 1.0427 - val_NDCG@10: 0.8576 - val_MAE: 0.3878 - val_RC@5: 0.9274 - val_RC@10: 0.9602 - lr: 9.1981e-05 - e_time: 36.0118 - 36s/epoch - 391ms/step
+Epoch 82/1000
+92/92 - 36s - loss: 0.7502 - NDCG@10: 0.8959 - MAE: 0.4258 - RC@5: 0.9536 - RC@10: 0.9752 - val_loss: 1.0435 - val_NDCG@10: 0.8567 - val_MAE: 0.3879 - val_RC@5: 0.9276 - val_RC@10: 0.9603 - lr: 9.1882e-05 - e_time: 36.0247 - 36s/epoch - 392ms/step
+Epoch 83/1000
+92/92 - 36s - loss: 0.7421 - NDCG@10: 0.8969 - MAE: 0.4252 - RC@5: 0.9546 - RC@10: 0.9758 - val_loss: 1.0414 - val_NDCG@10: 0.8584 - val_MAE: 0.3872 - val_RC@5: 0.9286 - val_RC@10: 0.9609 - lr: 9.1783e-05 - e_time: 36.0321 - 36s/epoch - 392ms/step
+Epoch 84/1000
+92/92 - 36s - loss: 0.7372 - NDCG@10: 0.8976 - MAE: 0.4256 - RC@5: 0.9544 - RC@10: 0.9762 - val_loss: 1.0405 - val_NDCG@10: 0.8575 - val_MAE: 0.3870 - val_RC@5: 0.9284 - val_RC@10: 0.9603 - lr: 9.1684e-05 - e_time: 36.0216 - 36s/epoch - 392ms/step
+Epoch 85/1000
+92/92 - 36s - loss: 0.7359 - NDCG@10: 0.8980 - MAE: 0.4255 - RC@5: 0.9539 - RC@10: 0.9756 - val_loss: 1.0489 - val_NDCG@10: 0.8573 - val_MAE: 0.3884 - val_RC@5: 0.9292 - val_RC@10: 0.9605 - lr: 9.1585e-05 - e_time: 36.0357 - 36s/epoch - 392ms/step
+Epoch 86/1000
+92/92 - 36s - loss: 0.7301 - NDCG@10: 0.8981 - MAE: 0.4254 - RC@5: 0.9549 - RC@10: 0.9759 - val_loss: 1.0486 - val_NDCG@10: 0.8577 - val_MAE: 0.3869 - val_RC@5: 0.9288 - val_RC@10: 0.9601 - lr: 9.1486e-05 - e_time: 36.0408 - 36s/epoch - 392ms/step
+Epoch 87/1000
+92/92 - 36s - loss: 0.7233 - NDCG@10: 0.8995 - MAE: 0.4254 - RC@5: 0.9557 - RC@10: 0.9772 - val_loss: 1.0558 - val_NDCG@10: 0.8572 - val_MAE: 0.3872 - val_RC@5: 0.9277 - val_RC@10: 0.9601 - lr: 9.1387e-05 - e_time: 36.2647 - 36s/epoch - 394ms/step
+Epoch 88/1000
+92/92 - 36s - loss: 0.7255 - NDCG@10: 0.8992 - MAE: 0.4244 - RC@5: 0.9558 - RC@10: 0.9768 - val_loss: 1.0543 - val_NDCG@10: 0.8569 - val_MAE: 0.3879 - val_RC@5: 0.9284 - val_RC@10: 0.9596 - lr: 9.1288e-05 - e_time: 36.0125 - 36s/epoch - 391ms/step
+Epoch 89/1000
+92/92 - 36s - loss: 0.7182 - NDCG@10: 0.9003 - MAE: 0.4250 - RC@5: 0.9560 - RC@10: 0.9767 - val_loss: 1.0591 - val_NDCG@10: 0.8565 - val_MAE: 0.3860 - val_RC@5: 0.9276 - val_RC@10: 0.9594 - lr: 9.1189e-05 - e_time: 36.0104 - 36s/epoch - 391ms/step
+Epoch 90/1000
+92/92 - 36s - loss: 0.7150 - NDCG@10: 0.9012 - MAE: 0.4251 - RC@5: 0.9568 - RC@10: 0.9771 - val_loss: 1.0707 - val_NDCG@10: 0.8560 - val_MAE: 0.3862 - val_RC@5: 0.9279 - val_RC@10: 0.9586 - lr: 9.1090e-05 - e_time: 36.0151 - 36s/epoch - 391ms/step
+Epoch 91/1000
+92/92 - 36s - loss: 0.7114 - NDCG@10: 0.9007 - MAE: 0.4245 - RC@5: 0.9572 - RC@10: 0.9775 - val_loss: 1.0620 - val_NDCG@10: 0.8568 - val_MAE: 0.3871 - val_RC@5: 0.9272 - val_RC@10: 0.9583 - lr: 9.0991e-05 - e_time: 36.0316 - 36s/epoch - 392ms/step
+Epoch 92/1000
+92/92 - 36s - loss: 0.7024 - NDCG@10: 0.9029 - MAE: 0.4244 - RC@5: 0.9580 - RC@10: 0.9779 - val_loss: 1.0662 - val_NDCG@10: 0.8571 - val_MAE: 0.3844 - val_RC@5: 0.9272 - val_RC@10: 0.9590 - lr: 9.0892e-05 - e_time: 36.0092 - 36s/epoch - 391ms/step
+Epoch 93/1000
+92/92 - 36s - loss: 0.7025 - NDCG@10: 0.9027 - MAE: 0.4242 - RC@5: 0.9575 - RC@10: 0.9781 - val_loss: 1.0782 - val_NDCG@10: 0.8571 - val_MAE: 0.3840 - val_RC@5: 0.9276 - val_RC@10: 0.9592 - lr: 9.0793e-05 - e_time: 36.0054 - 36s/epoch - 391ms/step
+Epoch 94/1000
+92/92 - 36s - loss: 0.6996 - NDCG@10: 0.9036 - MAE: 0.4247 - RC@5: 0.9583 - RC@10: 0.9777 - val_loss: 1.0764 - val_NDCG@10: 0.8577 - val_MAE: 0.3845 - val_RC@5: 0.9281 - val_RC@10: 0.9609 - lr: 9.0694e-05 - e_time: 36.0183 - 36s/epoch - 392ms/step
+Epoch 95/1000
+92/92 - 36s - loss: 0.6919 - NDCG@10: 0.9048 - MAE: 0.4240 - RC@5: 0.9595 - RC@10: 0.9793 - val_loss: 1.0795 - val_NDCG@10: 0.8572 - val_MAE: 0.3820 - val_RC@5: 0.9280 - val_RC@10: 0.9594 - lr: 9.0595e-05 - e_time: 36.0148 - 36s/epoch - 391ms/step
+Epoch 96/1000
+92/92 - 36s - loss: 0.6880 - NDCG@10: 0.9044 - MAE: 0.4247 - RC@5: 0.9592 - RC@10: 0.9787 - val_loss: 1.0778 - val_NDCG@10: 0.8564 - val_MAE: 0.3869 - val_RC@5: 0.9267 - val_RC@10: 0.9583 - lr: 9.0496e-05 - e_time: 36.0311 - 36s/epoch - 392ms/step
+Epoch 97/1000
+92/92 - 36s - loss: 0.6838 - NDCG@10: 0.9059 - MAE: 0.4242 - RC@5: 0.9593 - RC@10: 0.9786 - val_loss: 1.0794 - val_NDCG@10: 0.8573 - val_MAE: 0.3840 - val_RC@5: 0.9270 - val_RC@10: 0.9597 - lr: 9.0397e-05 - e_time: 36.0350 - 36s/epoch - 392ms/step
+Epoch 98/1000
+92/92 - 36s - loss: 0.6791 - NDCG@10: 0.9066 - MAE: 0.4235 - RC@5: 0.9598 - RC@10: 0.9792 - val_loss: 1.0846 - val_NDCG@10: 0.8581 - val_MAE: 0.3807 - val_RC@5: 0.9275 - val_RC@10: 0.9603 - lr: 9.0298e-05 - e_time: 36.0220 - 36s/epoch - 392ms/step
+Epoch 99/1000
+92/92 - 36s - loss: 0.6778 - NDCG@10: 0.9066 - MAE: 0.4232 - RC@5: 0.9599 - RC@10: 0.9797 - val_loss: 1.0862 - val_NDCG@10: 0.8570 - val_MAE: 0.3835 - val_RC@5: 0.9272 - val_RC@10: 0.9587 - lr: 9.0199e-05 - e_time: 36.0378 - 36s/epoch - 392ms/step
+Epoch 100/1000
+92/92 - 36s - loss: 0.6746 - NDCG@10: 0.9072 - MAE: 0.4238 - RC@5: 0.9604 - RC@10: 0.9793 - val_loss: 1.0934 - val_NDCG@10: 0.8566 - val_MAE: 0.3841 - val_RC@5: 0.9271 - val_RC@10: 0.9590 - lr: 9.0100e-05 - e_time: 36.0309 - 36s/epoch - 392ms/step
+Epoch 101/1000
+92/92 - 36s - loss: 0.6674 - NDCG@10: 0.9078 - MAE: 0.4237 - RC@5: 0.9610 - RC@10: 0.9798 - val_loss: 1.0932 - val_NDCG@10: 0.8571 - val_MAE: 0.3825 - val_RC@5: 0.9283 - val_RC@10: 0.9590 - lr: 9.0001e-05 - e_time: 36.0299 - 36s/epoch - 392ms/step
+Epoch 102/1000
+92/92 - 36s - loss: 0.6694 - NDCG@10: 0.9076 - MAE: 0.4227 - RC@5: 0.9610 - RC@10: 0.9803 - val_loss: 1.1042 - val_NDCG@10: 0.8568 - val_MAE: 0.3810 - val_RC@5: 0.9280 - val_RC@10: 0.9586 - lr: 8.9902e-05 - e_time: 36.0379 - 36s/epoch - 392ms/step
+Epoch 103/1000
+92/92 - 36s - loss: 0.6620 - NDCG@10: 0.9096 - MAE: 0.4227 - RC@5: 0.9623 - RC@10: 0.9809 - val_loss: 1.1047 - val_NDCG@10: 0.8565 - val_MAE: 0.3832 - val_RC@5: 0.9266 - val_RC@10: 0.9593 - lr: 8.9803e-05 - e_time: 36.0512 - 36s/epoch - 392ms/step
+Epoch 103: early stopping
+[92m[INFO] Loading best model...[0m
+Using TensorFlow backend
+[93m[WARNING] Model folder already exists...[0m
+Model: "model"
+__________________________________________________________________________________________________
+ Layer (type)                Output Shape                 Param #   Connected to                  
+==================================================================================================
+ padding_mask (InputLayer)   [(None, None)]               0         []                            
+                                                                                                  
+ segment_ids (InputLayer)    [(None, None)]               0         []                            
+                                                                                                  
+ token_ids (InputLayer)      [(None, None)]               0         []                            
+                                                                                                  
+ bert_backbone (BertBackbon  {'sequence_output': (None,   4385920   ['padding_mask[0][0]',        
+ e)                           None, 128),                            'segment_ids[0][0]',         
+                              'pooled_output': (None, 1              'token_ids[0][0]']           
+                             28)}                                                                 
+                                                                                                  
+ dropout (Dropout)           (None, None, 128)            0         ['bert_backbone[0][1]']       
+                                                                                                  
+ tf.__operators__.getitem_1  (None, 128)                  0         ['dropout[0][0]']             
+  (SlicingOpLambda)                                                                               
+                                                                                                  
+ out (Dense)                 (None, 86)                   11094     ['tf.__operators__.getitem_1[0
+                                                                    ][0]']                        
+                                                                                                  
+==================================================================================================
+Total params: 4397014 (16.77 MB)
+Trainable params: 4397014 (16.77 MB)
+Non-trainable params: 0 (0.00 Byte)
+__________________________________________________________________________________________________
+None
+[92m[INFO] Model already trained. Loading weights...[0m
+Using TensorFlow backend
+[93m[WARNING] Model folder already exists...[0m
+Model: "model"
+__________________________________________________________________________________________________
+ Layer (type)                Output Shape                 Param #   Connected to                  
+==================================================================================================
+ padding_mask (InputLayer)   [(None, None)]               0         []                            
+                                                                                                  
+ segment_ids (InputLayer)    [(None, None)]               0         []                            
+                                                                                                  
+ token_ids (InputLayer)      [(None, None)]               0         []                            
+                                                                                                  
+ bert_backbone (BertBackbon  {'sequence_output': (None,   4385920   ['padding_mask[0][0]',        
+ e)                           None, 128),                            'segment_ids[0][0]',         
+                              'pooled_output': (None, 1              'token_ids[0][0]']           
+                             28)}                                                                 
+                                                                                                  
+ dropout (Dropout)           (None, None, 128)            0         ['bert_backbone[0][1]']       
+                                                                                                  
+ tf.__operators__.getitem_1  (None, 128)                  0         ['dropout[0][0]']             
+  (SlicingOpLambda)                                                                               
+                                                                                                  
+ out (Dense)                 (None, 86)                   11094     ['tf.__operators__.getitem_1[0
+                                                                    ][0]']                        
+                                                                                                  
+==================================================================================================
+Total params: 4397014 (16.77 MB)
+Trainable params: 4397014 (16.77 MB)
+Non-trainable params: 0 (0.00 Byte)
+__________________________________________________________________________________________________
+None
+[92m[INFO] Model already trained. Loading weights...[0m
+Using TensorFlow backend
+[93m[WARNING] Model folder already exists...[0m
+Model: "model"
+__________________________________________________________________________________________________
+ Layer (type)                Output Shape                 Param #   Connected to                  
+==================================================================================================
+ padding_mask (InputLayer)   [(None, None)]               0         []                            
+                                                                                                  
+ segment_ids (InputLayer)    [(None, None)]               0         []                            
+                                                                                                  
+ token_ids (InputLayer)      [(None, None)]               0         []                            
+                                                                                                  
+ bert_backbone (BertBackbon  {'sequence_output': (None,   4385920   ['padding_mask[0][0]',        
+ e)                           None, 128),                            'segment_ids[0][0]',         
+                              'pooled_output': (None, 1              'token_ids[0][0]']           
+                             28)}                                                                 
+                                                                                                  
+ dropout (Dropout)           (None, None, 128)            0         ['bert_backbone[0][1]']       
+                                                                                                  
+ tf.__operators__.getitem_1  (None, 128)                  0         ['dropout[0][0]']             
+  (SlicingOpLambda)                                                                               
+                                                                                                  
+ out (Dense)                 (None, 86)                   11094     ['tf.__operators__.getitem_1[0
+                                                                    ][0]']                        
+                                                                                                  
+==================================================================================================
+Total params: 4397014 (16.77 MB)
+Trainable params: 4397014 (16.77 MB)
+Non-trainable params: 0 (0.00 Byte)
+__________________________________________________________________________________________________
+None
+[92m[INFO] Model already trained. Loading weights...[0m

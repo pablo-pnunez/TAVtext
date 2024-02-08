@@ -7,6 +7,7 @@ sets = {"restaurants": ["gijon", "barcelona", "madrid", "paris", "newyorkcity", 
         "amazon": ["fashion", "digital_music"]}
 
 models = ["ATT2ITM", "BOW2ITM", "USEM2ITM"]
+models = ["BERT2ITM"]
 
 
 # Para cada modelo/conjunto/ciudad, mirar si se acabó la ejecución

@@ -11,7 +11,7 @@ from src.datasets.text_datasets.AmazonDataset import AmazonDataset
 from src.datasets.text_datasets.POIDataset import POIDataset
 
 from src.models.text_models.USEM2ITM import USEM2ITM
-from models.text_models.att.ATT2ITM import ATT2ITM
+from src.models.text_models.att.ATT2ITM import ATT2ITM
 from src.models.text_models.BOW2ITM import BOW2ITM
 
 from cornac.metrics import Recall, Precision, FMeasure, NDCG
@@ -136,6 +136,8 @@ models = [
     cornac.models.MostPop(),
     cornac.models.MF(use_bias=True),
     cornac.models.OnlineIBPR(),
+    cornac.models.BiVAECF(),
+    #cornac.models.BiVAECF(k=20, encoder_structure=[40], n_epochs=500, batch_size=128), # Con parámetros que aparecen en gitgub, pero va igual de mal
 
     # GridSearch( model=md_bpr, space=[ Discrete("k", [25, 50]), Discrete("max_iter", [50, 100]), Discrete("learning_rate", [1e-4, 5e-4, 1e-3]), ], metric=NDCG(), eval_method=eval_method),
     # GridSearch( model=md_ease, space=[ Discrete("posB", [True, False]), ], metric=NDCG(), eval_method=eval_method), # cornac.models.MF(seed=seed),  # Best parameter settings: {'k': 30, 'learning_rate': 5e-06, 'max_iter': 10}

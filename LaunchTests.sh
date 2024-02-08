@@ -1,8 +1,8 @@
 #!/bin/bash
 
-MAXTSTS=2
+MAXTSTS=1
 STAGE=0 # GRIDSEARCH o TRAIN
-GPU=0
+GPU=1
 ESP=10 # Early stop patience (50 se utilizó en modelos 0 y 1)
 
 declare -A DATASETS
@@ -31,14 +31,17 @@ declare -A LRATES
 # BATCHES["ATT2ITM"]="256 512 1024 2048 4096"
 # LRATES["ATT2ITM"]="5e-6 1e-5 5e-5 1e-4 5e-4" 
 
-MODELS["ATT2ITM"]="2" 
-BATCHES["ATT2ITM"]="64 128 256"
-LRATES["ATT2ITM"]="5e-5 1e-4 5e-4" 
-
+# MODELS["ATT2ITM"]="2" 
+# BATCHES["ATT2ITM"]="64 128 256"
+# LRATES["ATT2ITM"]="5e-5 1e-4 5e-4" 
 
 # MODELS["USEM2ITM"]="0" 
 # BATCHES["USEM2ITM"]="512 1024 2048"
 # LRATES["USEM2ITM"]="1e-5 5e-5 1e-4 5e-4 1e-3 5e-3" 
+
+MODELS["BERT2ITM"]="0" 
+BATCHES["BERT2ITM"]="512 1024"
+LRATES["BERT2ITM"]="1e-5 5e-5 1e-4 5e-4 1e-3 5e-3" 
 
 for DATASET_NAME in ${!DATASETS[@]}; do 
   for SUBSET_NAME in ${DATASETS[$DATASET_NAME]}; do
@@ -58,7 +61,7 @@ for DATASET_NAME in ${!DATASETS[@]}; do
             # source /media/nas/pperez/miniconda3/etc/profile.d/conda.sh
             # conda activate TAV_text
 
-            nohup /media/nas/pperez/miniconda3/envs/TAVtext/bin/python -u Main.py -stg $STAGE -mn $MODEL_NAME -dst $DATASET_NAME -sst $SUBSET_NAME -mv $MODEL_VERSION -esp $ESP -bs $BATCH -lr $LRATE >> "$TXT_PATH"$MODEL_NAME"_["$MODEL_VERSION"]_"$BOWNWORDS"_("$BATCH"_"$LRATE").txt" &
+            nohup /media/nas/pperez/conda/ns3/envs/TAVtext/bin/python -u Main.py -stg $STAGE -gpu $GPU -mn $MODEL_NAME -dst $DATASET_NAME -sst $SUBSET_NAME -mv $MODEL_VERSION -esp $ESP -bs $BATCH -lr $LRATE >> "$TXT_PATH"$MODEL_NAME"_["$MODEL_VERSION"]_"$BOWNWORDS"_("$BATCH"_"$LRATE").txt" &
           
             # GPU=$(($(($GPU+1%2))%2))
 

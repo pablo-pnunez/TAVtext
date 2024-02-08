@@ -1,0 +1,82 @@
+Using TensorFlow backend
+Model: "model"
+__________________________________________________________________________________________________
+ Layer (type)                Output Shape                 Param #   Connected to                  
+==================================================================================================
+ padding_mask (InputLayer)   [(None, None)]               0         []                            
+                                                                                                  
+ segment_ids (InputLayer)    [(None, None)]               0         []                            
+                                                                                                  
+ token_ids (InputLayer)      [(None, None)]               0         []                            
+                                                                                                  
+ bert_backbone (BertBackbon  {'sequence_output': (None,   4385920   ['padding_mask[0][0]',        
+ e)                           None, 128),                            'segment_ids[0][0]',         
+                              'pooled_output': (None, 1              'token_ids[0][0]']           
+                             28)}                                                                 
+                                                                                                  
+ dropout (Dropout)           (None, None, 128)            0         ['bert_backbone[0][1]']       
+                                                                                                  
+ tf.__operators__.getitem_1  (None, 128)                  0         ['dropout[0][0]']             
+  (SlicingOpLambda)                                                                               
+                                                                                                  
+ out (Dense)                 (None, 134)                  17286     ['tf.__operators__.getitem_1[0
+                                                                    ][0]']                        
+                                                                                                  
+==================================================================================================
+Total params: 4403206 (16.80 MB)
+Trainable params: 4403206 (16.80 MB)
+Non-trainable params: 0 (0.00 Byte)
+__________________________________________________________________________________________________
+None
+Epoch 1/1000
+Using TensorFlow backend
+Model: "model"
+__________________________________________________________________________________________________
+ Layer (type)                Output Shape                 Param #   Connected to                  
+==================================================================================================
+ padding_mask (InputLayer)   [(None, None)]               0         []                            
+                                                                                                  
+ segment_ids (InputLayer)    [(None, None)]               0         []                            
+                                                                                                  
+ token_ids (InputLayer)      [(None, None)]               0         []                            
+                                                                                                  
+ bert_backbone (BertBackbon  {'sequence_output': (None,   4385920   ['padding_mask[0][0]',        
+ e)                           None, 128),                            'segment_ids[0][0]',         
+                              'pooled_output': (None, 1              'token_ids[0][0]']           
+                             28)}                                                                 
+                                                                                                  
+ dropout (Dropout)           (None, None, 128)            0         ['bert_backbone[0][1]']       
+                                                                                                  
+ tf.__operators__.getitem_1  (None, 128)                  0         ['dropout[0][0]']             
+  (SlicingOpLambda)                                                                               
+                                                                                                  
+ out (Dense)                 (None, 134)                  17286     ['tf.__operators__.getitem_1[0
+                                                                    ][0]']                        
+                                                                                                  
+==================================================================================================
+Total params: 4403206 (16.80 MB)
+Trainable params: 4403206 (16.80 MB)
+Non-trainable params: 0 (0.00 Byte)
+__________________________________________________________________________________________________
+None
+Epoch 1/1000
+259/259 - 57s - loss: 4.7989 - NDCG@10: 0.2572 - MAE: 0.4937 - RC@5: 0.3029 - RC@10: 0.3910 - val_loss: 2.9982 - val_NDCG@10: 0.5287 - val_MAE: 0.4695 - val_RC@5: 0.5964 - val_RC@10: 0.6948 - lr: 9.9901e-05 - e_time: 56.1022 - 57s/epoch - 219ms/step
+Epoch 2/1000
+259/259 - 52s - loss: 3.3733 - NDCG@10: 0.4921 - MAE: 0.4789 - RC@5: 0.5458 - RC@10: 0.6146 - val_loss: 2.2248 - val_NDCG@10: 0.6644 - val_MAE: 0.4597 - val_RC@5: 0.7397 - val_RC@10: 0.8019 - lr: 9.9802e-05 - e_time: 51.5207 - 52s/epoch - 201ms/step
+Epoch 3/1000
+259/259 - 52s - loss: 2.7693 - NDCG@10: 0.5860 - MAE: 0.4727 - RC@5: 0.6441 - RC@10: 0.7112 - val_loss: 1.8912 - val_NDCG@10: 0.7146 - val_MAE: 0.4517 - val_RC@5: 0.7924 - val_RC@10: 0.8546 - lr: 9.9703e-05 - e_time: 51.5389 - 52s/epoch - 202ms/step
+Epoch 4/1000
+259/259 - 52s - loss: 2.4495 - NDCG@10: 0.6315 - MAE: 0.4673 - RC@5: 0.6961 - RC@10: 0.7612 - val_loss: 1.7032 - val_NDCG@10: 0.7456 - val_MAE: 0.4488 - val_RC@5: 0.8192 - val_RC@10: 0.8793 - lr: 9.9604e-05 - e_time: 51.6442 - 52s/epoch - 202ms/step
+Epoch 5/1000
+259/259 - 52s - loss: 2.2262 - NDCG@10: 0.6667 - MAE: 0.4628 - RC@5: 0.7354 - RC@10: 0.7994 - val_loss: 1.5497 - val_NDCG@10: 0.7686 - val_MAE: 0.4429 - val_RC@5: 0.8443 - val_RC@10: 0.9028 - lr: 9.9505e-05 - e_time: 51.7077 - 52s/epoch - 202ms/step
+Epoch 6/1000
+259/259 - 52s - loss: 2.0582 - NDCG@10: 0.6934 - MAE: 0.4588 - RC@5: 0.7632 - RC@10: 0.8254 - val_loss: 1.4532 - val_NDCG@10: 0.7839 - val_MAE: 0.4390 - val_RC@5: 0.8605 - val_RC@10: 0.9146 - lr: 9.9406e-05 - e_time: 51.6916 - 52s/epoch - 202ms/step
+Epoch 7/1000
+259/259 - 52s - loss: 1.9299 - NDCG@10: 0.7143 - MAE: 0.4560 - RC@5: 0.7850 - RC@10: 0.8446 - val_loss: 1.3666 - val_NDCG@10: 0.7973 - val_MAE: 0.4344 - val_RC@5: 0.8710 - val_RC@10: 0.9241 - lr: 9.9307e-05 - e_time: 51.6976 - 52s/epoch - 202ms/step
+Epoch 8/1000
+259/259 - 52s - loss: 1.8239 - NDCG@10: 0.7298 - MAE: 0.4533 - RC@5: 0.8011 - RC@10: 0.8593 - val_loss: 1.3037 - val_NDCG@10: 0.8063 - val_MAE: 0.4344 - val_RC@5: 0.8790 - val_RC@10: 0.9312 - lr: 9.9208e-05 - e_time: 51.6746 - 52s/epoch - 202ms/step
+Epoch 9/1000
+259/259 - 52s - loss: 1.7309 - NDCG@10: 0.7453 - MAE: 0.4512 - RC@5: 0.8151 - RC@10: 0.8722 - val_loss: 1.2599 - val_NDCG@10: 0.8125 - val_MAE: 0.4296 - val_RC@5: 0.8873 - val_RC@10: 0.9352 - lr: 9.9109e-05 - e_time: 51.6433 - 52s/epoch - 202ms/step
+Epoch 10/1000
+259/259 - 52s - loss: 1.6650 - NDCG@10: 0.7556 - MAE: 0.4499 - RC@5: 0.8257 - RC@10: 0.8812 - val_loss: 1.2165 - val_NDCG@10: 0.8190 - val_MAE: 0.4292 - val_RC@5: 0.8911 - val_RC@10: 0.9401 - lr: 9.9010e-05 - e_time: 51.6252 - 52s/epoch - 202ms/step
+Epoch 11/1000

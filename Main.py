@@ -9,6 +9,7 @@ import os
 args = parse_cmd_args()
 gpu = np.argmin([g["mem_used_percent"] for g in nvgpu.gpu_info()]) if args.gpu is None else args.gpu
 os.environ["CUDA_VISIBLE_DEVICES"] = str(gpu)
+os.environ["KERAS_BACKEND"] = "tensorflow" 
 
 from src.datasets.text_datasets.RestaurantDataset import RestaurantDataset
 from src.datasets.text_datasets.AmazonDataset import AmazonDataset
@@ -17,24 +18,27 @@ from src.datasets.text_datasets.POIDataset import POIDataset
 from src.models.text_models.att.ATT2ITM import ATT2ITM
 from src.models.text_models.BOW2ITM import BOW2ITM
 from src.models.text_models.USEM2ITM import USEM2ITM
+from src.models.text_models.BERT2ITM import BERT2ITM
 
 # #######################################################################################################################
 
-model = "ATT2ITM" if args.mn is None else args.mn
+model = "BERT2ITM" if args.mn is None else args.mn
 dataset = "restaurants".lower().replace(" ", "") if args.dst is None else args.dst
-subset = "newyorkcity".lower().replace(" ", "") if args.sst is None else args.sst
+subset = "paris".lower().replace(" ", "") if args.sst is None else args.sst
 
-from src.experiments.Common import load_best_model
+# from src.experiments.Common import load_best_model
 
-model = load_best_model(model=model, dataset=dataset, subset=subset)
-model.train(dev=False, save_model=True)
-model.evaluate_text("Where can i eat the best vegan burger")
+# model = load_best_model(model=model, dataset=dataset, subset=subset)
+# model.train(dev=False, save_model=True)
+# model.evaluate_text("Where can i eat the best vegan burger")
 
+# exit()
 
-exit()
+# stage = 3 if args.stg is None else args.stg
+# use_best = True
 
-stage = 3 if args.stg is None else args.stg
-use_best = True
+stage = -1 if args.stg is None else args.stg
+use_best = False
 
 if use_best:  # Usar la mejor configuración conocida?
     best_model = pd.read_csv("models/best_models.csv")
@@ -53,7 +57,7 @@ else:
     neg_rate = 10
 
     seed = 100 if args.sd is None else args.sd
-    l_rate = 5e-4 if args.lr is None else args.lr
+    l_rate = 1e-4 if args.lr is None else args.lr
     n_epochs = 1000 if args.ep is None else args.eps
     b_size = 256 if args.bs is None else args.bs
     early_stop_patience = 50 if args.esp is None else args.esp
@@ -202,7 +206,6 @@ if "ATT2ITM" == model:
         # att2itm_mdl.evaluate(test=True)
         att2itm_mdl.evaluate_text("Where can i eat the typical pastrami sandwich")
 
-
 elif "BOW2ITM" == model:
 
     if use_best:
@@ -243,3 +246,20 @@ elif "USEM2ITM" == model:
     if stage == -1:
         usem2itm_mdl = USEM2ITM(usem2itm_mdl_cfg, text_dataset)
         usem2itm_mdl.train(dev=True, save_model=False)
+
+elif "BERT2ITM" == model:
+
+    if use_best:
+        bert2itm_mdl_cfg = mdl_cfg
+    else:
+        bert2itm_mdl_cfg = {"model": {"model_version": model_v, "learning_rate": l_rate, "final_learning_rate": l_rate/100, "epochs": n_epochs, "batch_size": b_size, "seed": seed,
+                                  "early_st_first_epoch": 0, "early_st_monitor": "val_loss", "early_st_monitor_mode": "min", "early_st_patience": 50},
+                        "session": {"gpu": gpu, "mixed_precision": True, "in_md5": False}}
+
+    if stage == 0:
+        bert2itm_mdl = BERT2ITM(bert2itm_mdl_cfg, text_dataset)
+        bert2itm_mdl.train(dev=True, save_model=True)
+
+    if stage == -1:
+        bert2itm_mdl = BERT2ITM(bert2itm_mdl_cfg, text_dataset)
+        bert2itm_mdl.train(dev=True, save_model=False)
