@@ -2,14 +2,15 @@
 
 MAXTSTS=1
 STAGE=0 # GRIDSEARCH o TRAIN
-GPU=1
+GPU=0
 ESP=10 # Early stop patience (50 se utilizó en modelos 0 y 1)
 
 declare -A DATASETS
 
-DATASETS["restaurants"]="gijon barcelona madrid newyorkcity paris"
-DATASETS["pois"]="barcelona madrid newyorkcity paris london"
-DATASETS["amazon"]="digital_music fashion"
+#DATASETS["restaurants"]="gijon barcelona madrid newyorkcity paris"
+#DATASETS["pois"]="barcelona madrid newyorkcity paris london"
+#DATASETS["amazon"]="digital_music fashion"
+DATASETS["restaurants"]="newyorkcity"
 
 # DATASETS["restaurants"]="madrid newyorkcity paris"
 # DATASETS["amazon"]="digital_music fashion"
@@ -42,6 +43,7 @@ declare -A LRATES
 MODELS["BERT2ITM"]="0" 
 BATCHES["BERT2ITM"]="512 1024"
 LRATES["BERT2ITM"]="1e-5 5e-5 1e-4 5e-4 1e-3 5e-3" 
+# LRATES["BERT2ITM"]="5e-5 1e-4 5e-4 1e-3" 
 
 for DATASET_NAME in ${!DATASETS[@]}; do 
   for SUBSET_NAME in ${DATASETS[$DATASET_NAME]}; do

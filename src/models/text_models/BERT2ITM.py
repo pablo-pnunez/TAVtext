@@ -31,51 +31,24 @@ class BERT2ITM(RSTModel):
         mv = self.CONFIG["model"]["model_version"]
         self.MODEL_VERSION = mv
 
-        backbone = keras_nlp.models.BertBackbone.from_preset("bert_tiny_en_uncased")
-        backbone.trainable = True
-        inputs = backbone.input
-        sequence = backbone(inputs)["sequence_output"]
-        # sequence = keras_nlp.layers.TransformerEncoder(num_heads=2, intermediate_dim=256, dropout=0.5)(sequence)
+        if mv == "0":
+            backbone = keras_nlp.models.BertBackbone.from_preset("bert_tiny_en_uncased")
+            backbone.trainable = True
+            inputs = backbone.input
+            sequence = backbone(inputs)["sequence_output"]
+            # sequence = keras_nlp.layers.TransformerEncoder(num_heads=2, intermediate_dim=256, dropout=0.5)(sequence)
 
-        # Use [CLS] token output to classify
-        sequence = tf.keras.layers.Dropout(.8)(sequence)
-        outputs = tf.keras.layers.Dense(self.DATASET.DATA["N_ITEMS"], activation="sigmoid", name="out", dtype='float32')(sequence[:, backbone.cls_token_index, :])
+            # Use [CLS] token output to classify
+            sequence = tf.keras.layers.Dropout(.8)(sequence)
+            outputs = tf.keras.layers.Dense(self.DATASET.DATA["N_ITEMS"], activation="sigmoid", name="out", dtype='float32')(sequence[:, backbone.cls_token_index, :])
 
-        model = tf.keras.Model(inputs, outputs)
+            model = tf.keras.Model(inputs, outputs)
+            
 
         metrics = [tfr.keras.metrics.NDCGMetric(topn=10, name="NDCG@10"), tf.keras.metrics.MeanAbsoluteError(name="MAE"),
                     tfr.keras.metrics.RecallMetric(topn=5, name='RC@5'), tfr.keras.metrics.RecallMetric(topn=10, name='RC@10')]
 
         model.compile(optimizer=tf.keras.optimizers.legacy.Adam(self.CONFIG["model"]["learning_rate"]), loss=tf.keras.losses.CategoricalCrossentropy(), metrics=metrics)
-
-
-        '''
-        inputs = tf.keras.layers.Input(shape=(), dtype=tf.string)
-
-        # REFERENCE: https://arxiv.org/abs/2302.08387
-        sentence_encoding_layer = hub.KerasLayer("https://www.kaggle.com/models/google/lealla/frameworks/TensorFlow2/variations/lealla-small/versions/1", input_shape=[], dtype=tf.string, name='LEALLA', trainable=True)
-        x = sentence_encoding_layer(inputs)
-
-        if mv == "0":
-            x = tf.keras.layers.Dropout(.5)(x)
-            x = tf.keras.layers.BatchNormalization()(x)
-            x = tf.keras.layers.Activation("relu")(x)
-            x = tf.keras.layers.Dense(256, activation='relu')(x)
-            # x = tf.keras.layers.Dropout(.5)(x)
-            # x = tf.keras.layers.Dense(256, activation='tanh')(x)
-
-        outputs = tf.keras.layers.Dense(self.DATASET.DATA["N_ITEMS"], activation="sigmoid", name="out", dtype='float32')(x)
-
-        model = tf.keras.Model(inputs, outputs)
-
-        # metrics = [tfr.keras.metrics.RecallMetric(topn=1, name='r1'), tfr.keras.metrics.RecallMetric(topn=5, name='r5'), tfr.keras.metrics.RecallMetric(topn=10, name='r10'),
-        #            tfr.keras.metrics.PrecisionMetric(topn=5, name='p5'), tfr.keras.metrics.PrecisionMetric(topn=10, name='p10')]
-
-        metrics = [tfr.keras.metrics.NDCGMetric(topn=10, name="NDCG@10"), tf.keras.metrics.MeanAbsoluteError(name="MAE"),
-                    tfr.keras.metrics.RecallMetric(topn=5, name='RC@5'), tfr.keras.metrics.RecallMetric(topn=10, name='RC@10')]
-
-        model.compile(optimizer=tf.keras.optimizers.legacy.Adam(self.CONFIG["model"]["learning_rate"]), loss=tf.keras.losses.CategoricalCrossentropy(), metrics=metrics,)
-        '''
 
         print(model.summary())
 
