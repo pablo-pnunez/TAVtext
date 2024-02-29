@@ -25,7 +25,8 @@ sets = {"restaurants": ["gijon", "barcelona", "madrid", "paris", "newyorkcity", 
         "pois": ["barcelona", "madrid", "paris", "newyorkcity", "london"],
         "amazon": ["fashion", "digital_music"]}
 
-models = ["BERT2ITM"]
+# models = ["BERT2ITM"]
+
         
 dev = True
 best_models = []
@@ -49,8 +50,10 @@ for model in models:
                 raise NotImplemented
             elif "ITM" in model:
                 # columns = {"val_r1": {"best": "max", "others": ["val_loss", "epoch", "model_md5"]}}  # ["val_5", "val_r10", "epoch", "model_md5"]}}
-                # columns = {"val_r1": {"best": "max", "format": "pct"}, "val_loss": {"format": "pct"}, "epoch": {"format": "pct"}, "model_md5": {"format": "pct"}}  # ["val_5", "val_r10", "epoch", "model_md5"]}}
-                columns = {"val_NDCG@10": {"best": "max", "format": "pct"}, "val_loss": {"format": "pct"}, "epoch": {"format": "pct"}, "model_md5": {"format": "pct"}}  # ["val_5", "val_r10", "epoch", "model_md5"]}}
+                if "BERT" in model:
+                    columns = {"val_NDCG@10": {"best": "max", "format": "pct"}, "val_loss": {"format": "pct"}, "epoch": {"format": "pct"}, "model_md5": {"format": "pct"}}  # ["val_5", "val_r10", "epoch", "model_md5"]}}
+                else:
+                    columns = {"val_r1": {"best": "max", "format": "pct"}, "val_loss": {"format": "pct"}, "epoch": {"format": "pct"}, "model_md5": {"format": "pct"}}  # ["val_5", "val_r10", "epoch", "model_md5"]}}
 
             path = f"models/{model}/{dataset}/{subset}/"
 
