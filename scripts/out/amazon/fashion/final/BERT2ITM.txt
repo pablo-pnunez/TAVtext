@@ -1,0 +1,60 @@
+Using TensorFlow backend
+[94mLoading best BERT2ITM model: 7f21293988cf9aa7e9b2b02465f497e3[0m
+[93m[WARNING] Model folder already exists...[0m
+Model: "model"
+__________________________________________________________________________________________________
+ Layer (type)                Output Shape                 Param #   Connected to                  
+==================================================================================================
+ padding_mask (InputLayer)   [(None, None)]               0         []                            
+                                                                                                  
+ segment_ids (InputLayer)    [(None, None)]               0         []                            
+                                                                                                  
+ token_ids (InputLayer)      [(None, None)]               0         []                            
+                                                                                                  
+ bert_backbone (BertBackbon  {'sequence_output': (None,   4385920   ['padding_mask[0][0]',        
+ e)                           None, 128),                            'segment_ids[0][0]',         
+                              'pooled_output': (None, 1              'token_ids[0][0]']           
+                             28)}                                                                 
+                                                                                                  
+ dropout (Dropout)           (None, None, 128)            0         ['bert_backbone[0][1]']       
+                                                                                                  
+ tf.__operators__.getitem_1  (None, 128)                  0         ['dropout[0][0]']             
+  (SlicingOpLambda)                                                                               
+                                                                                                  
+ out (Dense)                 (None, 706)                  91074     ['tf.__operators__.getitem_1[0
+                                                                    ][0]']                        
+                                                                                                  
+==================================================================================================
+Total params: 4476994 (17.08 MB)
+Trainable params: 4476994 (17.08 MB)
+Non-trainable params: 0 (0.00 Byte)
+__________________________________________________________________________________________________
+None
+[93m[WARNING] Model weights are not loaded![0m
+[92m[INFO] Best epoch number: 10[0m
+Epoch 1/10
+357/357 - 104s - loss: 6.3626 - NDCG@10: 0.0552 - MAE: 0.3823 - RC@5: 0.0673 - RC@10: 0.1089 - lr: 9.9901e-04 - e_time: 103.5781 - 104s/epoch - 290ms/step
+Epoch 2/10
+357/357 - 99s - loss: 6.1951 - NDCG@10: 0.0656 - MAE: 0.3780 - RC@5: 0.0830 - RC@10: 0.1287 - lr: 9.9802e-04 - e_time: 98.9915 - 99s/epoch - 277ms/step
+Epoch 3/10
+357/357 - 99s - loss: 6.1724 - NDCG@10: 0.0670 - MAE: 0.3810 - RC@5: 0.0850 - RC@10: 0.1310 - lr: 9.9703e-04 - e_time: 99.0888 - 99s/epoch - 278ms/step
+Epoch 4/10
+357/357 - 99s - loss: 6.1606 - NDCG@10: 0.0676 - MAE: 0.3857 - RC@5: 0.0856 - RC@10: 0.1325 - lr: 9.9604e-04 - e_time: 99.0930 - 99s/epoch - 278ms/step
+Epoch 5/10
+357/357 - 99s - loss: 6.1550 - NDCG@10: 0.0674 - MAE: 0.3898 - RC@5: 0.0855 - RC@10: 0.1320 - lr: 9.9505e-04 - e_time: 98.9208 - 99s/epoch - 277ms/step
+Epoch 6/10
+357/357 - 99s - loss: 6.1488 - NDCG@10: 0.0678 - MAE: 0.3922 - RC@5: 0.0857 - RC@10: 0.1330 - lr: 9.9406e-04 - e_time: 99.1872 - 99s/epoch - 278ms/step
+Epoch 7/10
+357/357 - 99s - loss: 6.1445 - NDCG@10: 0.0676 - MAE: 0.3938 - RC@5: 0.0859 - RC@10: 0.1323 - lr: 9.9307e-04 - e_time: 99.2960 - 99s/epoch - 278ms/step
+Epoch 8/10
+357/357 - 99s - loss: 6.1400 - NDCG@10: 0.0681 - MAE: 0.3954 - RC@5: 0.0859 - RC@10: 0.1330 - lr: 9.9208e-04 - e_time: 98.6879 - 99s/epoch - 276ms/step
+Epoch 9/10
+357/357 - 98s - loss: 6.1361 - NDCG@10: 0.0679 - MAE: 0.3964 - RC@5: 0.0858 - RC@10: 0.1329 - lr: 9.9109e-04 - e_time: 97.6325 - 98s/epoch - 273ms/step
+Epoch 10/10
+357/357 - 98s - loss: 6.1337 - NDCG@10: 0.0681 - MAE: 0.3974 - RC@5: 0.0861 - RC@10: 0.1326 - lr: 9.9010e-04 - e_time: 97.6810 - 98s/epoch - 274ms/step
+[92m[INFO] Loading best model...[0m
+[92m[INFO] There are 19960 evaluation examples.[0m
+[92m       loss    NDCG@1   NDCG@10  ...      F1@1      F1@5     F1@10
+0  6.139654  0.019539  0.068565  ...  0.019539  0.028824  0.024403
+
+[1 rows x 20 columns][0m

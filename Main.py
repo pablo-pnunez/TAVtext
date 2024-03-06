@@ -8,7 +8,7 @@ import os
 
 args = parse_cmd_args()
 gpu = np.argmin([g["mem_used_percent"] for g in nvgpu.gpu_info()]) if args.gpu is None else args.gpu
-os.environ["CUDA_VISIBLE_DEVICES"] = str(gpu)
+os.environ["CUDA_VISIBLE_DEVICES"] = str("1")
 os.environ["KERAS_BACKEND"] = "tensorflow" 
 
 from src.datasets.text_datasets.RestaurantDataset import RestaurantDataset
@@ -23,8 +23,8 @@ from src.models.text_models.BERT2ITM import BERT2ITM
 # #######################################################################################################################
 
 model = "BERT2ITM" if args.mn is None else args.mn
-dataset = "restaurants".lower().replace(" ", "") if args.dst is None else args.dst
-subset = "paris".lower().replace(" ", "") if args.sst is None else args.sst
+dataset = "pois".lower().replace(" ", "") if args.dst is None else args.dst
+subset = "barcelona".lower().replace(" ", "") if args.sst is None else args.sst
 
 # from src.experiments.Common import load_best_model
 
@@ -263,3 +263,8 @@ elif "BERT2ITM" == model:
     if stage == -1:
         bert2itm_mdl = BERT2ITM(bert2itm_mdl_cfg, text_dataset)
         bert2itm_mdl.train(dev=True, save_model=False)
+
+    if stage == 3:
+        bert2itm_mdl = BERT2ITM(bert2itm_mdl_cfg, text_dataset)
+        bert2itm_mdl.train(dev=False, save_model=True)
+        bert2itm_mdl.evaluate(test=True, user_info=True)

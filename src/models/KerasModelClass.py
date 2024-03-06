@@ -124,7 +124,7 @@ class KerasModelClass(ModelClass):
         if not is_dev:
             # Si es un dataset de tensorflow
             if isinstance(train_sequence, tf.data.Dataset):
-                hist = self.MODEL.fit(train_sequence.cache().batch(self.CONFIG["model"]['batch_size']).prefetch(tf.data.AUTOTUNE),
+                hist = self.MODEL.fit(train_sequence.batch(self.CONFIG["model"]['batch_size']).cache().prefetch(tf.data.AUTOTUNE),
                                       epochs=final_epoch_number,
                                       verbose=train_cfg["verbose"],
                                       callbacks=callbacks,

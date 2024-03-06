@@ -1,13 +1,16 @@
 #!/bin/bash
 
-MAXTSTS=2
-GPU=0
+MAXTSTS=1
+GPU=1
 
 declare -A DATASETS
 declare -A MODELS
 # DATASETS["restaurants"]="gijon barcelona madrid newyorkcity paris"
 # DATASETS["pois"]="barcelona madrid newyorkcity paris london"
 # DATASETS["amazon"]="digital_music fashion"
+
+DATASETS["pois"]="madrid"
+DATASETS["amazon"]="digital_music fashion"
 
 # MODELS["BOW2ITM"]="" 
 # MODELS["ATT2ITM"]="" 
