@@ -2,7 +2,7 @@ import numpy as np
 import nvgpu
 import os
 
-gpu = int(np.argmin(list(map(lambda x: x["mem_used_percent"], nvgpu.gpu_info())))) 
+gpu =  1 # int(np.argmin(list(map(lambda x: x["mem_used_percent"], nvgpu.gpu_info())))) 
 os.environ["CUDA_VISIBLE_DEVICES"] = str(gpu)
 
 from src.Common import print_b, print_e
@@ -13,6 +13,7 @@ from src.datasets.text_datasets.POIDataset import POIDataset
 from src.models.text_models.USEM2ITM import USEM2ITM
 from src.models.text_models.att.ATT2ITM import ATT2ITM
 from src.models.text_models.BOW2ITM import BOW2ITM
+from src.models.text_models.BERT2ITM import BERT2ITM
 
 from cornac.metrics import Recall, Precision, FMeasure, NDCG
 from cornac.hyperopt import GridSearch, Discrete
@@ -30,7 +31,7 @@ import json
 
 def load_set(dataset, subset):
 
-    models = ["USEM2ITM","ATT2ITM", "BOW2ITM"]
+    models = ["USEM2ITM", "BERT2ITM", "ATT2ITM", "BOW2ITM"]
     eval_data = {}
 
     for model in models:
@@ -65,6 +66,7 @@ def load_set(dataset, subset):
         if "ATT2ITM" == model: model_class = ATT2ITM(mdl_cfg, text_dataset)
         elif "BOW2ITM" == model: model_class = BOW2ITM(mdl_cfg, text_dataset)
         elif "USEM2ITM" == model: model_class = USEM2ITM(mdl_cfg, text_dataset)
+        elif "BERT2ITM" == model: model_class = BERT2ITM(mdl_cfg, text_dataset)
         else: raise NotImplementedError    
         # Cargar el modelo y evaluar
         model_class.train(dev=False, save_model=True)
@@ -138,9 +140,8 @@ models = [
     cornac.models.OnlineIBPR(),
     cornac.models.BiVAECF(),
     #cornac.models.BiVAECF(k=20, encoder_structure=[40], n_epochs=500, batch_size=128), # Con parámetros que aparecen en gitgub, pero va igual de mal
-
-    # GridSearch( model=md_bpr, space=[ Discrete("k", [25, 50]), Discrete("max_iter", [50, 100]), Discrete("learning_rate", [1e-4, 5e-4, 1e-3]), ], metric=NDCG(), eval_method=eval_method),
-    # GridSearch( model=md_ease, space=[ Discrete("posB", [True, False]), ], metric=NDCG(), eval_method=eval_method), # cornac.models.MF(seed=seed),  # Best parameter settings: {'k': 30, 'learning_rate': 5e-06, 'max_iter': 10}
+    GridSearch( model=md_bpr, space=[ Discrete("k", [25, 50]), Discrete("max_iter", [50, 100]), Discrete("learning_rate", [1e-4, 5e-4, 1e-3]), ], metric=NDCG(), eval_method=eval_method),
+    GridSearch( model=md_ease, space=[ Discrete("posB", [True, False]), ], metric=NDCG(), eval_method=eval_method), # cornac.models.MF(seed=seed),  # Best parameter settings: {'k': 30, 'learning_rate': 5e-06, 'max_iter': 10}
     # cornac.models.MMMF(seed=seed),  # Best parameter settings: {'k': 5, 'learning_rate': 0.001, 'max_iter': 50}
     # cornac.models.NeuMF(seed=seed),
     # cornac.models.WBPR(seed=seed),
