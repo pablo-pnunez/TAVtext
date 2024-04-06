@@ -1,16 +1,15 @@
 #!/bin/bash
 
-MAXTSTS=1
+MAXTSTS=2
 STAGE=0 # GRIDSEARCH o TRAIN
 GPU=1
 ESP=10 # Early stop patience (50 se utilizó en modelos 0 y 1)
 
 declare -A DATASETS
 
-#DATASETS["restaurants"]="gijon barcelona madrid newyorkcity paris"
-#DATASETS["pois"]="barcelona madrid newyorkcity paris london"
-#DATASETS["amazon"]="digital_music fashion"
-DATASETS["restaurants"]="paris"
+DATASETS["restaurants"]="gijon barcelona madrid newyorkcity paris"
+DATASETS["pois"]="barcelona madrid newyorkcity paris london"
+DATASETS["amazon"]="digital_music fashion"
 
 # DATASETS["restaurants"]="madrid newyorkcity paris"
 # DATASETS["amazon"]="digital_music fashion"
@@ -19,6 +18,10 @@ DATASETS["restaurants"]="paris"
 declare -A MODELS
 declare -A BATCHES
 declare -A LRATES
+
+MODELS["ATT2ITM_2"]="0" 
+BATCHES["ATT2ITM_2"]="512 1024"
+LRATES["ATT2ITM_2"]="1e-5 5e-5 1e-4 5e-4"
 
 # MODELS["BOW2ITM"]="0" 
 # BATCHES["BOW2ITM"]="256 512 1024 2048 4096"
@@ -40,10 +43,9 @@ declare -A LRATES
 # BATCHES["USEM2ITM"]="512 1024 2048"
 # LRATES["USEM2ITM"]="1e-5 5e-5 1e-4 5e-4 1e-3 5e-3" 
 
-MODELS["BERT2ITM"]="0" 
-BATCHES["BERT2ITM"]="512 1024"
-# LRATES["BERT2ITM"]="1e-5 5e-5 1e-4 5e-4 1e-3 5e-3" 
-LRATES["BERT2ITM"]="5e-5 1e-4 5e-4 1e-3" 
+# MODELS["BERT2ITM"]="0" 
+# BATCHES["BERT2ITM"]="512 1024"
+# LRATES["BERT2ITM"]="5e-5 1e-4 5e-4 1e-3" 
 
 for DATASET_NAME in ${!DATASETS[@]}; do 
   for SUBSET_NAME in ${DATASETS[$DATASET_NAME]}; do
@@ -63,7 +65,7 @@ for DATASET_NAME in ${!DATASETS[@]}; do
             # source /media/nas/pperez/miniconda3/etc/profile.d/conda.sh
             # conda activate TAV_text
 
-            nohup /media/nas/pperez/conda/ns3/envs/TAVtext/bin/python -u Main.py -stg $STAGE -gpu $GPU -mn $MODEL_NAME -dst $DATASET_NAME -sst $SUBSET_NAME -mv $MODEL_VERSION -esp $ESP -bs $BATCH -lr $LRATE >> "$TXT_PATH"$MODEL_NAME"_["$MODEL_VERSION"]_"$BOWNWORDS"_("$BATCH"_"$LRATE").txt" &
+            nohup /media/nas/pperez/conda/ns3/envs/TAVtext/bin/python -u Main.py -stg $STAGE -mn $MODEL_NAME -dst $DATASET_NAME -sst $SUBSET_NAME -mv $MODEL_VERSION -esp $ESP -bs $BATCH -lr $LRATE >> "$TXT_PATH"$MODEL_NAME"_["$MODEL_VERSION"]_"$BOWNWORDS"_("$BATCH"_"$LRATE").txt" &
           
             # GPU=$(($(($GPU+1%2))%2))
 

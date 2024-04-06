@@ -8,7 +8,7 @@ import os
 
 args = parse_cmd_args()
 gpu = np.argmin([g["mem_used_percent"] for g in nvgpu.gpu_info()]) if args.gpu is None else args.gpu
-os.environ["CUDA_VISIBLE_DEVICES"] = str("1")
+os.environ["CUDA_VISIBLE_DEVICES"] = str(gpu)
 os.environ["KERAS_BACKEND"] = "tensorflow" 
 
 from src.datasets.text_datasets.RestaurantDataset import RestaurantDataset
@@ -16,15 +16,17 @@ from src.datasets.text_datasets.AmazonDataset import AmazonDataset
 from src.datasets.text_datasets.POIDataset import POIDataset
 
 from src.models.text_models.att.ATT2ITM import ATT2ITM
+from src.models.text_models.att.ATT2ITM_2 import ATT2ITM_2 # como el normal, pero sin tanh.
+
 from src.models.text_models.BOW2ITM import BOW2ITM
 from src.models.text_models.USEM2ITM import USEM2ITM
 from src.models.text_models.BERT2ITM import BERT2ITM
 
 # #######################################################################################################################
 
-model = "BERT2ITM" if args.mn is None else args.mn
-dataset = "pois".lower().replace(" ", "") if args.dst is None else args.dst
-subset = "barcelona".lower().replace(" ", "") if args.sst is None else args.sst
+model = "ATT2ITM_2" if args.mn is None else args.mn
+dataset = "restaurants".lower().replace(" ", "") if args.dst is None else args.dst
+subset = "gijon".lower().replace(" ", "") if args.sst is None else args.sst
 
 # from src.experiments.Common import load_best_model
 
@@ -113,7 +115,31 @@ if known_users is False:
     text_dataset.DATA["TEST"] = text_dataset.DATA["TEST"][~text_dataset.DATA["TEST"]["userId"].isin(train_dev_users)]
     text_dataset.DATA["TEST"] = text_dataset.DATA["TEST"].drop_duplicates(subset=["userId", "id_item"], keep='last', inplace=False)
 
-if "ATT2ITM" == model:
+if "ATT2ITM_2" == model:
+
+    if use_best:
+        att2itm_mdl_cfg = mdl_cfg
+    else:
+        att2itm_mdl_cfg = {"model": {"model_version": model_v, "learning_rate": l_rate, "final_learning_rate": l_rate/100, "epochs": n_epochs, "batch_size": b_size, "seed": seed,
+                                     "early_st_first_epoch": 0, "early_st_monitor": "val_loss", "early_st_monitor_mode": "min", "early_st_patience": early_stop_patience},
+                           "session": {"gpu": gpu, "mixed_precision": True, "in_md5": False}}
+
+    att2itm_mdl = ATT2ITM_2(att2itm_mdl_cfg, text_dataset)
+
+    if stage == 0:
+        att2itm_mdl.train(dev=True, save_model=True)
+
+    if stage == -1:
+        att2itm_mdl.train(dev=True, save_model=False)
+        att2itm_mdl.evaluate_text("Quiero comer un buen arroz con bogavante y con buenas vistas")
+
+        att2itm_mdl.emb_tsne()
+
+    if stage == 3:
+        att2itm_mdl.train(dev=False, save_model=True)
+        att2itm_mdl.evaluate_text("Where can i eat the typical pastrami sandwich")
+
+elif "ATT2ITM" == model:
 
     if use_best:
         att2itm_mdl_cfg = mdl_cfg
