@@ -19,7 +19,7 @@ def format_range(wks, fr, fc, lr, lc, fmt):
 
 
 # model = "ATT2ITM"
-models = ["ATT2ITM", "BOW2ITM", "USEM2ITM", "BERT2ITM"]
+models = ["ATT2ITM", "ATT2ITM_2", "BOW2ITM", "USEM2ITM", "BERT2ITM"]
 
 sets = {"restaurants": ["gijon", "barcelona", "madrid", "paris", "newyorkcity", "london"],
         "pois": ["barcelona", "madrid", "paris", "newyorkcity", "london"],

@@ -7,6 +7,7 @@ from src.models.text_models.USEM2ITM import USEM2ITM
 from src.models.text_models.BOW2ITM import BOW2ITM
 from src.models.text_models.att.ATT2ITM import ATT2ITM
 from src.models.text_models.BERT2ITM import BERT2ITM
+from src.models.text_models.att.ATT2ITM_2 import ATT2ITM_2
 
 from src.Common import print_w, print_b
 
@@ -66,6 +67,7 @@ def load_best_model(model, dataset, subset, gpu=None):
     elif "BOW2ITM" == model: model_class = BOW2ITM(mdl_cfg, text_dataset)
     elif "USEM2ITM" == model: model_class = USEM2ITM(mdl_cfg, text_dataset)
     elif "BERT2ITM" == model: model_class = BERT2ITM(mdl_cfg, text_dataset)
+    elif "ATT2ITM_2" == model: model_class = ATT2ITM_2(mdl_cfg, text_dataset)
     else: raise ValueError    
 
     print_w("Model weights are not loaded!")
