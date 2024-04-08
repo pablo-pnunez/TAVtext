@@ -1,9 +1,18 @@
 import numpy as np
+import argparse
 import nvgpu
 import os
 
-gpu =  1 # int(np.argmin(list(map(lambda x: x["mem_used_percent"], nvgpu.gpu_info())))) 
+parser = argparse.ArgumentParser()
+parser.add_argument('-dst', type=str, help="Dataset")
+parser.add_argument('-sst', type=str, help="Subset")
+parser.add_argument('-gpu', type=int, help="GPU")
+args = parser.parse_args()
+
+gpu =  int(np.argmin(list(map(lambda x: x["mem_used_percent"], nvgpu.gpu_info())))) if args.gpu is None else args.gpu
 os.environ["CUDA_VISIBLE_DEVICES"] = str(gpu)
+
+print(f"USING GPU-{gpu}.")
 
 from src.Common import print_b, print_e
 from src.datasets.text_datasets.RestaurantDataset import RestaurantDataset
@@ -25,7 +34,6 @@ import cornac
 
 import tensorflow as tf
 import pandas as pd
-import argparse
 import json
 
 
@@ -57,7 +65,8 @@ def load_set(dataset, subset):
 
         # Primero se eliminan los usuarios que no están en train de los conjuntos de val y test
         # Esto es solo para evaluar nuestro modelo en igualdad de condiciones
-        train_users = text_dataset.DATA["TRAIN_DEV"][text_dataset.DATA["TRAIN_DEV"]["dev"] == 0].userId.unique()
+        # train_users = text_dataset.DATA["TRAIN_DEV"][text_dataset.DATA["TRAIN_DEV"]["dev"] == 0].userId.unique()
+        train_users = text_dataset.DATA["TRAIN_DEV"].userId.unique()
         text_dataset.DATA["TRAIN_DEV"] = text_dataset.DATA["TRAIN_DEV"][text_dataset.DATA["TRAIN_DEV"]["userId"].isin(train_users)]
         text_dataset.DATA["TEST"] = text_dataset.DATA["TEST"][text_dataset.DATA["TEST"]["userId"].isin(train_users)]
         text_dataset.DATA["TEST"] = text_dataset.DATA["TEST"].drop_duplicates(subset=["userId", "id_item"], keep='last', inplace=False)
@@ -108,11 +117,6 @@ def load_set(dataset, subset):
 
 seed = 2048
 base_path = "models/Baselines"
-
-parser = argparse.ArgumentParser()
-parser.add_argument('-dst', type=str, help="Dataset")
-parser.add_argument('-sst', type=str, help="Subset")
-args = parser.parse_args()
 
 # datasets = {"pois": ["barcelona", "gijon"]}
 dataset = "restaurants" if args.dst is None else args.dst

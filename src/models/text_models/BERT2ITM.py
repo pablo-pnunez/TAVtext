@@ -18,7 +18,7 @@ from sklearn.preprocessing import MultiLabelBinarizer
 
 
 class BERT2ITM(RSTModel):
-    """ Predecir, a partir de una review codificada mendiante USEM, el restaurante de la review """
+    """ Predecir, a partir de una review codificada mendiante BERT, el restaurante de la review """
 
     def __init__(self, config, dataset):
         RSTModel.__init__(self, config=config, dataset=dataset)

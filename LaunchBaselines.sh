@@ -1,13 +1,14 @@
 #!/bin/bash
 
-MAXTSTS=1
+MAXTSTS=2
+GPU=0
 
 declare -A DATASETS
 
-# DATASETS["restaurants"]="gijon barcelona madrid newyorkcity paris"
-# DATASETS["pois"]="barcelona madrid newyorkcity paris london"
-# DATASETS["amazon"]="digital_music fashion" 
-DATASETS["restaurants"]="paris"
+DATASETS["restaurants"]="gijon barcelona madrid newyorkcity paris"
+DATASETS["pois"]="barcelona madrid newyorkcity paris london"
+DATASETS["amazon"]="digital_music fashion" 
+# DATASETS["restaurants"]="paris"
 
 
 for DATASET_NAME in ${!DATASETS[@]}; do 
@@ -17,8 +18,10 @@ for DATASET_NAME in ${!DATASETS[@]}; do
     # source /media/nas/pperez/miniconda3/etc/profile.d/conda.sh
     # conda activate TAV_text
 
-    nohup /media/nas/pperez/conda/ns3/envs/TAVtext/bin/python -u Baselines.py -dst $DATASET_NAME -sst $SUBSET_NAME &
+    nohup /media/nas/pperez/conda/ns3/envs/TAVtext/bin/python -u Baselines.py -gpu $GPU -dst $DATASET_NAME -sst $SUBSET_NAME &
   
+    GPU=$(($(($GPU+1%2))%2))
+
     # Si se alcanza el máximo de procesos simultaneos, esperar
     while [ $(jobs -r | wc -l) -eq $MAXTSTS ];
     do
