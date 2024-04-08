@@ -748,7 +748,8 @@ class ATT2ITM(RSTModel):
         all_att_mean = all_att.mean(1)
         all_att_std = all_att.std(1)
         all_att_mean_std = np.abs(all_att_mean) + all_att_std
-
+        
+        print(f"El rango de valores de la matriz de atención para todas las palabras se mueve en el rango [{all_att.min()},{all_att.max()}].")
         # Determinar que palabras son relevantes en función de su "mean_std"
         '''
         global_filter = True
