@@ -22,13 +22,13 @@ from src.experiments.Common import load_best_model
 model_class = load_best_model(model=args.model, dataset=args.dataset, subset=args.subset, gpu=gpu)
 
 # Analizar las emisiones
-base_tracker_params = {"gpu_ids":[gpu], "output_dir":model_class.MODEL_PATH, "tracking_mode":"process","output_file":"emissions.csv"}
+base_tracker_params = {"gpu_ids":[gpu], "output_dir":model_class.MODEL_PATH, "tracking_mode":"process", "output_file":"emissions.csv"}
 train_tracker_params = {**base_tracker_params, "project_name":"train"}
 test_tracker_params = {**base_tracker_params, "project_name":"test"}
 
 with EmissionsTracker(**train_tracker_params) as tracker:
     # Entrenar el modelo final
-    model_class.train(dev=False, save_model=True)
+    model_class.train(dev=False, save_model=False) # ESTO HAY QUE CAMBIARLO A TRUE CUANDO ACABE CON LAS EMISIONES !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 with EmissionsTracker(**test_tracker_params) as tracker:
     # Evaluar el modelo final

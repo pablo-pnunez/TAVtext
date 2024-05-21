@@ -2,7 +2,7 @@
 from tabnanny import verbose
 from src.models.ModelClass import *
 from src.Common import print_e, print_g
-from src.Callbacks import linear_decay, CustomStopper, EpochTime, EmissionsTracker
+from src.Callbacks import linear_decay, CustomStopper, EpochTime, Emissions
 
 import os
 import numpy as np
@@ -92,6 +92,10 @@ class KerasModelClass(ModelClass):
                                 patience=self.CONFIG["model"]["early_st_patience"], verbose=1, mode=self.CONFIG["model"]["early_st_monitor_mode"])
             callbacks.append(est)
 
+        # CO2 logger
+        log = Emissions(self.MODEL_PATH + final_folder)
+        callbacks.append(log)
+
         # Si se quiere almacenar la salida del modelo (pesos/csv)
         if save_model:
             if os.path.exists(self.MODEL_PATH + final_folder + "checkpoint"):
@@ -104,10 +108,6 @@ class KerasModelClass(ModelClass):
 
             # Time logger
             log = EpochTime()
-            callbacks.append(log)
-
-            # Time logger
-            log = EmissionsTracker()
             callbacks.append(log)
 
             # CSV logger

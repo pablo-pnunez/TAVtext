@@ -1,12 +1,12 @@
-2024-05-21 13:51:14.296462: E external/local_xla/xla/stream_executor/cuda/cuda_dnn.cc:9261] Unable to register cuDNN factory: Attempting to register factory for plugin cuDNN when one has already been registered
-2024-05-21 13:51:14.296492: E external/local_xla/xla/stream_executor/cuda/cuda_fft.cc:607] Unable to register cuFFT factory: Attempting to register factory for plugin cuFFT when one has already been registered
-2024-05-21 13:51:14.297597: E external/local_xla/xla/stream_executor/cuda/cuda_blas.cc:1515] Unable to register cuBLAS factory: Attempting to register factory for plugin cuBLAS when one has already been registered
-2024-05-21 13:51:14.302424: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+2024-05-21 14:49:42.116180: E external/local_xla/xla/stream_executor/cuda/cuda_dnn.cc:9261] Unable to register cuDNN factory: Attempting to register factory for plugin cuDNN when one has already been registered
+2024-05-21 14:49:42.116214: E external/local_xla/xla/stream_executor/cuda/cuda_fft.cc:607] Unable to register cuFFT factory: Attempting to register factory for plugin cuFFT when one has already been registered
+2024-05-21 14:49:42.117336: E external/local_xla/xla/stream_executor/cuda/cuda_blas.cc:1515] Unable to register cuBLAS factory: Attempting to register factory for plugin cuBLAS when one has already been registered
+2024-05-21 14:49:42.122302: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
 To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
-2024-05-21 13:51:15.082239: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
-2024-05-21 13:51:16.843044: I external/local_xla/xla/stream_executor/cuda/cuda_executor.cc:901] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero. See more at https://github.com/torvalds/linux/blob/v6.0/Documentation/ABI/testing/sysfs-bus-pci#L344-L355
-2024-05-21 13:51:16.844204: I external/local_xla/xla/stream_executor/cuda/cuda_executor.cc:901] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero. See more at https://github.com/torvalds/linux/blob/v6.0/Documentation/ABI/testing/sysfs-bus-pci#L344-L355
-2024-05-21 13:51:16.844417: I external/local_xla/xla/stream_executor/cuda/cuda_executor.cc:901] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero. See more at https://github.com/torvalds/linux/blob/v6.0/Documentation/ABI/testing/sysfs-bus-pci#L344-L355
+2024-05-21 14:49:42.818283: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+2024-05-21 14:49:44.594299: I external/local_xla/xla/stream_executor/cuda/cuda_executor.cc:901] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero. See more at https://github.com/torvalds/linux/blob/v6.0/Documentation/ABI/testing/sysfs-bus-pci#L344-L355
+2024-05-21 14:49:44.595448: I external/local_xla/xla/stream_executor/cuda/cuda_executor.cc:901] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero. See more at https://github.com/torvalds/linux/blob/v6.0/Documentation/ABI/testing/sysfs-bus-pci#L344-L355
+2024-05-21 14:49:44.595636: I external/local_xla/xla/stream_executor/cuda/cuda_executor.cc:901] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero. See more at https://github.com/torvalds/linux/blob/v6.0/Documentation/ABI/testing/sysfs-bus-pci#L344-L355
 /media/nas/pperez/conda/ns3/envs/TAVtext/lib/python3.9/site-packages/tensorflow_addons/utils/tfa_eol_msg.py:23: UserWarning: 
 
 TensorFlow Addons (TFA) has ended development and introduction of new features.
@@ -17,61 +17,887 @@ For more information see: https://github.com/tensorflow/addons/issues/2807
 
   warnings.warn(
 Using TensorFlow backend
-[94mLoading best BOW2ITM model: 401e85db0ccb089b9a9c16018ad9e1a4[0m
+[94mLoading best ATT2ITM model: 544d98b3ba0a0dfd7e3f0019f4d9675e[0m
 [93m[WARNING] Model folder already exists...[0m
-2024-05-21 13:51:18.633938: I external/local_xla/xla/stream_executor/cuda/cuda_executor.cc:901] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero. See more at https://github.com/torvalds/linux/blob/v6.0/Documentation/ABI/testing/sysfs-bus-pci#L344-L355
-2024-05-21 13:51:18.634174: I external/local_xla/xla/stream_executor/cuda/cuda_executor.cc:901] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero. See more at https://github.com/torvalds/linux/blob/v6.0/Documentation/ABI/testing/sysfs-bus-pci#L344-L355
-2024-05-21 13:51:18.634422: I external/local_xla/xla/stream_executor/cuda/cuda_executor.cc:901] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero. See more at https://github.com/torvalds/linux/blob/v6.0/Documentation/ABI/testing/sysfs-bus-pci#L344-L355
-2024-05-21 13:51:18.882424: I external/local_xla/xla/stream_executor/cuda/cuda_executor.cc:901] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero. See more at https://github.com/torvalds/linux/blob/v6.0/Documentation/ABI/testing/sysfs-bus-pci#L344-L355
-2024-05-21 13:51:18.882671: I external/local_xla/xla/stream_executor/cuda/cuda_executor.cc:901] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero. See more at https://github.com/torvalds/linux/blob/v6.0/Documentation/ABI/testing/sysfs-bus-pci#L344-L355
-2024-05-21 13:51:18.883049: I external/local_xla/xla/stream_executor/cuda/cuda_executor.cc:901] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero. See more at https://github.com/torvalds/linux/blob/v6.0/Documentation/ABI/testing/sysfs-bus-pci#L344-L355
-2024-05-21 13:51:18.883220: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1929] Created device /job:localhost/replica:0/task:0/device:GPU:0 with 6630 MB memory:  -> device: 0, name: NVIDIA GeForce RTX 3090, pci bus id: 0000:0e:00.0, compute capability: 8.6
+2024-05-21 14:49:46.409581: I external/local_xla/xla/stream_executor/cuda/cuda_executor.cc:901] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero. See more at https://github.com/torvalds/linux/blob/v6.0/Documentation/ABI/testing/sysfs-bus-pci#L344-L355
+2024-05-21 14:49:46.409817: I external/local_xla/xla/stream_executor/cuda/cuda_executor.cc:901] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero. See more at https://github.com/torvalds/linux/blob/v6.0/Documentation/ABI/testing/sysfs-bus-pci#L344-L355
+2024-05-21 14:49:46.410175: I external/local_xla/xla/stream_executor/cuda/cuda_executor.cc:901] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero. See more at https://github.com/torvalds/linux/blob/v6.0/Documentation/ABI/testing/sysfs-bus-pci#L344-L355
+2024-05-21 14:49:46.557710: I external/local_xla/xla/stream_executor/cuda/cuda_executor.cc:901] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero. See more at https://github.com/torvalds/linux/blob/v6.0/Documentation/ABI/testing/sysfs-bus-pci#L344-L355
+2024-05-21 14:49:46.558925: I external/local_xla/xla/stream_executor/cuda/cuda_executor.cc:901] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero. See more at https://github.com/torvalds/linux/blob/v6.0/Documentation/ABI/testing/sysfs-bus-pci#L344-L355
+2024-05-21 14:49:46.560290: I external/local_xla/xla/stream_executor/cuda/cuda_executor.cc:901] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero. See more at https://github.com/torvalds/linux/blob/v6.0/Documentation/ABI/testing/sysfs-bus-pci#L344-L355
+2024-05-21 14:49:46.560472: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1929] Created device /job:localhost/replica:0/task:0/device:GPU:0 with 1027 MB memory:  -> device: 0, name: NVIDIA GeForce RTX 3090, pci bus id: 0000:03:00.0, compute capability: 8.6
 [93m[WARNING] Model weights are not loaded![0m
-[codecarbon WARNING @ 13:51:18] Invalid gpu_ids format. Expected a string or a list of ints.
-[codecarbon INFO @ 13:51:18] [setup] RAM Tracking...
-[codecarbon INFO @ 13:51:18] [setup] GPU Tracking...
-[codecarbon INFO @ 13:51:18] Tracking Nvidia GPU via pynvml
-[codecarbon INFO @ 13:51:18] [setup] CPU Tracking...
-[codecarbon WARNING @ 13:51:18] No CPU tracking mode found. Falling back on CPU constant mode.
-[codecarbon INFO @ 13:51:20] CPU Model on constant consumption mode: AMD Ryzen 9 5900X 12-Core Processor
-[codecarbon INFO @ 13:51:20] >>> Tracker's metadata:
-[codecarbon INFO @ 13:51:20]   Platform system: Linux-6.2.0-39-generic-x86_64-with-glibc2.35
-[codecarbon INFO @ 13:51:20]   Python version: 3.9.18
-[codecarbon INFO @ 13:51:20]   CodeCarbon version: 2.4.2
-[codecarbon INFO @ 13:51:20]   Available RAM : 62.710 GB
-[codecarbon INFO @ 13:51:20]   CPU count: 24
-[codecarbon INFO @ 13:51:20]   CPU model: AMD Ryzen 9 5900X 12-Core Processor
-[codecarbon INFO @ 13:51:20]   GPU count: 2
-[codecarbon INFO @ 13:51:20]   GPU model: 2 x NVIDIA GeForce RTX 3090
-[92m[INFO] Best epoch number: 52[0m
+[codecarbon INFO @ 14:49:46] [setup] RAM Tracking...
+[codecarbon INFO @ 14:49:46] [setup] GPU Tracking...
+[codecarbon INFO @ 14:49:46] Tracking Nvidia GPU via pynvml
+[codecarbon INFO @ 14:49:46] [setup] CPU Tracking...
+[codecarbon WARNING @ 14:49:46] No CPU tracking mode found. Falling back on CPU constant mode.
+[codecarbon INFO @ 14:49:47] CPU Model on constant consumption mode: AMD Ryzen 9 5900X 12-Core Processor
+[codecarbon INFO @ 14:49:47] >>> Tracker's metadata:
+[codecarbon INFO @ 14:49:47]   Platform system: Linux-6.2.0-39-generic-x86_64-with-glibc2.35
+[codecarbon INFO @ 14:49:47]   Python version: 3.9.18
+[codecarbon INFO @ 14:49:47]   CodeCarbon version: 2.4.2
+[codecarbon INFO @ 14:49:47]   Available RAM : 62.710 GB
+[codecarbon INFO @ 14:49:47]   CPU count: 24
+[codecarbon INFO @ 14:49:47]   CPU model: AMD Ryzen 9 5900X 12-Core Processor
+[codecarbon INFO @ 14:49:47]   GPU count: 2
+[codecarbon INFO @ 14:49:47]   GPU model: 2 x NVIDIA GeForce RTX 3090
+[92m[INFO] Best epoch number: 161[0m
 [92m[INFO] Model already trained. Loading weights...[0m
-[codecarbon INFO @ 13:51:23] Energy consumed for RAM : 0.000000 kWh. RAM Power : 0.428159236907959 W
-[codecarbon INFO @ 13:51:23] Energy consumed for all GPUs : 0.000018 kWh. Total GPU Power : 149.8903543847045 W
-[codecarbon INFO @ 13:51:23] Energy consumed for all CPUs : 0.000006 kWh. Total CPU Power : 52.5 W
-[codecarbon INFO @ 13:51:23] 0.000025 kWh of electricity used since the beginning.
-[codecarbon WARNING @ 13:51:23] Invalid gpu_ids format. Expected a string or a list of ints.
-[codecarbon INFO @ 13:51:23] [setup] RAM Tracking...
-[codecarbon INFO @ 13:51:23] [setup] GPU Tracking...
-[codecarbon INFO @ 13:51:23] Tracking Nvidia GPU via pynvml
-[codecarbon INFO @ 13:51:23] [setup] CPU Tracking...
-[codecarbon WARNING @ 13:51:23] No CPU tracking mode found. Falling back on CPU constant mode.
-[codecarbon INFO @ 13:51:24] CPU Model on constant consumption mode: AMD Ryzen 9 5900X 12-Core Processor
-[codecarbon INFO @ 13:51:24] >>> Tracker's metadata:
-[codecarbon INFO @ 13:51:24]   Platform system: Linux-6.2.0-39-generic-x86_64-with-glibc2.35
-[codecarbon INFO @ 13:51:24]   Python version: 3.9.18
-[codecarbon INFO @ 13:51:24]   CodeCarbon version: 2.4.2
-[codecarbon INFO @ 13:51:24]   Available RAM : 62.710 GB
-[codecarbon INFO @ 13:51:24]   CPU count: 24
-[codecarbon INFO @ 13:51:24]   CPU model: AMD Ryzen 9 5900X 12-Core Processor
-[codecarbon INFO @ 13:51:24]   GPU count: 2
-[codecarbon INFO @ 13:51:24]   GPU model: 2 x NVIDIA GeForce RTX 3090
+[codecarbon INFO @ 14:49:51] Energy consumed for RAM : 0.000000 kWh. RAM Power : 0.4307613372802735 W
+[codecarbon INFO @ 14:49:51] Energy consumed for all GPUs : 0.000003 kWh. Total GPU Power : 85.04912794887814 W
+[codecarbon INFO @ 14:49:51] Energy consumed for all CPUs : 0.000002 kWh. Total CPU Power : 52.5 W
+[codecarbon INFO @ 14:49:51] 0.000005 kWh of electricity used since the beginning.
+[codecarbon INFO @ 14:49:51] [setup] RAM Tracking...
+[codecarbon INFO @ 14:49:51] [setup] GPU Tracking...
+[codecarbon INFO @ 14:49:51] Tracking Nvidia GPU via pynvml
+[codecarbon INFO @ 14:49:51] [setup] CPU Tracking...
+[codecarbon WARNING @ 14:49:51] No CPU tracking mode found. Falling back on CPU constant mode.
+[codecarbon INFO @ 14:49:52] CPU Model on constant consumption mode: AMD Ryzen 9 5900X 12-Core Processor
+[codecarbon INFO @ 14:49:52] >>> Tracker's metadata:
+[codecarbon INFO @ 14:49:52]   Platform system: Linux-6.2.0-39-generic-x86_64-with-glibc2.35
+[codecarbon INFO @ 14:49:52]   Python version: 3.9.18
+[codecarbon INFO @ 14:49:52]   CodeCarbon version: 2.4.2
+[codecarbon INFO @ 14:49:52]   Available RAM : 62.710 GB
+[codecarbon INFO @ 14:49:52]   CPU count: 24
+[codecarbon INFO @ 14:49:52]   CPU model: AMD Ryzen 9 5900X 12-Core Processor
+[codecarbon INFO @ 14:49:52]   GPU count: 2
+[codecarbon INFO @ 14:49:52]   GPU model: 2 x NVIDIA GeForce RTX 3090
 [92m[INFO] There are 3935 evaluation examples.[0m
-2024-05-21 13:51:29.276680: I external/local_tsl/tsl/platform/default/subprocess.cc:304] Start cannot spawn child process: No such file or directory
-[92m       loss    NDCG@1   NDCG@10  ...      F1@1      F1@5     F1@10
-0  2.975741  0.371792  0.525878  ...  0.372046  0.201525  0.127481
+2024-05-21 14:49:56.590308: I external/local_tsl/tsl/platform/default/subprocess.cc:304] Start cannot spawn child process: No such file or directory
+2024-05-21 14:50:06.594839: W external/local_tsl/tsl/framework/bfc_allocator.cc:485] Allocator (GPU_0_bfc) ran out of memory trying to allocate 188.58MiB (rounded to 197738496)requested by op ATT2ITM_1/tf.tile/Tile
+If the cause is memory fragmentation maybe the environment variable 'TF_GPU_ALLOCATOR=cuda_malloc_async' will improve the situation. 
+Current allocation summary follows.
+Current allocation summary follows.
+2024-05-21 14:50:06.594885: I external/local_tsl/tsl/framework/bfc_allocator.cc:1039] BFCAllocator dump for GPU_0_bfc
+2024-05-21 14:50:06.594907: I external/local_tsl/tsl/framework/bfc_allocator.cc:1046] Bin (256): 	Total Chunks: 100, Chunks in use: 100. 25.0KiB allocated for chunks. 25.0KiB in use in bin. 351B client-requested in use in bin.
+2024-05-21 14:50:06.594918: I external/local_tsl/tsl/framework/bfc_allocator.cc:1046] Bin (512): 	Total Chunks: 6, Chunks in use: 6. 3.0KiB allocated for chunks. 3.0KiB in use in bin. 3.0KiB client-requested in use in bin.
+2024-05-21 14:50:06.594927: I external/local_tsl/tsl/framework/bfc_allocator.cc:1046] Bin (1024): 	Total Chunks: 7, Chunks in use: 7. 7.2KiB allocated for chunks. 7.2KiB in use in bin. 7.0KiB client-requested in use in bin.
+2024-05-21 14:50:06.594936: I external/local_tsl/tsl/framework/bfc_allocator.cc:1046] Bin (2048): 	Total Chunks: 2, Chunks in use: 2. 4.0KiB allocated for chunks. 4.0KiB in use in bin. 4.0KiB client-requested in use in bin.
+2024-05-21 14:50:06.594944: I external/local_tsl/tsl/framework/bfc_allocator.cc:1046] Bin (4096): 	Total Chunks: 0, Chunks in use: 0. 0B allocated for chunks. 0B in use in bin. 0B client-requested in use in bin.
+2024-05-21 14:50:06.594954: I external/local_tsl/tsl/framework/bfc_allocator.cc:1046] Bin (8192): 	Total Chunks: 5, Chunks in use: 4. 40.0KiB allocated for chunks. 32.0KiB in use in bin. 32.0KiB client-requested in use in bin.
+2024-05-21 14:50:06.594962: I external/local_tsl/tsl/framework/bfc_allocator.cc:1046] Bin (16384): 	Total Chunks: 0, Chunks in use: 0. 0B allocated for chunks. 0B in use in bin. 0B client-requested in use in bin.
+2024-05-21 14:50:06.594970: I external/local_tsl/tsl/framework/bfc_allocator.cc:1046] Bin (32768): 	Total Chunks: 0, Chunks in use: 0. 0B allocated for chunks. 0B in use in bin. 0B client-requested in use in bin.
+2024-05-21 14:50:06.594979: I external/local_tsl/tsl/framework/bfc_allocator.cc:1046] Bin (65536): 	Total Chunks: 0, Chunks in use: 0. 0B allocated for chunks. 0B in use in bin. 0B client-requested in use in bin.
+2024-05-21 14:50:06.595296: I external/local_tsl/tsl/framework/bfc_allocator.cc:1046] Bin (131072): 	Total Chunks: 9, Chunks in use: 8. 1.41MiB allocated for chunks. 1.22MiB in use in bin. 1.19MiB client-requested in use in bin.
+2024-05-21 14:50:06.595306: I external/local_tsl/tsl/framework/bfc_allocator.cc:1046] Bin (262144): 	Total Chunks: 9, Chunks in use: 8. 3.11MiB allocated for chunks. 2.75MiB in use in bin. 2.59MiB client-requested in use in bin.
+2024-05-21 14:50:06.595316: I external/local_tsl/tsl/framework/bfc_allocator.cc:1046] Bin (524288): 	Total Chunks: 3, Chunks in use: 2. 1.81MiB allocated for chunks. 1.25MiB in use in bin. 768.0KiB client-requested in use in bin.
+2024-05-21 14:50:06.595326: I external/local_tsl/tsl/framework/bfc_allocator.cc:1046] Bin (1048576): 	Total Chunks: 10, Chunks in use: 10. 12.52MiB allocated for chunks. 12.52MiB in use in bin. 11.74MiB client-requested in use in bin.
+2024-05-21 14:50:06.595335: I external/local_tsl/tsl/framework/bfc_allocator.cc:1046] Bin (2097152): 	Total Chunks: 2, Chunks in use: 2. 7.07MiB allocated for chunks. 7.07MiB in use in bin. 7.07MiB client-requested in use in bin.
+2024-05-21 14:50:06.595344: I external/local_tsl/tsl/framework/bfc_allocator.cc:1046] Bin (4194304): 	Total Chunks: 1, Chunks in use: 1. 4.00MiB allocated for chunks. 4.00MiB in use in bin. 3.54MiB client-requested in use in bin.
+2024-05-21 14:50:06.595352: I external/local_tsl/tsl/framework/bfc_allocator.cc:1046] Bin (8388608): 	Total Chunks: 0, Chunks in use: 0. 0B allocated for chunks. 0B in use in bin. 0B client-requested in use in bin.
+2024-05-21 14:50:06.595360: I external/local_tsl/tsl/framework/bfc_allocator.cc:1046] Bin (16777216): 	Total Chunks: 0, Chunks in use: 0. 0B allocated for chunks. 0B in use in bin. 0B client-requested in use in bin.
+2024-05-21 14:50:06.595646: I external/local_tsl/tsl/framework/bfc_allocator.cc:1046] Bin (33554432): 	Total Chunks: 0, Chunks in use: 0. 0B allocated for chunks. 0B in use in bin. 0B client-requested in use in bin.
+2024-05-21 14:50:06.595655: I external/local_tsl/tsl/framework/bfc_allocator.cc:1046] Bin (67108864): 	Total Chunks: 0, Chunks in use: 0. 0B allocated for chunks. 0B in use in bin. 0B client-requested in use in bin.
+2024-05-21 14:50:06.595667: I external/local_tsl/tsl/framework/bfc_allocator.cc:1046] Bin (134217728): 	Total Chunks: 0, Chunks in use: 0. 0B allocated for chunks. 0B in use in bin. 0B client-requested in use in bin.
+2024-05-21 14:50:06.595680: I external/local_tsl/tsl/framework/bfc_allocator.cc:1046] Bin (268435456): 	Total Chunks: 2, Chunks in use: 2. 997.94MiB allocated for chunks. 997.94MiB in use in bin. 933.00MiB client-requested in use in bin.
+2024-05-21 14:50:06.595690: I external/local_tsl/tsl/framework/bfc_allocator.cc:1062] Bin for 188.58MiB was 128.00MiB, Chunk State: 
+2024-05-21 14:50:06.595697: I external/local_tsl/tsl/framework/bfc_allocator.cc:1075] Next region of size 509542400
+2024-05-21 14:50:06.595709: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3e58000000 of size 509542400 next 18446744073709551615
+2024-05-21 14:50:06.595717: I external/local_tsl/tsl/framework/bfc_allocator.cc:1075] Next region of size 536870912
+2024-05-21 14:50:06.595725: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3e78000000 of size 536870912 next 18446744073709551615
+2024-05-21 14:50:06.595998: I external/local_tsl/tsl/framework/bfc_allocator.cc:1075] Next region of size 2097152
+2024-05-21 14:50:06.596005: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8200000 of size 1280 next 1
+2024-05-21 14:50:06.596011: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8200500 of size 256 next 2
+2024-05-21 14:50:06.596017: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8200600 of size 256 next 3
+2024-05-21 14:50:06.596023: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8200700 of size 256 next 4
+2024-05-21 14:50:06.596028: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8200800 of size 256 next 5
+2024-05-21 14:50:06.596034: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8200900 of size 256 next 10
+2024-05-21 14:50:06.596040: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8200a00 of size 1024 next 11
+2024-05-21 14:50:06.596046: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8200e00 of size 256 next 7
+2024-05-21 14:50:06.596052: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8200f00 of size 256 next 12
+2024-05-21 14:50:06.596323: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8201000 of size 512 next 16
+2024-05-21 14:50:06.596342: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8201200 of size 512 next 14
+2024-05-21 14:50:06.596350: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8201400 of size 256 next 25
+2024-05-21 14:50:06.596356: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8201500 of size 256 next 15
+2024-05-21 14:50:06.596362: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8201600 of size 261376 next 19
+2024-05-21 14:50:06.596628: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8241300 of size 131584 next 23
+2024-05-21 14:50:06.596634: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8261500 of size 256 next 17
+2024-05-21 14:50:06.596640: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8261600 of size 256 next 24
+2024-05-21 14:50:06.596646: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8261700 of size 256 next 26
+2024-05-21 14:50:06.596652: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8261800 of size 256 next 27
+2024-05-21 14:50:06.596658: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8261900 of size 256 next 28
+2024-05-21 14:50:06.596664: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8261a00 of size 256 next 29
+2024-05-21 14:50:06.596673: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8261b00 of size 256 next 30
+2024-05-21 14:50:06.596679: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8261c00 of size 256 next 31
+2024-05-21 14:50:06.596943: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8261d00 of size 256 next 32
+2024-05-21 14:50:06.596950: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8261e00 of size 256 next 33
+2024-05-21 14:50:06.596956: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8261f00 of size 256 next 34
+2024-05-21 14:50:06.596961: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8262000 of size 256 next 35
+2024-05-21 14:50:06.596967: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8262100 of size 256 next 36
+2024-05-21 14:50:06.596973: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8262200 of size 256 next 37
+2024-05-21 14:50:06.596979: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8262300 of size 256 next 38
+2024-05-21 14:50:06.596984: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8262400 of size 256 next 39
+2024-05-21 14:50:06.596990: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8262500 of size 256 next 40
+2024-05-21 14:50:06.596995: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8262600 of size 256 next 41
+2024-05-21 14:50:06.597236: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8262700 of size 1024 next 45
+2024-05-21 14:50:06.597241: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8262b00 of size 1024 next 46
+2024-05-21 14:50:06.597246: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8262f00 of size 1024 next 49
+2024-05-21 14:50:06.597251: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8263300 of size 1024 next 50
+2024-05-21 14:50:06.597255: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8263700 of size 512 next 53
+2024-05-21 14:50:06.597260: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8263900 of size 512 next 54
+2024-05-21 14:50:06.597265: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8263b00 of size 512 next 57
+2024-05-21 14:50:06.597269: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8263d00 of size 512 next 58
+2024-05-21 14:50:06.597274: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8263f00 of size 1024 next 60
+2024-05-21 14:50:06.597279: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] Free  at 7f3ff8264300 of size 379136 next 13
+2024-05-21 14:50:06.597513: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff82c0c00 of size 622080 next 21
+2024-05-21 14:50:06.597519: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8358a00 of size 685568 next 18446744073709551615
+2024-05-21 14:50:06.597524: I external/local_tsl/tsl/framework/bfc_allocator.cc:1075] Next region of size 4194304
+2024-05-21 14:50:06.597529: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8600000 of size 4194304 next 18446744073709551615
+2024-05-21 14:50:06.597533: I external/local_tsl/tsl/framework/bfc_allocator.cc:1075] Next region of size 8388608
+2024-05-21 14:50:06.597538: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c00000 of size 393216 next 22
+2024-05-21 14:50:06.597543: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c60000 of size 131072 next 62
+2024-05-21 14:50:06.597548: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c80000 of size 256 next 20
+2024-05-21 14:50:06.597552: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c80100 of size 256 next 63
+2024-05-21 14:50:06.597557: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c80200 of size 256 next 64
+2024-05-21 14:50:06.597783: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c80300 of size 256 next 65
+2024-05-21 14:50:06.597788: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c80400 of size 256 next 66
+2024-05-21 14:50:06.597793: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c80500 of size 256 next 67
+2024-05-21 14:50:06.597798: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c80600 of size 256 next 68
+2024-05-21 14:50:06.597802: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c80700 of size 256 next 69
+2024-05-21 14:50:06.597807: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c80800 of size 256 next 70
+2024-05-21 14:50:06.597811: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c80900 of size 256 next 71
+2024-05-21 14:50:06.598036: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c80a00 of size 256 next 72
+2024-05-21 14:50:06.598041: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c80b00 of size 256 next 73
+2024-05-21 14:50:06.598046: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c80c00 of size 256 next 74
+2024-05-21 14:50:06.598050: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c80d00 of size 256 next 75
+2024-05-21 14:50:06.598055: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c80e00 of size 256 next 76
+2024-05-21 14:50:06.598059: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c80f00 of size 256 next 77
+2024-05-21 14:50:06.598275: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c81000 of size 256 next 78
+2024-05-21 14:50:06.598280: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c81100 of size 256 next 79
+2024-05-21 14:50:06.598284: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c81200 of size 256 next 80
+2024-05-21 14:50:06.598289: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c81300 of size 256 next 81
+2024-05-21 14:50:06.598293: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c81400 of size 256 next 82
+2024-05-21 14:50:06.598298: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c81500 of size 256 next 83
+2024-05-21 14:50:06.598304: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c81600 of size 256 next 84
+2024-05-21 14:50:06.598520: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c81700 of size 256 next 85
+2024-05-21 14:50:06.598525: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c81800 of size 256 next 86
+2024-05-21 14:50:06.598529: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c81900 of size 256 next 87
+2024-05-21 14:50:06.598534: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c81a00 of size 256 next 88
+2024-05-21 14:50:06.598539: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c81b00 of size 256 next 89
+2024-05-21 14:50:06.598543: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c81c00 of size 256 next 90
+2024-05-21 14:50:06.598760: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c81d00 of size 256 next 91
+2024-05-21 14:50:06.598765: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c81e00 of size 256 next 92
+2024-05-21 14:50:06.598769: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c81f00 of size 256 next 93
+2024-05-21 14:50:06.598774: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c82000 of size 256 next 94
+2024-05-21 14:50:06.598779: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c82100 of size 256 next 95
+2024-05-21 14:50:06.598783: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c82200 of size 256 next 96
+2024-05-21 14:50:06.599003: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c82300 of size 256 next 97
+2024-05-21 14:50:06.599008: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c82400 of size 256 next 98
+2024-05-21 14:50:06.599013: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c82500 of size 256 next 99
+2024-05-21 14:50:06.599017: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c82600 of size 256 next 100
+2024-05-21 14:50:06.599022: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c82700 of size 256 next 101
+2024-05-21 14:50:06.599027: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c82800 of size 256 next 102
+2024-05-21 14:50:06.599245: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c82900 of size 256 next 103
+2024-05-21 14:50:06.599250: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c82a00 of size 256 next 104
+2024-05-21 14:50:06.599254: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c82b00 of size 256 next 105
+2024-05-21 14:50:06.599259: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c82c00 of size 256 next 106
+2024-05-21 14:50:06.599264: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c82d00 of size 256 next 107
+2024-05-21 14:50:06.599268: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c82e00 of size 256 next 108
+2024-05-21 14:50:06.599479: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c82f00 of size 256 next 109
+2024-05-21 14:50:06.599484: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c83000 of size 256 next 110
+2024-05-21 14:50:06.599489: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c83100 of size 256 next 111
+2024-05-21 14:50:06.599494: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c83200 of size 256 next 112
+2024-05-21 14:50:06.599498: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c83300 of size 256 next 113
+2024-05-21 14:50:06.599503: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c83400 of size 256 next 114
+2024-05-21 14:50:06.599508: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c83500 of size 256 next 115
+2024-05-21 14:50:06.599722: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c83600 of size 256 next 116
+2024-05-21 14:50:06.599727: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c83700 of size 256 next 117
+2024-05-21 14:50:06.599732: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c83800 of size 256 next 118
+2024-05-21 14:50:06.599737: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c83900 of size 256 next 119
+2024-05-21 14:50:06.599741: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c83a00 of size 256 next 120
+2024-05-21 14:50:06.599746: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c83b00 of size 256 next 121
+2024-05-21 14:50:06.599971: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c83c00 of size 256 next 122
+2024-05-21 14:50:06.599976: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c83d00 of size 256 next 123
+2024-05-21 14:50:06.599980: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c83e00 of size 256 next 124
+2024-05-21 14:50:06.599986: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c83f00 of size 256 next 125
+2024-05-21 14:50:06.599992: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c84000 of size 256 next 126
+2024-05-21 14:50:06.599997: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c84100 of size 256 next 127
+2024-05-21 14:50:06.600003: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c84200 of size 256 next 128
+2024-05-21 14:50:06.600231: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c84300 of size 256 next 129
+2024-05-21 14:50:06.600238: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c84400 of size 256 next 130
+2024-05-21 14:50:06.600244: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c84500 of size 256 next 131
+2024-05-21 14:50:06.600250: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c84600 of size 256 next 132
+2024-05-21 14:50:06.600257: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c84700 of size 256 next 136
+2024-05-21 14:50:06.600263: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c84800 of size 256 next 137
+2024-05-21 14:50:06.600487: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c84900 of size 8192 next 143
+2024-05-21 14:50:06.600494: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c86900 of size 2048 next 146
+2024-05-21 14:50:06.600500: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c87100 of size 2048 next 148
+2024-05-21 14:50:06.600506: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] Free  at 7f3ff8c87900 of size 8192 next 149
+2024-05-21 14:50:06.600512: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c89900 of size 8192 next 150
+2024-05-21 14:50:06.600518: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c8b900 of size 8192 next 151
+2024-05-21 14:50:06.600707: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c8d900 of size 8192 next 152
+2024-05-21 14:50:06.600714: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] Free  at 7f3ff8c8f900 of size 198400 next 18
+2024-05-21 14:50:06.600720: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8cc0000 of size 393216 next 44
+2024-05-21 14:50:06.600726: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8d20000 of size 393216 next 47
+2024-05-21 14:50:06.600732: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8d80000 of size 393216 next 48
+2024-05-21 14:50:06.600738: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8de0000 of size 131072 next 51
+2024-05-21 14:50:06.600965: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8e00000 of size 131072 next 52
+2024-05-21 14:50:06.600972: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8e20000 of size 131072 next 55
+2024-05-21 14:50:06.600978: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8e40000 of size 131072 next 56
+2024-05-21 14:50:06.600984: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8e60000 of size 228864 next 9
+2024-05-21 14:50:06.600990: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8e97e00 of size 393216 next 61
+2024-05-21 14:50:06.600995: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8ef7e00 of size 1220608 next 133
+2024-05-21 14:50:06.601000: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff9021e00 of size 1327104 next 134
+2024-05-21 14:50:06.601005: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff9165e00 of size 1220608 next 135
+2024-05-21 14:50:06.601218: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff928fe00 of size 305152 next 140
+2024-05-21 14:50:06.601223: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff92da600 of size 305152 next 141
+2024-05-21 14:50:06.601228: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff9324e00 of size 305152 next 145
+2024-05-21 14:50:06.601233: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] Free  at 7f3ff936f600 of size 592384 next 18446744073709551615
+2024-05-21 14:50:06.601237: I external/local_tsl/tsl/framework/bfc_allocator.cc:1075] Next region of size 16777216
+2024-05-21 14:50:06.601245: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ffca00000 of size 3707904 next 43
+2024-05-21 14:50:06.601467: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ffcd89400 of size 3707904 next 59
+2024-05-21 14:50:06.601472: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ffd112800 of size 1327104 next 142
+2024-05-21 14:50:06.601477: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ffd256800 of size 1220608 next 144
+2024-05-21 14:50:06.601481: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ffd380800 of size 1220608 next 147
+2024-05-21 14:50:06.601486: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ffd4aa800 of size 1220608 next 153
+2024-05-21 14:50:06.601491: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ffd5d4800 of size 1220608 next 154
+2024-05-21 14:50:06.601676: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ffd6fe800 of size 1220608 next 155
+2024-05-21 14:50:06.601681: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ffd828800 of size 1931264 next 18446744073709551615
+2024-05-21 14:50:06.601685: I external/local_tsl/tsl/framework/bfc_allocator.cc:1100]      Summary of in-use Chunks by size: 
+2024-05-21 14:50:06.601692: I external/local_tsl/tsl/framework/bfc_allocator.cc:1103] 100 Chunks of size 256 totalling 25.0KiB
+2024-05-21 14:50:06.601698: I external/local_tsl/tsl/framework/bfc_allocator.cc:1103] 6 Chunks of size 512 totalling 3.0KiB
+2024-05-21 14:50:06.601703: I external/local_tsl/tsl/framework/bfc_allocator.cc:1103] 6 Chunks of size 1024 totalling 6.0KiB
+2024-05-21 14:50:06.601898: I external/local_tsl/tsl/framework/bfc_allocator.cc:1103] 1 Chunks of size 1280 totalling 1.2KiB
+2024-05-21 14:50:06.601903: I external/local_tsl/tsl/framework/bfc_allocator.cc:1103] 2 Chunks of size 2048 totalling 4.0KiB
+2024-05-21 14:50:06.601909: I external/local_tsl/tsl/framework/bfc_allocator.cc:1103] 4 Chunks of size 8192 totalling 32.0KiB
+2024-05-21 14:50:06.601914: I external/local_tsl/tsl/framework/bfc_allocator.cc:1103] 5 Chunks of size 131072 totalling 640.0KiB
+2024-05-21 14:50:06.601919: I external/local_tsl/tsl/framework/bfc_allocator.cc:1103] 1 Chunks of size 131584 totalling 128.5KiB
+2024-05-21 14:50:06.601924: I external/local_tsl/tsl/framework/bfc_allocator.cc:1103] 1 Chunks of size 228864 totalling 223.5KiB
+2024-05-21 14:50:06.602145: I external/local_tsl/tsl/framework/bfc_allocator.cc:1103] 1 Chunks of size 261376 totalling 255.2KiB
+2024-05-21 14:50:06.602150: I external/local_tsl/tsl/framework/bfc_allocator.cc:1103] 3 Chunks of size 305152 totalling 894.0KiB
+2024-05-21 14:50:06.602155: I external/local_tsl/tsl/framework/bfc_allocator.cc:1103] 5 Chunks of size 393216 totalling 1.88MiB
+2024-05-21 14:50:06.602160: I external/local_tsl/tsl/framework/bfc_allocator.cc:1103] 1 Chunks of size 622080 totalling 607.5KiB
+2024-05-21 14:50:06.602166: I external/local_tsl/tsl/framework/bfc_allocator.cc:1103] 1 Chunks of size 685568 totalling 669.5KiB
+2024-05-21 14:50:06.602171: I external/local_tsl/tsl/framework/bfc_allocator.cc:1103] 7 Chunks of size 1220608 totalling 8.15MiB
+2024-05-21 14:50:06.602394: I external/local_tsl/tsl/framework/bfc_allocator.cc:1103] 2 Chunks of size 1327104 totalling 2.53MiB
+2024-05-21 14:50:06.602399: I external/local_tsl/tsl/framework/bfc_allocator.cc:1103] 1 Chunks of size 1931264 totalling 1.84MiB
+2024-05-21 14:50:06.602404: I external/local_tsl/tsl/framework/bfc_allocator.cc:1103] 2 Chunks of size 3707904 totalling 7.07MiB
+2024-05-21 14:50:06.602409: I external/local_tsl/tsl/framework/bfc_allocator.cc:1103] 1 Chunks of size 4194304 totalling 4.00MiB
+2024-05-21 14:50:06.602414: I external/local_tsl/tsl/framework/bfc_allocator.cc:1103] 1 Chunks of size 509542400 totalling 485.94MiB
+2024-05-21 14:50:06.602419: I external/local_tsl/tsl/framework/bfc_allocator.cc:1103] 1 Chunks of size 536870912 totalling 512.00MiB
+2024-05-21 14:50:06.602635: I external/local_tsl/tsl/framework/bfc_allocator.cc:1107] Sum Total of in-use chunks: 1.00GiB
+2024-05-21 14:50:06.602644: I external/local_tsl/tsl/framework/bfc_allocator.cc:1109] Total bytes in pool: 1077870592 memory_limit_: 1077870592 available bytes: 0 curr_region_allocation_bytes_: 1073741824
+2024-05-21 14:50:06.602651: I external/local_tsl/tsl/framework/bfc_allocator.cc:1114] Stats: 
+Limit:                      1077870592
+InUse:                      1076692480
+MaxInUse:                   1076692480
+NumAllocs:                         216
+MaxAllocSize:                536870912
+Reserved:                            0
+PeakReserved:                        0
+LargestFreeBlock:                    0
 
-[1 rows x 20 columns][0m
-[codecarbon INFO @ 13:51:31] Energy consumed for RAM : 0.000001 kWh. RAM Power : 0.5472621917724609 W
-[codecarbon INFO @ 13:51:31] Energy consumed for all GPUs : 0.000183 kWh. Total GPU Power : 169.02063100772693 W
-[codecarbon INFO @ 13:51:31] Energy consumed for all CPUs : 0.000057 kWh. Total CPU Power : 52.5 W
-[codecarbon INFO @ 13:51:31] 0.000240 kWh of electricity used since the beginning.
+2024-05-21 14:50:06.602659: W external/local_tsl/tsl/framework/bfc_allocator.cc:497] ********************************************xxx************************************************xx***
+2024-05-21 14:50:06.602681: W external/local_tsl/tsl/framework/bfc_allocator.cc:485] Allocator (GPU_0_bfc) ran out of memory trying to allocate 298.00MiB (rounded to 312475648)requested by op ATT2ITM_1/dense_2/Tensordot/MatMul
+If the cause is memory fragmentation maybe the environment variable 'TF_GPU_ALLOCATOR=cuda_malloc_async' will improve the situation. 
+Current allocation summary follows.
+Current allocation summary follows.
+2024-05-21 14:50:06.602977: I external/local_tsl/tsl/framework/bfc_allocator.cc:1039] BFCAllocator dump for GPU_0_bfc
+2024-05-21 14:50:06.602991: W tensorflow/core/framework/op_kernel.cc:1839] OP_REQUIRES failed at tile_ops.cc:201 : RESOURCE_EXHAUSTED: OOM when allocating tensor with shape[2048,162,149] and type float on /job:localhost/replica:0/task:0/device:GPU:0 by allocator GPU_0_bfc
+2024-05-21 14:50:06.603216: I external/local_tsl/tsl/framework/bfc_allocator.cc:1046] Bin (256): 	Total Chunks: 100, Chunks in use: 100. 25.0KiB allocated for chunks. 25.0KiB in use in bin. 351B client-requested in use in bin.
+2024-05-21 14:50:06.603226: I external/local_tsl/tsl/framework/bfc_allocator.cc:1046] Bin (512): 	Total Chunks: 6, Chunks in use: 6. 3.0KiB allocated for chunks. 3.0KiB in use in bin. 3.0KiB client-requested in use in bin.
+2024-05-21 14:50:06.603234: I external/local_tsl/tsl/framework/bfc_allocator.cc:1046] Bin (1024): 	Total Chunks: 7, Chunks in use: 7. 7.2KiB allocated for chunks. 7.2KiB in use in bin. 7.0KiB client-requested in use in bin.
+2024-05-21 14:50:06.603462: I external/local_tsl/tsl/framework/bfc_allocator.cc:1046] Bin (2048): 	Total Chunks: 2, Chunks in use: 2. 4.0KiB allocated for chunks. 4.0KiB in use in bin. 4.0KiB client-requested in use in bin.
+2024-05-21 14:50:06.603471: I external/local_tsl/tsl/framework/bfc_allocator.cc:1046] Bin (4096): 	Total Chunks: 0, Chunks in use: 0. 0B allocated for chunks. 0B in use in bin. 0B client-requested in use in bin.
+2024-05-21 14:50:06.603479: I external/local_tsl/tsl/framework/bfc_allocator.cc:1046] Bin (8192): 	Total Chunks: 5, Chunks in use: 4. 40.0KiB allocated for chunks. 32.0KiB in use in bin. 32.0KiB client-requested in use in bin.
+2024-05-21 14:50:06.603486: I external/local_tsl/tsl/framework/bfc_allocator.cc:1046] Bin (16384): 	Total Chunks: 0, Chunks in use: 0. 0B allocated for chunks. 0B in use in bin. 0B client-requested in use in bin.
+2024-05-21 14:50:06.603492: I external/local_tsl/tsl/framework/bfc_allocator.cc:1046] Bin (32768): 	Total Chunks: 0, Chunks in use: 0. 0B allocated for chunks. 0B in use in bin. 0B client-requested in use in bin.
+2024-05-21 14:50:06.603499: I external/local_tsl/tsl/framework/bfc_allocator.cc:1046] Bin (65536): 	Total Chunks: 0, Chunks in use: 0. 0B allocated for chunks. 0B in use in bin. 0B client-requested in use in bin.
+2024-05-21 14:50:06.603506: I external/local_tsl/tsl/framework/bfc_allocator.cc:1046] Bin (131072): 	Total Chunks: 9, Chunks in use: 8. 1.41MiB allocated for chunks. 1.22MiB in use in bin. 1.19MiB client-requested in use in bin.
+2024-05-21 14:50:06.603728: I external/local_tsl/tsl/framework/bfc_allocator.cc:1046] Bin (262144): 	Total Chunks: 9, Chunks in use: 8. 3.11MiB allocated for chunks. 2.75MiB in use in bin. 2.59MiB client-requested in use in bin.
+2024-05-21 14:50:06.603739: I external/local_tsl/tsl/framework/bfc_allocator.cc:1046] Bin (524288): 	Total Chunks: 3, Chunks in use: 2. 1.81MiB allocated for chunks. 1.25MiB in use in bin. 768.0KiB client-requested in use in bin.
+2024-05-21 14:50:06.603747: I external/local_tsl/tsl/framework/bfc_allocator.cc:1046] Bin (1048576): 	Total Chunks: 10, Chunks in use: 10. 12.52MiB allocated for chunks. 12.52MiB in use in bin. 11.74MiB client-requested in use in bin.
+2024-05-21 14:50:06.603754: I external/local_tsl/tsl/framework/bfc_allocator.cc:1046] Bin (2097152): 	Total Chunks: 2, Chunks in use: 2. 7.07MiB allocated for chunks. 7.07MiB in use in bin. 7.07MiB client-requested in use in bin.
+2024-05-21 14:50:06.603982: I external/local_tsl/tsl/framework/bfc_allocator.cc:1046] Bin (4194304): 	Total Chunks: 1, Chunks in use: 1. 4.00MiB allocated for chunks. 4.00MiB in use in bin. 3.54MiB client-requested in use in bin.
+2024-05-21 14:50:06.603988: I external/local_tsl/tsl/framework/bfc_allocator.cc:1046] Bin (8388608): 	Total Chunks: 0, Chunks in use: 0. 0B allocated for chunks. 0B in use in bin. 0B client-requested in use in bin.
+2024-05-21 14:50:06.603993: I external/local_tsl/tsl/framework/bfc_allocator.cc:1046] Bin (16777216): 	Total Chunks: 0, Chunks in use: 0. 0B allocated for chunks. 0B in use in bin. 0B client-requested in use in bin.
+2024-05-21 14:50:06.603998: I external/local_tsl/tsl/framework/bfc_allocator.cc:1046] Bin (33554432): 	Total Chunks: 0, Chunks in use: 0. 0B allocated for chunks. 0B in use in bin. 0B client-requested in use in bin.
+2024-05-21 14:50:06.604003: I external/local_tsl/tsl/framework/bfc_allocator.cc:1046] Bin (67108864): 	Total Chunks: 0, Chunks in use: 0. 0B allocated for chunks. 0B in use in bin. 0B client-requested in use in bin.
+2024-05-21 14:50:06.604008: I external/local_tsl/tsl/framework/bfc_allocator.cc:1046] Bin (134217728): 	Total Chunks: 0, Chunks in use: 0. 0B allocated for chunks. 0B in use in bin. 0B client-requested in use in bin.
+2024-05-21 14:50:06.604221: I external/local_tsl/tsl/framework/bfc_allocator.cc:1046] Bin (268435456): 	Total Chunks: 2, Chunks in use: 2. 997.94MiB allocated for chunks. 997.94MiB in use in bin. 933.00MiB client-requested in use in bin.
+2024-05-21 14:50:06.604227: I external/local_tsl/tsl/framework/bfc_allocator.cc:1062] Bin for 298.00MiB was 256.00MiB, Chunk State: 
+2024-05-21 14:50:06.604232: I external/local_tsl/tsl/framework/bfc_allocator.cc:1075] Next region of size 509542400
+2024-05-21 14:50:06.604237: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3e58000000 of size 509542400 next 18446744073709551615
+2024-05-21 14:50:06.604242: I external/local_tsl/tsl/framework/bfc_allocator.cc:1075] Next region of size 536870912
+2024-05-21 14:50:06.604247: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3e78000000 of size 536870912 next 18446744073709551615
+2024-05-21 14:50:06.604462: I external/local_tsl/tsl/framework/bfc_allocator.cc:1075] Next region of size 2097152
+2024-05-21 14:50:06.604468: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8200000 of size 1280 next 1
+2024-05-21 14:50:06.604473: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8200500 of size 256 next 2
+2024-05-21 14:50:06.604478: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8200600 of size 256 next 3
+2024-05-21 14:50:06.604483: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8200700 of size 256 next 4
+2024-05-21 14:50:06.604488: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8200800 of size 256 next 5
+2024-05-21 14:50:06.604754: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8200900 of size 256 next 10
+2024-05-21 14:50:06.604760: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8200a00 of size 1024 next 11
+2024-05-21 14:50:06.604764: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8200e00 of size 256 next 7
+2024-05-21 14:50:06.604772: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8200f00 of size 256 next 12
+2024-05-21 14:50:06.604777: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8201000 of size 512 next 16
+2024-05-21 14:50:06.604781: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8201200 of size 512 next 14
+2024-05-21 14:50:06.605003: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8201400 of size 256 next 25
+2024-05-21 14:50:06.605008: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8201500 of size 256 next 15
+2024-05-21 14:50:06.605013: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8201600 of size 261376 next 19
+2024-05-21 14:50:06.605017: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8241300 of size 131584 next 23
+2024-05-21 14:50:06.605025: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8261500 of size 256 next 17
+2024-05-21 14:50:06.605030: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8261600 of size 256 next 24
+2024-05-21 14:50:06.605218: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8261700 of size 256 next 26
+2024-05-21 14:50:06.605223: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8261800 of size 256 next 27
+2024-05-21 14:50:06.605228: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8261900 of size 256 next 28
+2024-05-21 14:50:06.605233: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8261a00 of size 256 next 29
+2024-05-21 14:50:06.605237: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8261b00 of size 256 next 30
+2024-05-21 14:50:06.605242: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8261c00 of size 256 next 31
+2024-05-21 14:50:06.605247: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8261d00 of size 256 next 32
+2024-05-21 14:50:06.605461: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8261e00 of size 256 next 33
+2024-05-21 14:50:06.605466: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8261f00 of size 256 next 34
+2024-05-21 14:50:06.605471: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8262000 of size 256 next 35
+2024-05-21 14:50:06.605476: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8262100 of size 256 next 36
+2024-05-21 14:50:06.605481: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8262200 of size 256 next 37
+2024-05-21 14:50:06.605485: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8262300 of size 256 next 38
+2024-05-21 14:50:06.605490: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8262400 of size 256 next 39
+2024-05-21 14:50:06.605749: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8262500 of size 256 next 40
+2024-05-21 14:50:06.605754: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8262600 of size 256 next 41
+2024-05-21 14:50:06.605759: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8262700 of size 1024 next 45
+2024-05-21 14:50:06.605764: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8262b00 of size 1024 next 46
+2024-05-21 14:50:06.605769: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8262f00 of size 1024 next 49
+2024-05-21 14:50:06.605773: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8263300 of size 1024 next 50
+2024-05-21 14:50:06.605779: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8263700 of size 512 next 53
+2024-05-21 14:50:06.606038: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8263900 of size 512 next 54
+2024-05-21 14:50:06.606044: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8263b00 of size 512 next 57
+2024-05-21 14:50:06.606051: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8263d00 of size 512 next 58
+2024-05-21 14:50:06.606055: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8263f00 of size 1024 next 60
+2024-05-21 14:50:06.606060: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] Free  at 7f3ff8264300 of size 379136 next 13
+2024-05-21 14:50:06.606065: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff82c0c00 of size 622080 next 21
+2024-05-21 14:50:06.606355: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8358a00 of size 685568 next 18446744073709551615
+2024-05-21 14:50:06.606360: I external/local_tsl/tsl/framework/bfc_allocator.cc:1075] Next region of size 4194304
+2024-05-21 14:50:06.606365: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8600000 of size 4194304 next 18446744073709551615
+2024-05-21 14:50:06.606370: I external/local_tsl/tsl/framework/bfc_allocator.cc:1075] Next region of size 8388608
+2024-05-21 14:50:06.606375: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c00000 of size 393216 next 22
+2024-05-21 14:50:06.606380: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c60000 of size 131072 next 62
+2024-05-21 14:50:06.606541: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c80000 of size 256 next 20
+2024-05-21 14:50:06.606546: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c80100 of size 256 next 63
+2024-05-21 14:50:06.606551: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c80200 of size 256 next 64
+2024-05-21 14:50:06.606555: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c80300 of size 256 next 65
+2024-05-21 14:50:06.606560: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c80400 of size 256 next 66
+2024-05-21 14:50:06.606565: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c80500 of size 256 next 67
+2024-05-21 14:50:06.606571: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c80600 of size 256 next 68
+2024-05-21 14:50:06.606756: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c80700 of size 256 next 69
+2024-05-21 14:50:06.606761: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c80800 of size 256 next 70
+2024-05-21 14:50:06.606766: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c80900 of size 256 next 71
+2024-05-21 14:50:06.606770: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c80a00 of size 256 next 72
+2024-05-21 14:50:06.606775: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c80b00 of size 256 next 73
+2024-05-21 14:50:06.606780: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c80c00 of size 256 next 74
+2024-05-21 14:50:06.607003: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c80d00 of size 256 next 75
+2024-05-21 14:50:06.607008: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c80e00 of size 256 next 76
+2024-05-21 14:50:06.607013: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c80f00 of size 256 next 77
+2024-05-21 14:50:06.607017: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c81000 of size 256 next 78
+2024-05-21 14:50:06.607022: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c81100 of size 256 next 79
+2024-05-21 14:50:06.607027: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c81200 of size 256 next 80
+2024-05-21 14:50:06.607246: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c81300 of size 256 next 81
+2024-05-21 14:50:06.607251: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c81400 of size 256 next 82
+2024-05-21 14:50:06.607256: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c81500 of size 256 next 83
+2024-05-21 14:50:06.607263: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c81600 of size 256 next 84
+2024-05-21 14:50:06.607267: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c81700 of size 256 next 85
+2024-05-21 14:50:06.607272: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c81800 of size 256 next 86
+2024-05-21 14:50:06.607487: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c81900 of size 256 next 87
+2024-05-21 14:50:06.607492: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c81a00 of size 256 next 88
+2024-05-21 14:50:06.607497: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c81b00 of size 256 next 89
+2024-05-21 14:50:06.607501: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c81c00 of size 256 next 90
+2024-05-21 14:50:06.607506: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c81d00 of size 256 next 91
+2024-05-21 14:50:06.607511: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c81e00 of size 256 next 92
+2024-05-21 14:50:06.607669: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c81f00 of size 256 next 93
+2024-05-21 14:50:06.607674: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c82000 of size 256 next 94
+2024-05-21 14:50:06.607679: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c82100 of size 256 next 95
+2024-05-21 14:50:06.607684: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c82200 of size 256 next 96
+2024-05-21 14:50:06.607689: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c82300 of size 256 next 97
+2024-05-21 14:50:06.607693: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c82400 of size 256 next 98
+2024-05-21 14:50:06.607698: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c82500 of size 256 next 99
+2024-05-21 14:50:06.607885: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c82600 of size 256 next 100
+2024-05-21 14:50:06.607890: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c82700 of size 256 next 101
+2024-05-21 14:50:06.607894: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c82800 of size 256 next 102
+2024-05-21 14:50:06.607899: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c82900 of size 256 next 103
+2024-05-21 14:50:06.607904: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c82a00 of size 256 next 104
+2024-05-21 14:50:06.607908: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c82b00 of size 256 next 105
+2024-05-21 14:50:06.608136: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c82c00 of size 256 next 106
+2024-05-21 14:50:06.608141: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c82d00 of size 256 next 107
+2024-05-21 14:50:06.608146: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c82e00 of size 256 next 108
+2024-05-21 14:50:06.608150: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c82f00 of size 256 next 109
+2024-05-21 14:50:06.608155: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c83000 of size 256 next 110
+2024-05-21 14:50:06.608160: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c83100 of size 256 next 111
+2024-05-21 14:50:06.608384: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c83200 of size 256 next 112
+2024-05-21 14:50:06.608390: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c83300 of size 256 next 113
+2024-05-21 14:50:06.608395: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c83400 of size 256 next 114
+2024-05-21 14:50:06.608399: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c83500 of size 256 next 115
+2024-05-21 14:50:06.608406: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c83600 of size 256 next 116
+2024-05-21 14:50:06.608411: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c83700 of size 256 next 117
+2024-05-21 14:50:06.608631: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c83800 of size 256 next 118
+2024-05-21 14:50:06.608636: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c83900 of size 256 next 119
+2024-05-21 14:50:06.608641: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c83a00 of size 256 next 120
+2024-05-21 14:50:06.608645: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c83b00 of size 256 next 121
+2024-05-21 14:50:06.608650: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c83c00 of size 256 next 122
+2024-05-21 14:50:06.608655: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c83d00 of size 256 next 123
+2024-05-21 14:50:06.608815: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c83e00 of size 256 next 124
+2024-05-21 14:50:06.608820: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c83f00 of size 256 next 125
+2024-05-21 14:50:06.608825: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c84000 of size 256 next 126
+2024-05-21 14:50:06.608830: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c84100 of size 256 next 127
+2024-05-21 14:50:06.608834: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c84200 of size 256 next 128
+2024-05-21 14:50:06.608839: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c84300 of size 256 next 129
+2024-05-21 14:50:06.608844: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c84400 of size 256 next 130
+2024-05-21 14:50:06.609056: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c84500 of size 256 next 131
+2024-05-21 14:50:06.609061: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c84600 of size 256 next 132
+2024-05-21 14:50:06.609066: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c84700 of size 256 next 136
+2024-05-21 14:50:06.609071: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c84800 of size 256 next 137
+2024-05-21 14:50:06.609075: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c84900 of size 8192 next 143
+2024-05-21 14:50:06.609080: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c86900 of size 2048 next 146
+2024-05-21 14:50:06.609298: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c87100 of size 2048 next 148
+2024-05-21 14:50:06.609303: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] Free  at 7f3ff8c87900 of size 8192 next 149
+2024-05-21 14:50:06.609308: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c89900 of size 8192 next 150
+2024-05-21 14:50:06.609313: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c8b900 of size 8192 next 151
+2024-05-21 14:50:06.609318: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c8d900 of size 8192 next 152
+2024-05-21 14:50:06.609322: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] Free  at 7f3ff8c8f900 of size 198400 next 18
+2024-05-21 14:50:06.609328: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8cc0000 of size 393216 next 44
+2024-05-21 14:50:06.609547: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8d20000 of size 393216 next 47
+2024-05-21 14:50:06.609552: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8d80000 of size 393216 next 48
+2024-05-21 14:50:06.609557: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8de0000 of size 131072 next 51
+2024-05-21 14:50:06.609561: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8e00000 of size 131072 next 52
+2024-05-21 14:50:06.609568: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8e20000 of size 131072 next 55
+2024-05-21 14:50:06.609573: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8e40000 of size 131072 next 56
+2024-05-21 14:50:06.609842: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8e60000 of size 228864 next 9
+2024-05-21 14:50:06.609847: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8e97e00 of size 393216 next 61
+2024-05-21 14:50:06.609852: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8ef7e00 of size 1220608 next 133
+2024-05-21 14:50:06.609857: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff9021e00 of size 1327104 next 134
+2024-05-21 14:50:06.609862: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff9165e00 of size 1220608 next 135
+2024-05-21 14:50:06.609866: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff928fe00 of size 305152 next 140
+2024-05-21 14:50:06.610054: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff92da600 of size 305152 next 141
+2024-05-21 14:50:06.610059: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff9324e00 of size 305152 next 145
+2024-05-21 14:50:06.610063: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] Free  at 7f3ff936f600 of size 592384 next 18446744073709551615
+2024-05-21 14:50:06.610068: I external/local_tsl/tsl/framework/bfc_allocator.cc:1075] Next region of size 16777216
+2024-05-21 14:50:06.610073: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ffca00000 of size 3707904 next 43
+2024-05-21 14:50:06.610078: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ffcd89400 of size 3707904 next 59
+2024-05-21 14:50:06.610300: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ffd112800 of size 1327104 next 142
+2024-05-21 14:50:06.610305: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ffd256800 of size 1220608 next 144
+2024-05-21 14:50:06.610310: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ffd380800 of size 1220608 next 147
+2024-05-21 14:50:06.610315: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ffd4aa800 of size 1220608 next 153
+2024-05-21 14:50:06.610320: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ffd5d4800 of size 1220608 next 154
+2024-05-21 14:50:06.610324: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ffd6fe800 of size 1220608 next 155
+2024-05-21 14:50:06.610329: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ffd828800 of size 1931264 next 18446744073709551615
+2024-05-21 14:50:06.610552: I external/local_tsl/tsl/framework/bfc_allocator.cc:1100]      Summary of in-use Chunks by size: 
+2024-05-21 14:50:06.610558: I external/local_tsl/tsl/framework/bfc_allocator.cc:1103] 100 Chunks of size 256 totalling 25.0KiB
+2024-05-21 14:50:06.610563: I external/local_tsl/tsl/framework/bfc_allocator.cc:1103] 6 Chunks of size 512 totalling 3.0KiB
+2024-05-21 14:50:06.610569: I external/local_tsl/tsl/framework/bfc_allocator.cc:1103] 6 Chunks of size 1024 totalling 6.0KiB
+2024-05-21 14:50:06.610574: I external/local_tsl/tsl/framework/bfc_allocator.cc:1103] 1 Chunks of size 1280 totalling 1.2KiB
+2024-05-21 14:50:06.610579: I external/local_tsl/tsl/framework/bfc_allocator.cc:1103] 2 Chunks of size 2048 totalling 4.0KiB
+2024-05-21 14:50:06.610840: I external/local_tsl/tsl/framework/bfc_allocator.cc:1103] 4 Chunks of size 8192 totalling 32.0KiB
+2024-05-21 14:50:06.610845: I external/local_tsl/tsl/framework/bfc_allocator.cc:1103] 5 Chunks of size 131072 totalling 640.0KiB
+2024-05-21 14:50:06.610850: I external/local_tsl/tsl/framework/bfc_allocator.cc:1103] 1 Chunks of size 131584 totalling 128.5KiB
+2024-05-21 14:50:06.610856: I external/local_tsl/tsl/framework/bfc_allocator.cc:1103] 1 Chunks of size 228864 totalling 223.5KiB
+2024-05-21 14:50:06.610863: I external/local_tsl/tsl/framework/bfc_allocator.cc:1103] 1 Chunks of size 261376 totalling 255.2KiB
+2024-05-21 14:50:06.610869: I external/local_tsl/tsl/framework/bfc_allocator.cc:1103] 3 Chunks of size 305152 totalling 894.0KiB
+2024-05-21 14:50:06.611093: I external/local_tsl/tsl/framework/bfc_allocator.cc:1103] 5 Chunks of size 393216 totalling 1.88MiB
+2024-05-21 14:50:06.611100: I external/local_tsl/tsl/framework/bfc_allocator.cc:1103] 1 Chunks of size 622080 totalling 607.5KiB
+2024-05-21 14:50:06.611106: I external/local_tsl/tsl/framework/bfc_allocator.cc:1103] 1 Chunks of size 685568 totalling 669.5KiB
+2024-05-21 14:50:06.611113: I external/local_tsl/tsl/framework/bfc_allocator.cc:1103] 7 Chunks of size 1220608 totalling 8.15MiB
+2024-05-21 14:50:06.611119: I external/local_tsl/tsl/framework/bfc_allocator.cc:1103] 2 Chunks of size 1327104 totalling 2.53MiB
+2024-05-21 14:50:06.611126: I external/local_tsl/tsl/framework/bfc_allocator.cc:1103] 1 Chunks of size 1931264 totalling 1.84MiB
+2024-05-21 14:50:06.611312: I external/local_tsl/tsl/framework/bfc_allocator.cc:1103] 2 Chunks of size 3707904 totalling 7.07MiB
+2024-05-21 14:50:06.611319: I external/local_tsl/tsl/framework/bfc_allocator.cc:1103] 1 Chunks of size 4194304 totalling 4.00MiB
+2024-05-21 14:50:06.611326: I external/local_tsl/tsl/framework/bfc_allocator.cc:1103] 1 Chunks of size 509542400 totalling 485.94MiB
+2024-05-21 14:50:06.611332: I external/local_tsl/tsl/framework/bfc_allocator.cc:1103] 1 Chunks of size 536870912 totalling 512.00MiB
+2024-05-21 14:50:06.611339: I external/local_tsl/tsl/framework/bfc_allocator.cc:1107] Sum Total of in-use chunks: 1.00GiB
+2024-05-21 14:50:06.611345: I external/local_tsl/tsl/framework/bfc_allocator.cc:1109] Total bytes in pool: 1077870592 memory_limit_: 1077870592 available bytes: 0 curr_region_allocation_bytes_: 1073741824
+2024-05-21 14:50:06.611561: I external/local_tsl/tsl/framework/bfc_allocator.cc:1114] Stats: 
+Limit:                      1077870592
+InUse:                      1076692480
+MaxInUse:                   1076692480
+NumAllocs:                         216
+MaxAllocSize:                536870912
+Reserved:                            0
+PeakReserved:                        0
+LargestFreeBlock:                    0
+
+2024-05-21 14:50:06.611571: W external/local_tsl/tsl/framework/bfc_allocator.cc:497] ********************************************xxx************************************************xx***
+2024-05-21 14:50:06.611585: W tensorflow/core/framework/op_kernel.cc:1839] OP_REQUIRES failed at matmul_op_impl.h:921 : RESOURCE_EXHAUSTED: OOM when allocating tensor with shape[305152,256] and type float on /job:localhost/replica:0/task:0/device:GPU:0 by allocator GPU_0_bfc
+2024-05-21 14:50:06.611597: W external/local_tsl/tsl/framework/bfc_allocator.cc:485] Allocator (GPU_0_bfc) ran out of memory trying to allocate 324.00MiB (rounded to 339738624)requested by op ATT2ITM_1/dense/Tensordot/MatMul
+If the cause is memory fragmentation maybe the environment variable 'TF_GPU_ALLOCATOR=cuda_malloc_async' will improve the situation. 
+Current allocation summary follows.
+Current allocation summary follows.
+2024-05-21 14:50:06.611899: I external/local_tsl/tsl/framework/bfc_allocator.cc:1039] BFCAllocator dump for GPU_0_bfc
+2024-05-21 14:50:06.611920: I external/local_tsl/tsl/framework/bfc_allocator.cc:1046] Bin (256): 	Total Chunks: 100, Chunks in use: 100. 25.0KiB allocated for chunks. 25.0KiB in use in bin. 351B client-requested in use in bin.
+2024-05-21 14:50:06.611931: I external/local_tsl/tsl/framework/bfc_allocator.cc:1046] Bin (512): 	Total Chunks: 6, Chunks in use: 6. 3.0KiB allocated for chunks. 3.0KiB in use in bin. 3.0KiB client-requested in use in bin.
+2024-05-21 14:50:06.611942: I external/local_tsl/tsl/framework/bfc_allocator.cc:1046] Bin (1024): 	Total Chunks: 7, Chunks in use: 7. 7.2KiB allocated for chunks. 7.2KiB in use in bin. 7.0KiB client-requested in use in bin.
+2024-05-21 14:50:06.611952: I external/local_tsl/tsl/framework/bfc_allocator.cc:1046] Bin (2048): 	Total Chunks: 2, Chunks in use: 2. 4.0KiB allocated for chunks. 4.0KiB in use in bin. 4.0KiB client-requested in use in bin.
+2024-05-21 14:50:06.611967: I external/local_tsl/tsl/framework/bfc_allocator.cc:1046] Bin (4096): 	Total Chunks: 0, Chunks in use: 0. 0B allocated for chunks. 0B in use in bin. 0B client-requested in use in bin.
+2024-05-21 14:50:06.611977: I external/local_tsl/tsl/framework/bfc_allocator.cc:1046] Bin (8192): 	Total Chunks: 5, Chunks in use: 4. 40.0KiB allocated for chunks. 32.0KiB in use in bin. 32.0KiB client-requested in use in bin.
+2024-05-21 14:50:06.611984: I external/local_tsl/tsl/framework/bfc_allocator.cc:1046] Bin (16384): 	Total Chunks: 0, Chunks in use: 0. 0B allocated for chunks. 0B in use in bin. 0B client-requested in use in bin.
+2024-05-21 14:50:06.611991: I external/local_tsl/tsl/framework/bfc_allocator.cc:1046] Bin (32768): 	Total Chunks: 0, Chunks in use: 0. 0B allocated for chunks. 0B in use in bin. 0B client-requested in use in bin.
+2024-05-21 14:50:06.611997: I external/local_tsl/tsl/framework/bfc_allocator.cc:1046] Bin (65536): 	Total Chunks: 0, Chunks in use: 0. 0B allocated for chunks. 0B in use in bin. 0B client-requested in use in bin.
+2024-05-21 14:50:06.612004: I external/local_tsl/tsl/framework/bfc_allocator.cc:1046] Bin (131072): 	Total Chunks: 9, Chunks in use: 8. 1.41MiB allocated for chunks. 1.22MiB in use in bin. 1.19MiB client-requested in use in bin.
+2024-05-21 14:50:06.612011: I external/local_tsl/tsl/framework/bfc_allocator.cc:1046] Bin (262144): 	Total Chunks: 9, Chunks in use: 8. 3.11MiB allocated for chunks. 2.75MiB in use in bin. 2.59MiB client-requested in use in bin.
+2024-05-21 14:50:06.612018: I external/local_tsl/tsl/framework/bfc_allocator.cc:1046] Bin (524288): 	Total Chunks: 3, Chunks in use: 2. 1.81MiB allocated for chunks. 1.25MiB in use in bin. 768.0KiB client-requested in use in bin.
+2024-05-21 14:50:06.612024: I external/local_tsl/tsl/framework/bfc_allocator.cc:1046] Bin (1048576): 	Total Chunks: 10, Chunks in use: 10. 12.52MiB allocated for chunks. 12.52MiB in use in bin. 11.74MiB client-requested in use in bin.
+2024-05-21 14:50:06.612029: I external/local_tsl/tsl/framework/bfc_allocator.cc:1046] Bin (2097152): 	Total Chunks: 2, Chunks in use: 2. 7.07MiB allocated for chunks. 7.07MiB in use in bin. 7.07MiB client-requested in use in bin.
+2024-05-21 14:50:06.612034: I external/local_tsl/tsl/framework/bfc_allocator.cc:1046] Bin (4194304): 	Total Chunks: 1, Chunks in use: 1. 4.00MiB allocated for chunks. 4.00MiB in use in bin. 3.54MiB client-requested in use in bin.
+2024-05-21 14:50:06.612040: I external/local_tsl/tsl/framework/bfc_allocator.cc:1046] Bin (8388608): 	Total Chunks: 0, Chunks in use: 0. 0B allocated for chunks. 0B in use in bin. 0B client-requested in use in bin.
+2024-05-21 14:50:06.612045: I external/local_tsl/tsl/framework/bfc_allocator.cc:1046] Bin (16777216): 	Total Chunks: 0, Chunks in use: 0. 0B allocated for chunks. 0B in use in bin. 0B client-requested in use in bin.
+2024-05-21 14:50:06.612050: I external/local_tsl/tsl/framework/bfc_allocator.cc:1046] Bin (33554432): 	Total Chunks: 0, Chunks in use: 0. 0B allocated for chunks. 0B in use in bin. 0B client-requested in use in bin.
+2024-05-21 14:50:06.612055: I external/local_tsl/tsl/framework/bfc_allocator.cc:1046] Bin (67108864): 	Total Chunks: 0, Chunks in use: 0. 0B allocated for chunks. 0B in use in bin. 0B client-requested in use in bin.
+2024-05-21 14:50:06.612060: I external/local_tsl/tsl/framework/bfc_allocator.cc:1046] Bin (134217728): 	Total Chunks: 0, Chunks in use: 0. 0B allocated for chunks. 0B in use in bin. 0B client-requested in use in bin.
+2024-05-21 14:50:06.612066: I external/local_tsl/tsl/framework/bfc_allocator.cc:1046] Bin (268435456): 	Total Chunks: 2, Chunks in use: 2. 997.94MiB allocated for chunks. 997.94MiB in use in bin. 933.00MiB client-requested in use in bin.
+2024-05-21 14:50:06.612071: I external/local_tsl/tsl/framework/bfc_allocator.cc:1062] Bin for 324.00MiB was 256.00MiB, Chunk State: 
+2024-05-21 14:50:06.612076: I external/local_tsl/tsl/framework/bfc_allocator.cc:1075] Next region of size 509542400
+2024-05-21 14:50:06.612085: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3e58000000 of size 509542400 next 18446744073709551615
+2024-05-21 14:50:06.612090: I external/local_tsl/tsl/framework/bfc_allocator.cc:1075] Next region of size 536870912
+2024-05-21 14:50:06.612095: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3e78000000 of size 536870912 next 18446744073709551615
+2024-05-21 14:50:06.612099: I external/local_tsl/tsl/framework/bfc_allocator.cc:1075] Next region of size 2097152
+2024-05-21 14:50:06.612106: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8200000 of size 1280 next 1
+2024-05-21 14:50:06.612111: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8200500 of size 256 next 2
+2024-05-21 14:50:06.612116: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8200600 of size 256 next 3
+2024-05-21 14:50:06.612121: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8200700 of size 256 next 4
+2024-05-21 14:50:06.612125: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8200800 of size 256 next 5
+2024-05-21 14:50:06.612130: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8200900 of size 256 next 10
+2024-05-21 14:50:06.612135: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8200a00 of size 1024 next 11
+2024-05-21 14:50:06.612140: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8200e00 of size 256 next 7
+2024-05-21 14:50:06.612144: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8200f00 of size 256 next 12
+2024-05-21 14:50:06.612149: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8201000 of size 512 next 16
+2024-05-21 14:50:06.612154: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8201200 of size 512 next 14
+2024-05-21 14:50:06.612158: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8201400 of size 256 next 25
+2024-05-21 14:50:06.612163: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8201500 of size 256 next 15
+2024-05-21 14:50:06.612168: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8201600 of size 261376 next 19
+2024-05-21 14:50:06.612173: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8241300 of size 131584 next 23
+2024-05-21 14:50:06.612178: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8261500 of size 256 next 17
+2024-05-21 14:50:06.612185: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8261600 of size 256 next 24
+2024-05-21 14:50:06.612192: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8261700 of size 256 next 26
+2024-05-21 14:50:06.612199: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8261800 of size 256 next 27
+2024-05-21 14:50:06.612205: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8261900 of size 256 next 28
+2024-05-21 14:50:06.612211: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8261a00 of size 256 next 29
+2024-05-21 14:50:06.612218: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8261b00 of size 256 next 30
+2024-05-21 14:50:06.612224: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8261c00 of size 256 next 31
+2024-05-21 14:50:06.612231: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8261d00 of size 256 next 32
+2024-05-21 14:50:06.612237: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8261e00 of size 256 next 33
+2024-05-21 14:50:06.612622: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8261f00 of size 256 next 34
+2024-05-21 14:50:06.612630: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8262000 of size 256 next 35
+2024-05-21 14:50:06.612640: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8262100 of size 256 next 36
+2024-05-21 14:50:06.612647: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8262200 of size 256 next 37
+2024-05-21 14:50:06.612653: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8262300 of size 256 next 38
+2024-05-21 14:50:06.612659: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8262400 of size 256 next 39
+2024-05-21 14:50:06.612666: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8262500 of size 256 next 40
+2024-05-21 14:50:06.612675: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8262600 of size 256 next 41
+2024-05-21 14:50:06.612977: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8262700 of size 1024 next 45
+2024-05-21 14:50:06.612984: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8262b00 of size 1024 next 46
+2024-05-21 14:50:06.612990: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8262f00 of size 1024 next 49
+2024-05-21 14:50:06.612997: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8263300 of size 1024 next 50
+2024-05-21 14:50:06.613003: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8263700 of size 512 next 53
+2024-05-21 14:50:06.613010: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8263900 of size 512 next 54
+2024-05-21 14:50:06.613016: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8263b00 of size 512 next 57
+2024-05-21 14:50:06.613023: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8263d00 of size 512 next 58
+2024-05-21 14:50:06.613030: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8263f00 of size 1024 next 60
+2024-05-21 14:50:06.613254: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] Free  at 7f3ff8264300 of size 379136 next 13
+2024-05-21 14:50:06.613262: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff82c0c00 of size 622080 next 21
+2024-05-21 14:50:06.613269: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8358a00 of size 685568 next 18446744073709551615
+2024-05-21 14:50:06.613275: I external/local_tsl/tsl/framework/bfc_allocator.cc:1075] Next region of size 4194304
+2024-05-21 14:50:06.613282: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8600000 of size 4194304 next 18446744073709551615
+2024-05-21 14:50:06.613289: I external/local_tsl/tsl/framework/bfc_allocator.cc:1075] Next region of size 8388608
+2024-05-21 14:50:06.613295: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c00000 of size 393216 next 22
+2024-05-21 14:50:06.613302: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c60000 of size 131072 next 62
+2024-05-21 14:50:06.613523: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c80000 of size 256 next 20
+2024-05-21 14:50:06.613530: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c80100 of size 256 next 63
+2024-05-21 14:50:06.613537: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c80200 of size 256 next 64
+2024-05-21 14:50:06.613543: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c80300 of size 256 next 65
+2024-05-21 14:50:06.613549: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c80400 of size 256 next 66
+2024-05-21 14:50:06.613556: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c80500 of size 256 next 67
+2024-05-21 14:50:06.613562: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c80600 of size 256 next 68
+2024-05-21 14:50:06.613569: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c80700 of size 256 next 69
+2024-05-21 14:50:06.613834: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c80800 of size 256 next 70
+2024-05-21 14:50:06.613844: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c80900 of size 256 next 71
+2024-05-21 14:50:06.613851: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c80a00 of size 256 next 72
+2024-05-21 14:50:06.613857: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c80b00 of size 256 next 73
+2024-05-21 14:50:06.613864: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c80c00 of size 256 next 74
+2024-05-21 14:50:06.613870: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c80d00 of size 256 next 75
+2024-05-21 14:50:06.613877: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c80e00 of size 256 next 76
+2024-05-21 14:50:06.613883: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c80f00 of size 256 next 77
+2024-05-21 14:50:06.614110: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c81000 of size 256 next 78
+2024-05-21 14:50:06.614117: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c81100 of size 256 next 79
+2024-05-21 14:50:06.614123: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c81200 of size 256 next 80
+2024-05-21 14:50:06.614130: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c81300 of size 256 next 81
+2024-05-21 14:50:06.614136: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c81400 of size 256 next 82
+2024-05-21 14:50:06.614143: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c81500 of size 256 next 83
+2024-05-21 14:50:06.614149: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c81600 of size 256 next 84
+2024-05-21 14:50:06.614156: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c81700 of size 256 next 85
+2024-05-21 14:50:06.614377: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c81800 of size 256 next 86
+2024-05-21 14:50:06.614384: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c81900 of size 256 next 87
+2024-05-21 14:50:06.614391: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c81a00 of size 256 next 88
+2024-05-21 14:50:06.614397: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c81b00 of size 256 next 89
+2024-05-21 14:50:06.614404: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c81c00 of size 256 next 90
+2024-05-21 14:50:06.614410: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c81d00 of size 256 next 91
+2024-05-21 14:50:06.614417: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c81e00 of size 256 next 92
+2024-05-21 14:50:06.614423: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c81f00 of size 256 next 93
+2024-05-21 14:50:06.614645: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c82000 of size 256 next 94
+2024-05-21 14:50:06.614652: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c82100 of size 256 next 95
+2024-05-21 14:50:06.614659: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c82200 of size 256 next 96
+2024-05-21 14:50:06.614665: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c82300 of size 256 next 97
+2024-05-21 14:50:06.614672: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c82400 of size 256 next 98
+2024-05-21 14:50:06.614678: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c82500 of size 256 next 99
+2024-05-21 14:50:06.614684: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c82600 of size 256 next 100
+2024-05-21 14:50:06.614691: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c82700 of size 256 next 101
+2024-05-21 14:50:06.614911: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c82800 of size 256 next 102
+2024-05-21 14:50:06.614921: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c82900 of size 256 next 103
+2024-05-21 14:50:06.614928: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c82a00 of size 256 next 104
+2024-05-21 14:50:06.614934: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c82b00 of size 256 next 105
+2024-05-21 14:50:06.614941: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c82c00 of size 256 next 106
+2024-05-21 14:50:06.614947: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c82d00 of size 256 next 107
+2024-05-21 14:50:06.614953: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c82e00 of size 256 next 108
+2024-05-21 14:50:06.614960: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c82f00 of size 256 next 109
+2024-05-21 14:50:06.615185: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c83000 of size 256 next 110
+2024-05-21 14:50:06.615192: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c83100 of size 256 next 111
+2024-05-21 14:50:06.615198: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c83200 of size 256 next 112
+2024-05-21 14:50:06.615205: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c83300 of size 256 next 113
+2024-05-21 14:50:06.615211: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c83400 of size 256 next 114
+2024-05-21 14:50:06.615218: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c83500 of size 256 next 115
+2024-05-21 14:50:06.615224: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c83600 of size 256 next 116
+2024-05-21 14:50:06.615231: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c83700 of size 256 next 117
+2024-05-21 14:50:06.615450: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c83800 of size 256 next 118
+2024-05-21 14:50:06.615457: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c83900 of size 256 next 119
+2024-05-21 14:50:06.615463: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c83a00 of size 256 next 120
+2024-05-21 14:50:06.615470: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c83b00 of size 256 next 121
+2024-05-21 14:50:06.615476: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c83c00 of size 256 next 122
+2024-05-21 14:50:06.615483: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c83d00 of size 256 next 123
+2024-05-21 14:50:06.615489: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c83e00 of size 256 next 124
+2024-05-21 14:50:06.615496: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c83f00 of size 256 next 125
+2024-05-21 14:50:06.615714: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c84000 of size 256 next 126
+2024-05-21 14:50:06.615721: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c84100 of size 256 next 127
+2024-05-21 14:50:06.615727: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c84200 of size 256 next 128
+2024-05-21 14:50:06.615734: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c84300 of size 256 next 129
+2024-05-21 14:50:06.615740: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c84400 of size 256 next 130
+2024-05-21 14:50:06.615746: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c84500 of size 256 next 131
+2024-05-21 14:50:06.615753: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c84600 of size 256 next 132
+2024-05-21 14:50:06.615759: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c84700 of size 256 next 136
+2024-05-21 14:50:06.615982: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c84800 of size 256 next 137
+2024-05-21 14:50:06.615993: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c84900 of size 8192 next 143
+2024-05-21 14:50:06.616000: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c86900 of size 2048 next 146
+2024-05-21 14:50:06.616006: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c87100 of size 2048 next 148
+2024-05-21 14:50:06.616013: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] Free  at 7f3ff8c87900 of size 8192 next 149
+2024-05-21 14:50:06.616019: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c89900 of size 8192 next 150
+2024-05-21 14:50:06.616025: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c8b900 of size 8192 next 151
+2024-05-21 14:50:06.616032: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8c8d900 of size 8192 next 152
+2024-05-21 14:50:06.616262: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] Free  at 7f3ff8c8f900 of size 198400 next 18
+2024-05-21 14:50:06.616269: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8cc0000 of size 393216 next 44
+2024-05-21 14:50:06.616275: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8d20000 of size 393216 next 47
+2024-05-21 14:50:06.616282: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8d80000 of size 393216 next 48
+2024-05-21 14:50:06.616288: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8de0000 of size 131072 next 51
+2024-05-21 14:50:06.616295: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8e00000 of size 131072 next 52
+2024-05-21 14:50:06.616301: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8e20000 of size 131072 next 55
+2024-05-21 14:50:06.616308: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8e40000 of size 131072 next 56
+2024-05-21 14:50:06.616526: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8e60000 of size 228864 next 9
+2024-05-21 14:50:06.616534: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8e97e00 of size 393216 next 61
+2024-05-21 14:50:06.616541: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff8ef7e00 of size 1220608 next 133
+2024-05-21 14:50:06.616547: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff9021e00 of size 1327104 next 134
+2024-05-21 14:50:06.616554: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff9165e00 of size 1220608 next 135
+2024-05-21 14:50:06.616561: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff928fe00 of size 305152 next 140
+2024-05-21 14:50:06.616567: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff92da600 of size 305152 next 141
+2024-05-21 14:50:06.616574: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ff9324e00 of size 305152 next 145
+2024-05-21 14:50:06.616844: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] Free  at 7f3ff936f600 of size 592384 next 18446744073709551615
+2024-05-21 14:50:06.616851: I external/local_tsl/tsl/framework/bfc_allocator.cc:1075] Next region of size 16777216
+2024-05-21 14:50:06.616858: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ffca00000 of size 3707904 next 43
+2024-05-21 14:50:06.616865: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ffcd89400 of size 3707904 next 59
+2024-05-21 14:50:06.616871: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ffd112800 of size 1327104 next 142
+2024-05-21 14:50:06.616878: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ffd256800 of size 1220608 next 144
+2024-05-21 14:50:06.616884: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ffd380800 of size 1220608 next 147
+2024-05-21 14:50:06.616891: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ffd4aa800 of size 1220608 next 153
+2024-05-21 14:50:06.617118: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ffd5d4800 of size 1220608 next 154
+2024-05-21 14:50:06.617126: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ffd6fe800 of size 1220608 next 155
+2024-05-21 14:50:06.617133: I external/local_tsl/tsl/framework/bfc_allocator.cc:1095] InUse at 7f3ffd828800 of size 1931264 next 18446744073709551615
+2024-05-21 14:50:06.617139: I external/local_tsl/tsl/framework/bfc_allocator.cc:1100]      Summary of in-use Chunks by size: 
+2024-05-21 14:50:06.617147: I external/local_tsl/tsl/framework/bfc_allocator.cc:1103] 100 Chunks of size 256 totalling 25.0KiB
+2024-05-21 14:50:06.617154: I external/local_tsl/tsl/framework/bfc_allocator.cc:1103] 6 Chunks of size 512 totalling 3.0KiB
+2024-05-21 14:50:06.617162: I external/local_tsl/tsl/framework/bfc_allocator.cc:1103] 6 Chunks of size 1024 totalling 6.0KiB
+2024-05-21 14:50:06.617169: I external/local_tsl/tsl/framework/bfc_allocator.cc:1103] 1 Chunks of size 1280 totalling 1.2KiB
+2024-05-21 14:50:06.617390: I external/local_tsl/tsl/framework/bfc_allocator.cc:1103] 2 Chunks of size 2048 totalling 4.0KiB
+2024-05-21 14:50:06.617398: I external/local_tsl/tsl/framework/bfc_allocator.cc:1103] 4 Chunks of size 8192 totalling 32.0KiB
+2024-05-21 14:50:06.617405: I external/local_tsl/tsl/framework/bfc_allocator.cc:1103] 5 Chunks of size 131072 totalling 640.0KiB
+2024-05-21 14:50:06.617412: I external/local_tsl/tsl/framework/bfc_allocator.cc:1103] 1 Chunks of size 131584 totalling 128.5KiB
+2024-05-21 14:50:06.617419: I external/local_tsl/tsl/framework/bfc_allocator.cc:1103] 1 Chunks of size 228864 totalling 223.5KiB
+2024-05-21 14:50:06.617427: I external/local_tsl/tsl/framework/bfc_allocator.cc:1103] 1 Chunks of size 261376 totalling 255.2KiB
+2024-05-21 14:50:06.617434: I external/local_tsl/tsl/framework/bfc_allocator.cc:1103] 3 Chunks of size 305152 totalling 894.0KiB
+2024-05-21 14:50:06.617441: I external/local_tsl/tsl/framework/bfc_allocator.cc:1103] 5 Chunks of size 393216 totalling 1.88MiB
+2024-05-21 14:50:06.617656: I external/local_tsl/tsl/framework/bfc_allocator.cc:1103] 1 Chunks of size 622080 totalling 607.5KiB
+2024-05-21 14:50:06.617664: I external/local_tsl/tsl/framework/bfc_allocator.cc:1103] 1 Chunks of size 685568 totalling 669.5KiB
+2024-05-21 14:50:06.617671: I external/local_tsl/tsl/framework/bfc_allocator.cc:1103] 7 Chunks of size 1220608 totalling 8.15MiB
+2024-05-21 14:50:06.617678: I external/local_tsl/tsl/framework/bfc_allocator.cc:1103] 2 Chunks of size 1327104 totalling 2.53MiB
+2024-05-21 14:50:06.617685: I external/local_tsl/tsl/framework/bfc_allocator.cc:1103] 1 Chunks of size 1931264 totalling 1.84MiB
+2024-05-21 14:50:06.617692: I external/local_tsl/tsl/framework/bfc_allocator.cc:1103] 2 Chunks of size 3707904 totalling 7.07MiB
+2024-05-21 14:50:06.617699: I external/local_tsl/tsl/framework/bfc_allocator.cc:1103] 1 Chunks of size 4194304 totalling 4.00MiB
+2024-05-21 14:50:06.617707: I external/local_tsl/tsl/framework/bfc_allocator.cc:1103] 1 Chunks of size 509542400 totalling 485.94MiB
+2024-05-21 14:50:06.618003: I external/local_tsl/tsl/framework/bfc_allocator.cc:1103] 1 Chunks of size 536870912 totalling 512.00MiB
+2024-05-21 14:50:06.618010: I external/local_tsl/tsl/framework/bfc_allocator.cc:1107] Sum Total of in-use chunks: 1.00GiB
+2024-05-21 14:50:06.618017: I external/local_tsl/tsl/framework/bfc_allocator.cc:1109] Total bytes in pool: 1077870592 memory_limit_: 1077870592 available bytes: 0 curr_region_allocation_bytes_: 1073741824
+2024-05-21 14:50:06.618026: I external/local_tsl/tsl/framework/bfc_allocator.cc:1114] Stats: 
+Limit:                      1077870592
+InUse:                      1076692480
+MaxInUse:                   1076692480
+NumAllocs:                         216
+MaxAllocSize:                536870912
+Reserved:                            0
+PeakReserved:                        0
+LargestFreeBlock:                    0
+
+2024-05-21 14:50:06.618036: W external/local_tsl/tsl/framework/bfc_allocator.cc:497] ********************************************xxx************************************************xx***
+2024-05-21 14:50:06.618051: W tensorflow/core/framework/op_kernel.cc:1839] OP_REQUIRES failed at matmul_op_impl.h:921 : RESOURCE_EXHAUSTED: OOM when allocating tensor with shape[331776,256] and type float on /job:localhost/replica:0/task:0/device:GPU:0 by allocator GPU_0_bfc
+2024-05-21 14:50:06.618280: I tensorflow/core/framework/local_rendezvous.cc:421] Local rendezvous recv item cancelled. Key hash: 8199658084769882606
+2024-05-21 14:50:06.618301: I tensorflow/core/framework/local_rendezvous.cc:421] Local rendezvous recv item cancelled. Key hash: 8741526690912403573
+2024-05-21 14:50:06.618310: I tensorflow/core/framework/local_rendezvous.cc:421] Local rendezvous recv item cancelled. Key hash: 5367925500685827235
+2024-05-21 14:50:06.618325: I tensorflow/core/framework/local_rendezvous.cc:421] Local rendezvous recv item cancelled. Key hash: 6825522704481059717
+2024-05-21 14:50:06.618507: I tensorflow/core/framework/local_rendezvous.cc:421] Local rendezvous recv item cancelled. Key hash: 15432846522060817329
+2024-05-21 14:50:06.618516: I tensorflow/core/framework/local_rendezvous.cc:421] Local rendezvous recv item cancelled. Key hash: 1239156787683901309
+2024-05-21 14:50:06.618524: I tensorflow/core/framework/local_rendezvous.cc:421] Local rendezvous recv item cancelled. Key hash: 6091663241440724595
+2024-05-21 14:50:06.618534: I tensorflow/core/framework/local_rendezvous.cc:421] Local rendezvous recv item cancelled. Key hash: 904707806282074557
+2024-05-21 14:50:06.618720: I tensorflow/core/framework/local_rendezvous.cc:421] Local rendezvous recv item cancelled. Key hash: 13851000088153579
+2024-05-21 14:50:06.618729: I tensorflow/core/framework/local_rendezvous.cc:421] Local rendezvous recv item cancelled. Key hash: 6371651433101152377
+2024-05-21 14:50:06.618743: I tensorflow/core/framework/local_rendezvous.cc:421] Local rendezvous recv item cancelled. Key hash: 16067204313953097563
+2024-05-21 14:50:06.618965: I tensorflow/core/framework/local_rendezvous.cc:421] Local rendezvous recv item cancelled. Key hash: 16733706860175284103
+2024-05-21 14:50:06.618976: I tensorflow/core/framework/local_rendezvous.cc:421] Local rendezvous recv item cancelled. Key hash: 351818827157839289
+2024-05-21 14:50:06.618985: I tensorflow/core/framework/local_rendezvous.cc:421] Local rendezvous recv item cancelled. Key hash: 13994875766251642747
+2024-05-21 14:50:06.619207: I tensorflow/core/framework/local_rendezvous.cc:421] Local rendezvous recv item cancelled. Key hash: 4514281138895626625
+2024-05-21 14:50:06.619224: I tensorflow/core/framework/local_rendezvous.cc:421] Local rendezvous recv item cancelled. Key hash: 11675375374081287389
+2024-05-21 14:50:06.619233: I tensorflow/core/framework/local_rendezvous.cc:421] Local rendezvous recv item cancelled. Key hash: 7673403687917266719
+2024-05-21 14:50:06.619457: I tensorflow/core/framework/local_rendezvous.cc:421] Local rendezvous recv item cancelled. Key hash: 12555493320709418563
+2024-05-21 14:50:06.619469: I tensorflow/core/framework/local_rendezvous.cc:421] Local rendezvous recv item cancelled. Key hash: 14363602554458959681
+2024-05-21 14:50:06.619479: I tensorflow/core/framework/local_rendezvous.cc:421] Local rendezvous recv item cancelled. Key hash: 1799373588537880979
+2024-05-21 14:50:06.619698: I tensorflow/core/framework/local_rendezvous.cc:421] Local rendezvous recv item cancelled. Key hash: 8842365978048197477
+2024-05-21 14:50:06.619709: I tensorflow/core/framework/local_rendezvous.cc:421] Local rendezvous recv item cancelled. Key hash: 2868694616394937217
+2024-05-21 14:50:06.619725: I tensorflow/core/framework/local_rendezvous.cc:421] Local rendezvous recv item cancelled. Key hash: 9823324028868015863
+2024-05-21 14:50:06.619943: I tensorflow/core/framework/local_rendezvous.cc:421] Local rendezvous recv item cancelled. Key hash: 6319297056221476785
+2024-05-21 14:50:06.619954: I tensorflow/core/framework/local_rendezvous.cc:421] Local rendezvous recv item cancelled. Key hash: 10976434329909442943
+2024-05-21 14:50:06.619974: I tensorflow/core/framework/local_rendezvous.cc:421] Local rendezvous recv item cancelled. Key hash: 9254003486007671511
+2024-05-21 14:50:06.620182: I tensorflow/core/framework/local_rendezvous.cc:421] Local rendezvous recv item cancelled. Key hash: 4504412299765807717
+2024-05-21 14:50:06.620192: I tensorflow/core/framework/local_rendezvous.cc:421] Local rendezvous recv item cancelled. Key hash: 10295695509172599567
+2024-05-21 14:50:06.620200: I tensorflow/core/framework/local_rendezvous.cc:421] Local rendezvous recv item cancelled. Key hash: 12747592466152242327
+2024-05-21 14:50:06.620215: I tensorflow/core/framework/local_rendezvous.cc:421] Local rendezvous recv item cancelled. Key hash: 16762082498146034210
+2024-05-21 14:50:06.620388: I tensorflow/core/framework/local_rendezvous.cc:421] Local rendezvous recv item cancelled. Key hash: 1900691686340192134
+2024-05-21 14:50:06.620396: I tensorflow/core/framework/local_rendezvous.cc:421] Local rendezvous recv item cancelled. Key hash: 16202109816720992346
+2024-05-21 14:50:06.620403: I tensorflow/core/framework/local_rendezvous.cc:421] Local rendezvous recv item cancelled. Key hash: 18256317276968396898
+2024-05-21 14:50:06.620410: I tensorflow/core/framework/local_rendezvous.cc:421] Local rendezvous recv item cancelled. Key hash: 3845690740611148460
+2024-05-21 14:50:06.620608: I tensorflow/core/framework/local_rendezvous.cc:421] Local rendezvous recv item cancelled. Key hash: 10359608645919599210
+2024-05-21 14:50:06.620616: I tensorflow/core/framework/local_rendezvous.cc:421] Local rendezvous recv item cancelled. Key hash: 14806910697776646964
+2024-05-21 14:50:06.620624: I tensorflow/core/framework/local_rendezvous.cc:421] Local rendezvous recv item cancelled. Key hash: 2393635882581970312
+2024-05-21 14:50:06.620631: I tensorflow/core/framework/local_rendezvous.cc:421] Local rendezvous recv item cancelled. Key hash: 7672386500184313182
+2024-05-21 14:50:06.620820: I tensorflow/core/framework/local_rendezvous.cc:421] Local rendezvous recv item cancelled. Key hash: 14547582240457690668
+2024-05-21 14:50:06.620828: I tensorflow/core/framework/local_rendezvous.cc:421] Local rendezvous recv item cancelled. Key hash: 11380153063731644388
+2024-05-21 14:50:06.620835: I tensorflow/core/framework/local_rendezvous.cc:421] Local rendezvous recv item cancelled. Key hash: 7394964553073190912
+2024-05-21 14:50:06.620844: I tensorflow/core/framework/local_rendezvous.cc:421] Local rendezvous recv item cancelled. Key hash: 13687900650727764986
+2024-05-21 14:50:06.621074: I tensorflow/core/framework/local_rendezvous.cc:421] Local rendezvous recv item cancelled. Key hash: 4659042169356030796
+2024-05-21 14:50:06.621088: I tensorflow/core/framework/local_rendezvous.cc:421] Local rendezvous recv item cancelled. Key hash: 16354762588437035530
+2024-05-21 14:50:06.621102: I tensorflow/core/framework/local_rendezvous.cc:421] Local rendezvous recv item cancelled. Key hash: 7580838774144441750
+2024-05-21 14:50:06.621325: I tensorflow/core/framework/local_rendezvous.cc:421] Local rendezvous recv item cancelled. Key hash: 13922668280117182304
+[codecarbon INFO @ 14:50:06] Energy consumed for RAM : 0.000002 kWh. RAM Power : 0.49729728698730474 W
+[codecarbon INFO @ 14:50:06] Energy consumed for all GPUs : 0.000371 kWh. Total GPU Power : 116.96116803237715 W
+[codecarbon INFO @ 14:50:06] Energy consumed for all CPUs : 0.000167 kWh. Total CPU Power : 52.5 W
+[codecarbon INFO @ 14:50:06] 0.000539 kWh of electricity used since the beginning.
+Traceback (most recent call last):
+  File "/media/nas/pperez/code/TAVtext/FinalTrain.py", line 41, in <module>
+    model_class.evaluate(test=True, user_info=True)
+  File "/media/nas/pperez/code/TAVtext/src/models/text_models/RSTModel.py", line 102, in evaluate
+    ret = self.MODEL.evaluate(test_gn.cache().batch(self.CONFIG["model"]['batch_size']).prefetch(tf.data.AUTOTUNE), verbose=0, return_dict=True)
+  File "/media/nas/pperez/conda/ns3/envs/TAVtext/lib/python3.9/site-packages/keras/src/utils/traceback_utils.py", line 70, in error_handler
+    raise e.with_traceback(filtered_tb) from None
+  File "/media/nas/pperez/conda/ns3/envs/TAVtext/lib/python3.9/site-packages/tensorflow/python/eager/execute.py", line 53, in quick_execute
+    tensors = pywrap_tfe.TFE_Py_Execute(ctx._handle, device_name, op_name,
+tensorflow.python.framework.errors_impl.ResourceExhaustedError: Graph execution error:
+
+Detected at node ATT2ITM_1/tf.tile/Tile defined at (most recent call last):
+  File "/media/nas/pperez/code/TAVtext/FinalTrain.py", line 41, in <module>
+
+  File "/media/nas/pperez/code/TAVtext/src/models/text_models/RSTModel.py", line 102, in evaluate
+
+  File "/media/nas/pperez/conda/ns3/envs/TAVtext/lib/python3.9/site-packages/keras/src/utils/traceback_utils.py", line 65, in error_handler
+
+  File "/media/nas/pperez/conda/ns3/envs/TAVtext/lib/python3.9/site-packages/keras/src/engine/training.py", line 2296, in evaluate
+
+  File "/media/nas/pperez/conda/ns3/envs/TAVtext/lib/python3.9/site-packages/keras/src/engine/training.py", line 4108, in run_step
+
+  File "/media/nas/pperez/conda/ns3/envs/TAVtext/lib/python3.9/site-packages/keras/src/engine/training.py", line 2066, in test_function
+
+  File "/media/nas/pperez/conda/ns3/envs/TAVtext/lib/python3.9/site-packages/keras/src/engine/training.py", line 2049, in step_function
+
+  File "/media/nas/pperez/conda/ns3/envs/TAVtext/lib/python3.9/site-packages/keras/src/engine/training.py", line 2037, in run_step
+
+  File "/media/nas/pperez/conda/ns3/envs/TAVtext/lib/python3.9/site-packages/keras/src/engine/training.py", line 1917, in test_step
+
+  File "/media/nas/pperez/conda/ns3/envs/TAVtext/lib/python3.9/site-packages/keras/src/utils/traceback_utils.py", line 65, in error_handler
+
+  File "/media/nas/pperez/conda/ns3/envs/TAVtext/lib/python3.9/site-packages/keras/src/engine/training.py", line 590, in __call__
+
+  File "/media/nas/pperez/conda/ns3/envs/TAVtext/lib/python3.9/site-packages/keras/src/utils/traceback_utils.py", line 65, in error_handler
+
+  File "/media/nas/pperez/conda/ns3/envs/TAVtext/lib/python3.9/site-packages/keras/src/engine/base_layer.py", line 1149, in __call__
+
+  File "/media/nas/pperez/conda/ns3/envs/TAVtext/lib/python3.9/site-packages/keras/src/utils/traceback_utils.py", line 96, in error_handler
+
+  File "/media/nas/pperez/conda/ns3/envs/TAVtext/lib/python3.9/site-packages/keras/src/engine/functional.py", line 515, in call
+
+  File "/media/nas/pperez/conda/ns3/envs/TAVtext/lib/python3.9/site-packages/keras/src/engine/functional.py", line 672, in _run_internal_graph
+
+  File "/media/nas/pperez/conda/ns3/envs/TAVtext/lib/python3.9/site-packages/keras/src/utils/traceback_utils.py", line 65, in error_handler
+
+  File "/media/nas/pperez/conda/ns3/envs/TAVtext/lib/python3.9/site-packages/keras/src/engine/base_layer.py", line 1149, in __call__
+
+  File "/media/nas/pperez/conda/ns3/envs/TAVtext/lib/python3.9/site-packages/keras/src/utils/traceback_utils.py", line 96, in error_handler
+
+  File "/media/nas/pperez/conda/ns3/envs/TAVtext/lib/python3.9/site-packages/keras/src/layers/core/tf_op_layer.py", line 242, in _call_wrapper
+
+  File "/media/nas/pperez/conda/ns3/envs/TAVtext/lib/python3.9/site-packages/keras/src/layers/core/tf_op_layer.py", line 279, in _call_wrapper
+
+Detected at node ATT2ITM_1/tf.tile/Tile defined at (most recent call last):
+  File "/media/nas/pperez/code/TAVtext/FinalTrain.py", line 41, in <module>
+
+  File "/media/nas/pperez/code/TAVtext/src/models/text_models/RSTModel.py", line 102, in evaluate
+
+  File "/media/nas/pperez/conda/ns3/envs/TAVtext/lib/python3.9/site-packages/keras/src/utils/traceback_utils.py", line 65, in error_handler
+
+  File "/media/nas/pperez/conda/ns3/envs/TAVtext/lib/python3.9/site-packages/keras/src/engine/training.py", line 2296, in evaluate
+
+  File "/media/nas/pperez/conda/ns3/envs/TAVtext/lib/python3.9/site-packages/keras/src/engine/training.py", line 4108, in run_step
+
+  File "/media/nas/pperez/conda/ns3/envs/TAVtext/lib/python3.9/site-packages/keras/src/engine/training.py", line 2066, in test_function
+
+  File "/media/nas/pperez/conda/ns3/envs/TAVtext/lib/python3.9/site-packages/keras/src/engine/training.py", line 2049, in step_function
+
+  File "/media/nas/pperez/conda/ns3/envs/TAVtext/lib/python3.9/site-packages/keras/src/engine/training.py", line 2037, in run_step
+
+  File "/media/nas/pperez/conda/ns3/envs/TAVtext/lib/python3.9/site-packages/keras/src/engine/training.py", line 1917, in test_step
+
+  File "/media/nas/pperez/conda/ns3/envs/TAVtext/lib/python3.9/site-packages/keras/src/utils/traceback_utils.py", line 65, in error_handler
+
+  File "/media/nas/pperez/conda/ns3/envs/TAVtext/lib/python3.9/site-packages/keras/src/engine/training.py", line 590, in __call__
+
+  File "/media/nas/pperez/conda/ns3/envs/TAVtext/lib/python3.9/site-packages/keras/src/utils/traceback_utils.py", line 65, in error_handler
+
+  File "/media/nas/pperez/conda/ns3/envs/TAVtext/lib/python3.9/site-packages/keras/src/engine/base_layer.py", line 1149, in __call__
+
+  File "/media/nas/pperez/conda/ns3/envs/TAVtext/lib/python3.9/site-packages/keras/src/utils/traceback_utils.py", line 96, in error_handler
+
+  File "/media/nas/pperez/conda/ns3/envs/TAVtext/lib/python3.9/site-packages/keras/src/engine/functional.py", line 515, in call
+
+  File "/media/nas/pperez/conda/ns3/envs/TAVtext/lib/python3.9/site-packages/keras/src/engine/functional.py", line 672, in _run_internal_graph
+
+  File "/media/nas/pperez/conda/ns3/envs/TAVtext/lib/python3.9/site-packages/keras/src/utils/traceback_utils.py", line 65, in error_handler
+
+  File "/media/nas/pperez/conda/ns3/envs/TAVtext/lib/python3.9/site-packages/keras/src/engine/base_layer.py", line 1149, in __call__
+
+  File "/media/nas/pperez/conda/ns3/envs/TAVtext/lib/python3.9/site-packages/keras/src/utils/traceback_utils.py", line 96, in error_handler
+
+  File "/media/nas/pperez/conda/ns3/envs/TAVtext/lib/python3.9/site-packages/keras/src/layers/core/tf_op_layer.py", line 242, in _call_wrapper
+
+  File "/media/nas/pperez/conda/ns3/envs/TAVtext/lib/python3.9/site-packages/keras/src/layers/core/tf_op_layer.py", line 279, in _call_wrapper
+
+2 root error(s) found.
+  (0) RESOURCE_EXHAUSTED:  OOM when allocating tensor with shape[2048,162,149] and type float on /job:localhost/replica:0/task:0/device:GPU:0 by allocator GPU_0_bfc
+	 [[{{node ATT2ITM_1/tf.tile/Tile}}]]
+Hint: If you want to see a list of allocated tensors when OOM happens, add report_tensor_allocations_upon_oom to RunOptions for current allocation info. This isn't available when running in Eager mode.
+
+	 [[broadcast_weights_2/assert_broadcastable/is_valid_shape/else/_24/broadcast_weights_2/assert_broadcastable/is_valid_shape/has_valid_nonscalar_shape/then/_275/broadcast_weights_2/assert_broadcastable/is_valid_shape/has_valid_nonscalar_shape/has_invalid_dims/ExpandDims_1/_98]]
+Hint: If you want to see a list of allocated tensors when OOM happens, add report_tensor_allocations_upon_oom to RunOptions for current allocation info. This isn't available when running in Eager mode.
+
+  (1) RESOURCE_EXHAUSTED:  OOM when allocating tensor with shape[2048,162,149] and type float on /job:localhost/replica:0/task:0/device:GPU:0 by allocator GPU_0_bfc
+	 [[{{node ATT2ITM_1/tf.tile/Tile}}]]
+Hint: If you want to see a list of allocated tensors when OOM happens, add report_tensor_allocations_upon_oom to RunOptions for current allocation info. This isn't available when running in Eager mode.
+
+0 successful operations.
+0 derived errors ignored. [Op:__inference_test_function_2988]

@@ -6,19 +6,20 @@ import numpy as np
 import time
 
 
-class EmissionsTracker(tf.keras.callbacks.Callback):
+class Emissions(tf.keras.callbacks.Callback):
 
-    def __init__(self):
+    def __init__(self, output_path):
         super().__init__()
-        self.emissions_tracker = EmissionsTracker(log_level="error", tracking_mode="process")
+        self.emissions_tracker = EmissionsTracker(log_level="error", output_dir=output_path, output_file="emissions_train.csv", tracking_mode="process")
 
     def on_epoch_end(self, epoch, logs):
-        logs['CO2'] = self.emissions_tracker.total_emissions
+        self.emissions_tracker._project_name = f"Epoch {epoch}"
+        logs['CO2(gr)'] = self.emissions_tracker.flush() * 1000 # CO2 emissions in grams
 
-    def on_train_begin(self, epoch, logs):
+    def on_train_begin(self, logs):
         self.emissions_tracker.start()
         
-    def on_train_end(self, epoch, logs):
+    def on_train_end(self, logs):
         self.emissions_tracker.stop()
         print( f"{int(self.emissions_tracker.final_emissions_data.duration//60)}'{int(self.emissions_tracker.final_emissions_data.duration%60)}\" of training time" )
         print( f"{self.emissions_tracker.final_emissions_data.emissions*1000:.3f}g of CO2" )
