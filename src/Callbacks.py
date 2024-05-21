@@ -1,8 +1,28 @@
 # -*- coding: utf-8 -*-
 
-import numpy as np
+from codecarbon import EmissionsTracker
 import tensorflow as tf
+import numpy as np
 import time
+
+
+class EmissionsTracker(tf.keras.callbacks.Callback):
+
+    def __init__(self):
+        super().__init__()
+        self.emissions_tracker = EmissionsTracker(log_level="error", tracking_mode="process")
+
+    def on_epoch_end(self, epoch, logs):
+        logs['CO2'] = self.emissions_tracker.total_emissions
+
+    def on_train_begin(self, epoch, logs):
+        self.emissions_tracker.start()
+        
+    def on_train_end(self, epoch, logs):
+        self.emissions_tracker.stop()
+        print( f"{int(self.emissions_tracker.final_emissions_data.duration//60)}'{int(self.emissions_tracker.final_emissions_data.duration%60)}\" of training time" )
+        print( f"{self.emissions_tracker.final_emissions_data.emissions*1000:.3f}g of CO2" )
+        print( f"{self.emissions_tracker.final_emissions_data.energy_consumed*1000:.3f}Wh of electricity" )
 
 
 class EpochTime(tf.keras.callbacks.Callback):
@@ -16,6 +36,7 @@ class EpochTime(tf.keras.callbacks.Callback):
 
     def on_epoch_begin(self, epoch, logs):
         self.time = time.time()
+
 
 
 class CustomStopper(tf.keras.callbacks.EarlyStopping):
