@@ -1,6 +1,6 @@
 #!/bin/bash
 
-MAXTSTS=2
+MAXTSTS=1
 GPU=0
 
 declare -A DATASETS
@@ -10,11 +10,13 @@ declare -A MODELS
 # DATASETS["amazon"]="digital_music fashion"
 
 DATASETS["restaurants"]="gijon barcelona madrid newyorkcity paris"
+DATASETS["pois"]="barcelona madrid newyorkcity paris london"
+DATASETS["amazon"]="digital_music fashion"
 
-MODELS["BOW2ITM"]="" 
+# MODELS["BOW2ITM"]="" 
 # MODELS["ATT2ITM"]="" 
 # MODELS["USEM2ITM"]="" 
-# MODELS["BERT2ITM"]="" 
+MODELS["BERT2ITM"]="" 
 # MODELS["ATT2ITM_2"]="" 
 
 for DATASET_NAME in ${!DATASETS[@]}; do 

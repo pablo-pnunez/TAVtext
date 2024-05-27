@@ -50,7 +50,7 @@ class BERT2ITM(RSTModel):
 
         model.compile(optimizer=tf.keras.optimizers.legacy.Adam(self.CONFIG["model"]["learning_rate"]), loss=tf.keras.losses.CategoricalCrossentropy(), metrics=metrics)
 
-        print(model.summary())
+        #print(model.summary())
 
         return model
 

@@ -1,27 +1,34 @@
-[94mLoading best model: b7caed7a4d82d3bc054e9ddf4172ff9c[0m
+Using TensorFlow backend
+[94mLoading best USEM2ITM model: b7caed7a4d82d3bc054e9ddf4172ff9c[0m
 [93m[WARNING] Model folder already exists...[0m
-Model: "model"
-_________________________________________________________________
- Layer (type)                Output Shape              Param #   
-=================================================================
- input_1 (InputLayer)        [(None,)]                 0         
-                                                                 
- USEM (KerasLayer)           (None, 512)               68927232  
-                                                                 
- dropout (Dropout)           (None, 512)               0         
-                                                                 
- out (Dense)                 (None, 63)                32319     
-                                                                 
-=================================================================
-Total params: 68,959,551
-Trainable params: 68,959,551
-Non-trainable params: 0
-_________________________________________________________________
-None
+[93m[WARNING] Model weights are not loaded![0m
 [92m[INFO] Best epoch number: 10[0m
-[92m[INFO] Model already trained. Loading weights...[0m
+[92m[INFO] Not saving the model...[0m
+Epoch 1/10
+128/128 - 17s - loss: 3.1457 - r1: 0.5187 - r5: 0.7482 - r10: 0.8214 - p5: 0.1496 - p10: 0.0821 - lr: 4.9951e-04 - CO2(gr): 0.4885 - 17s/epoch - 131ms/step
+Epoch 2/10
+128/128 - 10s - loss: 2.1256 - r1: 0.7162 - r5: 0.8956 - r10: 0.9401 - p5: 0.1791 - p10: 0.0940 - lr: 4.9901e-04 - CO2(gr): 0.8325 - 10s/epoch - 77ms/step
+Epoch 3/10
+128/128 - 10s - loss: 1.5237 - r1: 0.7779 - r5: 0.9323 - r10: 0.9642 - p5: 0.1865 - p10: 0.0964 - lr: 4.9852e-04 - CO2(gr): 1.1819 - 10s/epoch - 77ms/step
+Epoch 4/10
+128/128 - 10s - loss: 1.1577 - r1: 0.8183 - r5: 0.9518 - r10: 0.9764 - p5: 0.1904 - p10: 0.0976 - lr: 4.9802e-04 - CO2(gr): 1.5296 - 10s/epoch - 77ms/step
+Epoch 5/10
+128/128 - 10s - loss: 0.9299 - r1: 0.8448 - r5: 0.9643 - r10: 0.9830 - p5: 0.1929 - p10: 0.0983 - lr: 4.9753e-04 - CO2(gr): 1.8756 - 10s/epoch - 77ms/step
+Epoch 6/10
+128/128 - 10s - loss: 0.7719 - r1: 0.8664 - r5: 0.9725 - r10: 0.9868 - p5: 0.1945 - p10: 0.0987 - lr: 4.9703e-04 - CO2(gr): 2.2210 - 10s/epoch - 77ms/step
+Epoch 7/10
+128/128 - 10s - loss: 0.6501 - r1: 0.8871 - r5: 0.9778 - r10: 0.9890 - p5: 0.1956 - p10: 0.0989 - lr: 4.9654e-04 - CO2(gr): 2.5607 - 10s/epoch - 77ms/step
+Epoch 8/10
+128/128 - 10s - loss: 0.5561 - r1: 0.9038 - r5: 0.9822 - r10: 0.9911 - p5: 0.1964 - p10: 0.0991 - lr: 4.9604e-04 - CO2(gr): 2.9062 - 10s/epoch - 77ms/step
+Epoch 9/10
+128/128 - 10s - loss: 0.4789 - r1: 0.9174 - r5: 0.9853 - r10: 0.9933 - p5: 0.1971 - p10: 0.0993 - lr: 4.9555e-04 - CO2(gr): 3.2512 - 10s/epoch - 77ms/step
+Epoch 10/10
+128/128 - 10s - loss: 0.4203 - r1: 0.9265 - r5: 0.9879 - r10: 0.9940 - p5: 0.1976 - p10: 0.0994 - lr: 4.9505e-04 - CO2(gr): 3.5956 - 10s/epoch - 77ms/step
+1'45" of training time
+3.596g of CO2
+16.538Wh of electricity
 [92m[INFO] There are 7222 evaluation examples.[0m
-[92m       loss    NDCG@1   NDCG@10  ...      F1@1      F1@5    F1@10
-0  0.987748  0.769316  0.874616  ...  0.769316  0.314133  0.17638
+[92m      loss    NDCG@1  NDCG@10   NDCG@50  ...     F1@-1      F1@1      F1@5     F1@10
+0  1.00081  0.767239   0.8721  0.878673  ...  0.120762  0.767239  0.313025  0.176204
 
-[1 rows x 13 columns][0m
+[1 rows x 20 columns][0m
