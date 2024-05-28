@@ -28,8 +28,8 @@ test_tracker_params = {**base_tracker_params, "project_name":"test"}
 
 with EmissionsTracker(**train_tracker_params) as tracker:
     # Entrenar el modelo final
-    model_class.train(dev=False, save_model=False) # ESTO HAY QUE CAMBIARLO A TRUE CUANDO ACABE CON LAS EMISIONES !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
+    model_class.train(dev=False, save_model=True)
+    
 with EmissionsTracker(**test_tracker_params) as tracker:
     # Evaluar el modelo final
     model_class.evaluate(test=True, user_info=True)
