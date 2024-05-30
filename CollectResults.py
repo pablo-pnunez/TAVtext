@@ -3,7 +3,7 @@ import json
 from tkinter.messagebox import NO
 import pandas as pd
 import numpy as np
-
+from src.Common import print_e
 
 def format_range(wks, fr, fc, lr, lc, fmt):
 
@@ -19,7 +19,7 @@ def format_range(wks, fr, fc, lr, lc, fmt):
 
 
 # model = "ATT2ITM"
-models = ["ATT2ITM", "ATT2ITM_2", "BOW2ITM", "USEM2ITM", "BERT2ITM"]
+models = ["MOSTPOP2ITM", "ATT2ITM", "ATT2ITM_2", "BOW2ITM", "USEM2ITM", "BERT2ITM"]
 
 sets = {"restaurants": ["gijon", "barcelona", "madrid", "paris", "newyorkcity", "london"],
         "pois": ["barcelona", "madrid", "paris", "newyorkcity", "london"],
@@ -52,6 +52,8 @@ for model in models:
                 # columns = {"val_r1": {"best": "max", "others": ["val_loss", "epoch", "model_md5"]}}  # ["val_5", "val_r10", "epoch", "model_md5"]}}
                 if "BERT" in model:
                     columns = {"val_NDCG@10": {"best": "max", "format": "pct"}, "val_loss": {"format": "pct"}, "epoch": {"format": "pct"}, "model_md5": {"format": "pct"}}  # ["val_5", "val_r10", "epoch", "model_md5"]}}
+                elif "MOSTPOP" in model:
+                    columns = {"val_NDCG@10": {"best": "max", "format": "pct"}, "val_loss": {"format": "pct"}, "epoch": {"format": "pct"}, "model_md5": {"format": "pct"}}
                 else:
                     columns = {"val_r1": {"best": "max", "format": "pct"}, "val_loss": {"format": "pct"}, "epoch": {"format": "pct"}, "model_md5": {"format": "pct"}}  # ["val_5", "val_r10", "epoch", "model_md5"]}}
 
@@ -75,6 +77,7 @@ for model in models:
                     log_data = pd.read_csv(log_file)
                     log_data["epoch"] = log_data["epoch"]+1  # Sumar siempre 1 a las epochs
                 except Exception:
+                    print_e(f"No se ha encontrado fichero de log en '{log_file}'")
                     continue
 
                 with open(config_file) as json_file:
@@ -93,7 +96,7 @@ for model in models:
                 ret.append(list(res.values()))
 
             ret = pd.DataFrame(ret, columns=list(res.keys()))
-            ret = ret.loc[:, ret.apply(pd.Series.nunique) != 1]  # Eliminar columnas que no varían.
+            if len(ret)>1: ret = ret.loc[:, ret.apply(pd.Series.nunique) != 1]  # Eliminar columnas que no varían.
 
             # Una vez tenemos todos los mejores resultados guardadoes en "ret", podemos generar informes
             # Si hay varios modelos, separar los resultados

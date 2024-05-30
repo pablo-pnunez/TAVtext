@@ -29,7 +29,7 @@ for DATASET_NAME in ${!DATASETS[@]}; do
     done
 
     #Esperar X segundos entre pruebas para que le de tiempo a ocupar memoria en GPU
-    sleep 5
+    sleep 25
 
   done
 done

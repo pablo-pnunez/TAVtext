@@ -119,11 +119,9 @@ if known_users is False:
     text_dataset.DATA["TEST"] = text_dataset.DATA["TEST"].drop_duplicates(subset=["userId", "id_item"], keep='last', inplace=False)
 
 if "MOSTPOP2ITM" == model:
-    mostpop2itm_mdl = MOSTPOP2ITM({"model":{"batch_size": b_size, "seed":seed}, "session": {"gpu": gpu, "mixed_precision": True, "in_md5": False}}, text_dataset)
+    mostpop2itm_mdl = MOSTPOP2ITM({"model":{"batch_size": b_size, "learning_rate": l_rate, "seed":seed}, "session": {"gpu": gpu, "mixed_precision": True, "in_md5": False}}, text_dataset)   
+    mostpop2itm_mdl.train() # Crea un csv falso
     # mostpop2itm_mdl.evaluate()
-    
-    if stage == 0:
-        mostpop2itm_mdl.train(dev=True, save_model=True)
 
     
 elif "ATT2ITM_2" == model:

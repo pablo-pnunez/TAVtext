@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 from src.models.text_models.RSTModel import RSTModel
 import tensorflow as tf
+import pandas as pd
 import numpy as np
+import os
 
 class MOSTPOP2ITM(RSTModel):
     """ Baseline """
@@ -32,4 +34,9 @@ class MOSTPOP2ITM(RSTModel):
         return tf.data.Dataset.zip((data_x, data_y))
     
     def train(self, dev=False, save_model=True):
-        pass
+        # Crear un fichero falso de log para que se pueda generar "best_models.csv"
+        fake_log_path = self.MODEL_PATH+"dev/"
+        os.makedirs(fake_log_path, exist_ok=True)
+        df = pd.DataFrame(zip([0, 1],[0, 0],[0, 0]), columns=["epoch", "val_loss", "val_NDCG@10"])
+        df.to_csv(fake_log_path+"log.csv", index=False)
+        
