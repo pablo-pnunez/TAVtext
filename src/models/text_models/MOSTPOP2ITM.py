@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from src.models.text_models.RSTModel import RSTModel
+from codecarbon import EmissionsTracker
 import tensorflow as tf
 import pandas as pd
 import numpy as np
@@ -11,7 +12,9 @@ class MOSTPOP2ITM(RSTModel):
         RSTModel.__init__(self, config=config, dataset=dataset)
 
     def get_model(self):
-        
+        self.emissions_tracker = EmissionsTracker(project_name="Epoch 0", log_level="error", output_dir=self.MODEL_PATH, output_file="emissions_train.csv", tracking_mode="process")
+        # Medir emisiones        
+        self.emissions_tracker.start()
         # Número de reviews por user 
         item_pop = self.DATASET.DATA["TRAIN_DEV"]["id_item"].value_counts().reset_index().sort_values("index").reset_index(drop=True)["id_item"].values
         # Normalizar entre 0 y 1 (innecesario, pero bueno)
@@ -24,6 +27,8 @@ class MOSTPOP2ITM(RSTModel):
         model = tf.keras.models.Model(inputs=input_layer, outputs=output_layer)
         # Esto no vale para nada por que no se entrena, pero se necesita para que funcione la evaluación
         model.compile(loss="mse", optimizer="adam")
+        # Parar de medir emisiones        
+        self.emissions_tracker.stop()
         
         return model
         
@@ -39,4 +44,7 @@ class MOSTPOP2ITM(RSTModel):
         os.makedirs(fake_log_path, exist_ok=True)
         df = pd.DataFrame(zip([0, 1],[0, 0],[0, 0]), columns=["epoch", "val_loss", "val_NDCG@10"])
         df.to_csv(fake_log_path+"log.csv", index=False)
-        
+        # Otro para el train final
+        epoch_time = self.emissions_tracker.final_emissions_data.duration
+        df = pd.DataFrame(zip([0],[epoch_time],[0],[0]), columns=["epoch", "e_time", "loss", "r10"])
+        df.to_csv(self.MODEL_PATH+"log.csv", index=False)

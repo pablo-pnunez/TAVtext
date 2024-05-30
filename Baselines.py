@@ -139,7 +139,7 @@ md_bpr = cornac.models.BPR(seed=seed, verbose=True)
 md_ease = cornac.models.EASE(seed=seed, verbose=True)
 
 models = [
-    cornac.models.MostPop(),
+    cornac.models.MostPop(name="MostPop"),
     cornac.models.MF(use_bias=True),
     cornac.models.OnlineIBPR(),
     #cornac.models.BiVAECF(k=20, encoder_structure=[40], n_epochs=500, batch_size=128), # Con parámetros que aparecen en gitgub, pero va igual de mal
