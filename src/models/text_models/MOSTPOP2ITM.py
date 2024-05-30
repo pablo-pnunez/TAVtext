@@ -12,9 +12,11 @@ class MOSTPOP2ITM(RSTModel):
         RSTModel.__init__(self, config=config, dataset=dataset)
 
     def get_model(self):
-        self.emissions_tracker = EmissionsTracker(project_name="Epoch 0", log_level="error", output_dir=self.MODEL_PATH, output_file="emissions_train.csv", tracking_mode="process")
+        emissions_computed = os.path.exists(self.MODEL_PATH+"emissions_train.csv")
         # Medir emisiones        
-        self.emissions_tracker.start()
+        if not emissions_computed:
+            self.emissions_tracker = EmissionsTracker(project_name="Epoch 0", log_level="error", output_dir=self.MODEL_PATH, output_file="emissions_train.csv", tracking_mode="process")
+            self.emissions_tracker.start()
         # Número de reviews por user 
         item_pop = self.DATASET.DATA["TRAIN_DEV"]["id_item"].value_counts().reset_index().sort_values("index").reset_index(drop=True)["id_item"].values
         # Normalizar entre 0 y 1 (innecesario, pero bueno)
@@ -28,7 +30,8 @@ class MOSTPOP2ITM(RSTModel):
         # Esto no vale para nada por que no se entrena, pero se necesita para que funcione la evaluación
         model.compile(loss="mse", optimizer="adam")
         # Parar de medir emisiones        
-        self.emissions_tracker.stop()
+        if not emissions_computed:
+            self.emissions_tracker.stop()
         
         return model
         
