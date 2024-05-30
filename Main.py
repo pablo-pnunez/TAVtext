@@ -22,9 +22,12 @@ from src.models.text_models.BOW2ITM import BOW2ITM
 from src.models.text_models.USEM2ITM import USEM2ITM
 from src.models.text_models.BERT2ITM import BERT2ITM
 
+from src.models.text_models.MOSTPOP2ITM import MOSTPOP2ITM
+
 # #######################################################################################################################
 
-model = "ATT2ITM_2" if args.mn is None else args.mn
+
+model = "MOSTPOP2ITM" if args.mn is None else args.mn
 dataset = "restaurants".lower().replace(" ", "") if args.dst is None else args.dst
 subset = "gijon".lower().replace(" ", "") if args.sst is None else args.sst
 
@@ -115,7 +118,15 @@ if known_users is False:
     text_dataset.DATA["TEST"] = text_dataset.DATA["TEST"][~text_dataset.DATA["TEST"]["userId"].isin(train_dev_users)]
     text_dataset.DATA["TEST"] = text_dataset.DATA["TEST"].drop_duplicates(subset=["userId", "id_item"], keep='last', inplace=False)
 
-if "ATT2ITM_2" == model:
+if "MOSTPOP2ITM" == model:
+    mostpop2itm_mdl = MOSTPOP2ITM({"model":{"batch_size": b_size, "seed":seed}, "session": {"gpu": gpu, "mixed_precision": True, "in_md5": False}}, text_dataset)
+    # mostpop2itm_mdl.evaluate()
+    
+    if stage == 0:
+        mostpop2itm_mdl.train(dev=True, save_model=True)
+
+    
+elif "ATT2ITM_2" == model:
 
     if use_best:
         att2itm_mdl_cfg = mdl_cfg
