@@ -71,7 +71,7 @@ class RSTModel(KerasModelClass):
             train_dev_gn = self.__create_tfdata__(all_data)
             return train_dev_gn
 
-    def evaluate(self, test=False, user_info=False):
+    def evaluate(self, test=False, user_info=False, verbose=True):
         if test:
             test_data = self.DATASET.DATA["TEST"]
         else:
@@ -96,7 +96,7 @@ class RSTModel(KerasModelClass):
             tf.keras.metrics.Recall(top_k=20, name="Recall@20"),
             tf.keras.metrics.Recall(top_k=50, name="Recall@50"),]
 
-        print_g(f"There are {len(test_data)} evaluation examples.")
+        if verbose: print_g(f"There are {len(test_data)} evaluation examples.")
 
         self.MODEL.compile(loss=self.MODEL.loss, optimizer=self.MODEL.optimizer, metrics=metrics)
         ret = self.MODEL.evaluate(test_gn.cache().batch(self.CONFIG["model"]['batch_size']).prefetch(tf.data.AUTOTUNE), verbose=0, return_dict=True)
@@ -126,6 +126,6 @@ class RSTModel(KerasModelClass):
             ret[f"F1{r}"] = f1_at
 
         ret = pd.DataFrame([ret.values()], columns=ret.keys())
-        print_g(ret, title=False)
+        if verbose: print_g(ret, title=False)
 
         return ret  
