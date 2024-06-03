@@ -12,9 +12,9 @@ class MOSTPOP2ITM(RSTModel):
         RSTModel.__init__(self, config=config, dataset=dataset)
 
     def get_model(self):
-        emissions_computed = os.path.exists(self.MODEL_PATH+"emissions_train.csv")
+        self.emissions_computed = os.path.exists(self.MODEL_PATH+"emissions_train.csv")
         # Medir emisiones        
-        if not emissions_computed:
+        if not self.emissions_computed:
             self.emissions_tracker = EmissionsTracker(project_name="Epoch 0", log_level="error", output_dir=self.MODEL_PATH, output_file="emissions_train.csv", tracking_mode="process")
             self.emissions_tracker.start()
         # Número de reviews por user 
@@ -30,7 +30,7 @@ class MOSTPOP2ITM(RSTModel):
         # Esto no vale para nada por que no se entrena, pero se necesita para que funcione la evaluación
         model.compile(loss="mse", optimizer="adam")
         # Parar de medir emisiones        
-        if not emissions_computed:
+        if not self.emissions_computed:
             self.emissions_tracker.stop()
         
         return model
@@ -48,6 +48,7 @@ class MOSTPOP2ITM(RSTModel):
         df = pd.DataFrame(zip([0, 1],[0, 0],[0, 0]), columns=["epoch", "val_loss", "val_NDCG@10"])
         df.to_csv(fake_log_path+"log.csv", index=False)
         # Otro para el train final
-        epoch_time = self.emissions_tracker.final_emissions_data.duration
-        df = pd.DataFrame(zip([0],[epoch_time],[0],[0]), columns=["epoch", "e_time", "loss", "r10"])
-        df.to_csv(self.MODEL_PATH+"log.csv", index=False)
+        if not os.path.exists(self.MODEL_PATH+"log.csv"):
+            epoch_time = self.emissions_tracker.final_emissions_data.duration
+            df = pd.DataFrame(zip([0],[epoch_time],[0],[0]), columns=["epoch", "e_time", "loss", "r10"])
+            df.to_csv(self.MODEL_PATH+"log.csv", index=False)
