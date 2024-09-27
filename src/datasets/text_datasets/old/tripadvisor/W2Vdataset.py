@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from src.datasets.text_datasets.tripadvisor.TripAdvisorDataset import TripAdvisorDataset
+from src.datasets.text_datasets.old.tripadvisor.TripAdvisorDataset import TripAdvisorDataset
 from src.Common import to_pickle
 
 import pandas as pd

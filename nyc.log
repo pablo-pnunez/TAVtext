@@ -1,0 +1,145 @@
+2023-06-16 10:56:16.195053: I tensorflow/core/platform/cpu_feature_guard.cc:193] This TensorFlow binary is optimized with oneAPI Deep Neural Network Library (oneDNN) to use the following CPU instructions in performance-critical operations:  SSE3 SSE4.1 SSE4.2 AVX AVX2 FMA
+To enable them in other operations, rebuild TensorFlow with the appropriate compiler flags.
+/media/nas/pperez/miniconda3/envs/TAVtext/lib/python3.8/site-packages/tensorflow_addons/utils/tfa_eol_msg.py:23: UserWarning: 
+
+TensorFlow Addons (TFA) has ended development and introduction of new features.
+TFA has entered a minimal maintenance and release mode until a planned end of life in May 2024.
+Please modify downstream libraries to take dependencies from other repositories in our TensorFlow community (e.g. Keras, Keras-CV, and Keras-NLP). 
+
+For more information see: https://github.com/tensorflow/addons/issues/2807 
+
+  warnings.warn(
+[93m[WARNING] Model folder already exists...[0m
+INFO:tensorflow:Mixed precision compatibility check (mixed_float16): OK
+Your GPU will likely run quickly with dtype policy mixed_float16 as it has compute capability of at least 7.0. Your GPU: NVIDIA GeForce RTX 3090, compute capability 8.6
+Model: "WATT2VAL_0"
+__________________________________________________________________________________________________
+ Layer (type)                   Output Shape         Param #     Connected to                     
+==================================================================================================
+ input_1 (InputLayer)           [(None, None)]       0           []                               
+                                                                                                  
+ wr_att_embs (Embedding)        (None, None, 128)    1544704     ['input_1[0][0]']                
+                                                                                                  
+ dropout (Dropout)              (None, None, 128)    0           ['wr_att_embs[0][0]']            
+                                                                                                  
+ tf.linalg.matmul (TFOpLambda)  (None, None, None)   0           ['dropout[0][0]',                
+                                                                  'dropout[0][0]']                
+                                                                                                  
+ all_words (Embedding)          (None, None, 128)    1544704     ['input_1[0][0]']                
+                                                                                                  
+ tf.einsum (TFOpLambda)         (None, None, 128)    0           ['tf.linalg.matmul[0][0]',       
+                                                                  'all_words[0][0]']              
+                                                                                                  
+ word_emb (Lambda)              (None, None, 128)    0           ['tf.einsum[0][0]']              
+                                                                                                  
+ input_2 (InputLayer)           [(None, 1985)]       0           []                               
+                                                                                                  
+ dropout_1 (Dropout)            (None, None, 128)    0           ['word_emb[0][0]']               
+                                                                                                  
+ all_items (Embedding)          (None, 1985, 128)    254080      ['input_2[0][0]']                
+                                                                                                  
+ sine_position_encoding (SinePo  (None, None, 128)   0           ['dropout_1[0][0]']              
+ sitionEncoding)                                                                                  
+                                                                                                  
+ rest_emb (Lambda)              (None, 1985, 128)    0           ['all_items[0][0]']              
+                                                                                                  
+ tf.math.not_equal (TFOpLambda)  (None, None)        0           ['input_1[0][0]']                
+                                                                                                  
+ tf.__operators__.add (TFOpLamb  (None, None, 128)   0           ['dropout_1[0][0]',              
+ da)                                                              'sine_position_encoding[0][0]'] 
+                                                                                                  
+ dropout_2 (Dropout)            (None, 1985, 128)    0           ['rest_emb[0][0]']               
+                                                                                                  
+ tf.cast (TFOpLambda)           (None, None)         0           ['tf.math.not_equal[0][0]']      
+                                                                                                  
+ dot_mul (Lambda)               (None, None, 1985)   0           ['tf.__operators__.add[0][0]',   
+                                                                  'dropout_2[0][0]']              
+                                                                                                  
+ tf.expand_dims (TFOpLambda)    (None, None, 1)      0           ['tf.cast[0][0]']                
+                                                                                                  
+ dotprod (Activation)           (None, None, 1985)   0           ['dot_mul[0][0]']                
+                                                                                                  
+ tf.tile (TFOpLambda)           (None, None, 1985)   0           ['tf.expand_dims[0][0]']         
+                                                                                                  
+ dot_mask (Lambda)              (None, None, 1985)   0           ['dotprod[0][0]',                
+                                                                  'tf.tile[0][0]']                
+                                                                                                  
+ sum (Lambda)                   (None, 1985)         0           ['dot_mask[0][0]',               
+                                                                  'tf.tile[0][0]']                
+                                                                                                  
+ tf.math.multiply (TFOpLambda)  (None, 1985)         0           ['sum[0][0]']                    
+                                                                                                  
+ out (Activation)               (None, 1985)         0           ['tf.math.multiply[0][0]']       
+                                                                                                  
+==================================================================================================
+Total params: 3,343,488
+Trainable params: 3,343,488
+Non-trainable params: 0
+__________________________________________________________________________________________________
+None
+[92m[INFO] Best epoch number: 19[0m
+Epoch 1/19
+5803/5803 - 62s - loss: nan - NDCG@10: 0.0866 - MAE: nan - RC@5: 0.0995 - RC@10: 0.1287 - lr: 9.9901e-05 - e_time: 62.0123 - 62s/epoch - 11ms/step
+Epoch 2/19
+5803/5803 - 60s - loss: nan - NDCG@10: 0.2585 - MAE: nan - RC@5: 0.2986 - RC@10: 0.3606 - lr: 9.9802e-05 - e_time: 60.1760 - 60s/epoch - 10ms/step
+Epoch 3/19
+5803/5803 - 60s - loss: nan - NDCG@10: 0.3374 - MAE: nan - RC@5: 0.3914 - RC@10: 0.4702 - lr: 9.9703e-05 - e_time: 60.2074 - 60s/epoch - 10ms/step
+Epoch 4/19
+5803/5803 - 60s - loss: nan - NDCG@10: 0.3822 - MAE: nan - RC@5: 0.4438 - RC@10: 0.5275 - lr: 9.9604e-05 - e_time: 60.2765 - 60s/epoch - 10ms/step
+Epoch 5/19
+5803/5803 - 60s - loss: nan - NDCG@10: 0.4144 - MAE: nan - RC@5: 0.4802 - RC@10: 0.5664 - lr: 9.9505e-05 - e_time: 60.3166 - 60s/epoch - 10ms/step
+Epoch 6/19
+5803/5803 - 60s - loss: nan - NDCG@10: 0.4380 - MAE: nan - RC@5: 0.5070 - RC@10: 0.5933 - lr: 9.9406e-05 - e_time: 60.3364 - 60s/epoch - 10ms/step
+Epoch 7/19
+5803/5803 - 60s - loss: nan - NDCG@10: 0.4563 - MAE: nan - RC@5: 0.5274 - RC@10: 0.6130 - lr: 9.9307e-05 - e_time: 60.4052 - 60s/epoch - 10ms/step
+Epoch 8/19
+5803/5803 - 60s - loss: nan - NDCG@10: 0.4705 - MAE: nan - RC@5: 0.5433 - RC@10: 0.6280 - lr: 9.9208e-05 - e_time: 60.3793 - 60s/epoch - 10ms/step
+Epoch 9/19
+5803/5803 - 60s - loss: nan - NDCG@10: 0.4820 - MAE: nan - RC@5: 0.5562 - RC@10: 0.6406 - lr: 9.9109e-05 - e_time: 60.3627 - 60s/epoch - 10ms/step
+Epoch 10/19
+5803/5803 - 60s - loss: nan - NDCG@10: 0.4908 - MAE: nan - RC@5: 0.5659 - RC@10: 0.6492 - lr: 9.9010e-05 - e_time: 60.3928 - 60s/epoch - 10ms/step
+Epoch 11/19
+5803/5803 - 60s - loss: nan - NDCG@10: 0.4982 - MAE: nan - RC@5: 0.5734 - RC@10: 0.6572 - lr: 9.8911e-05 - e_time: 60.3678 - 60s/epoch - 10ms/step
+Epoch 12/19
+5803/5803 - 60s - loss: nan - NDCG@10: 0.5055 - MAE: nan - RC@5: 0.5817 - RC@10: 0.6643 - lr: 9.8812e-05 - e_time: 60.3549 - 60s/epoch - 10ms/step
+Epoch 13/19
+5803/5803 - 60s - loss: nan - NDCG@10: 0.5106 - MAE: nan - RC@5: 0.5870 - RC@10: 0.6694 - lr: 9.8713e-05 - e_time: 60.3948 - 60s/epoch - 10ms/step
+Epoch 14/19
+5803/5803 - 60s - loss: nan - NDCG@10: 0.5158 - MAE: nan - RC@5: 0.5927 - RC@10: 0.6746 - lr: 9.8614e-05 - e_time: 60.3762 - 60s/epoch - 10ms/step
+Epoch 15/19
+5803/5803 - 60s - loss: nan - NDCG@10: 0.5195 - MAE: nan - RC@5: 0.5966 - RC@10: 0.6780 - lr: 9.8515e-05 - e_time: 60.3189 - 60s/epoch - 10ms/step
+Epoch 16/19
+5803/5803 - 60s - loss: nan - NDCG@10: 0.5227 - MAE: nan - RC@5: 0.6003 - RC@10: 0.6818 - lr: 9.8416e-05 - e_time: 60.3394 - 60s/epoch - 10ms/step
+Epoch 17/19
+5803/5803 - 60s - loss: nan - NDCG@10: 0.5264 - MAE: nan - RC@5: 0.6040 - RC@10: 0.6852 - lr: 9.8317e-05 - e_time: 60.3812 - 60s/epoch - 10ms/step
+Epoch 18/19
+5803/5803 - 60s - loss: nan - NDCG@10: 0.5293 - MAE: nan - RC@5: 0.6074 - RC@10: 0.6883 - lr: 9.8218e-05 - e_time: 60.3179 - 60s/epoch - 10ms/step
+Epoch 19/19
+5803/5803 - 60s - loss: nan - NDCG@10: 0.5317 - MAE: nan - RC@5: 0.6102 - RC@10: 0.6908 - lr: 9.8119e-05 - e_time: 60.3382 - 60s/epoch - 10ms/step
+Traceback (most recent call last):
+  File "/media/nas/pperez/miniconda3/envs/TAVtext/lib/python3.8/site-packages/pandas/core/indexes/base.py", line 3621, in get_loc
+    return self._engine.get_loc(casted_key)
+  File "pandas/_libs/index.pyx", line 136, in pandas._libs.index.IndexEngine.get_loc
+  File "pandas/_libs/index.pyx", line 163, in pandas._libs.index.IndexEngine.get_loc
+  File "pandas/_libs/hashtable_class_helper.pxi", line 5198, in pandas._libs.hashtable.PyObjectHashTable.get_item
+  File "pandas/_libs/hashtable_class_helper.pxi", line 5206, in pandas._libs.hashtable.PyObjectHashTable.get_item
+KeyError: 'y'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/media/nas/pperez/code/TAVtext/Pruebas.py", line 130, in <module>
+    mdl.train(dev=False, save_model=True, callbacks=[])
+  File "/media/nas/pperez/code/TAVtext/src/models/KerasModelClass.py", line 53, in train
+    self.__train_model__(train_sequence=train_dev_seq, dev_sequence=None, save_model=save_model, train_cfg=train_cfg, callbacks=callbacks)
+  File "/media/nas/pperez/code/TAVtext/src/models/KerasModelClass.py", line 176, in __train_model__
+    hplt = sns.lineplot(x=range(done_epochs), y=hist.history[self.CONFIG["model"]["early_st_monitor"].replace("val_", "")], label=self.CONFIG["model"]["early_st_monitor"].replace("val_", ""))
+  File "/media/nas/pperez/miniconda3/envs/TAVtext/lib/python3.8/site-packages/seaborn/relational.py", line 645, in lineplot
+    p.plot(ax, kwargs)
+  File "/media/nas/pperez/miniconda3/envs/TAVtext/lib/python3.8/site-packages/seaborn/relational.py", line 459, in plot
+    lines = ax.plot(sub_data["x"], sub_data["y"], **kws)
+  File "/media/nas/pperez/miniconda3/envs/TAVtext/lib/python3.8/site-packages/pandas/core/frame.py", line 3505, in __getitem__
+    indexer = self.columns.get_loc(key)
+  File "/media/nas/pperez/miniconda3/envs/TAVtext/lib/python3.8/site-packages/pandas/core/indexes/base.py", line 3623, in get_loc
+    raise KeyError(key) from err
+KeyError: 'y'

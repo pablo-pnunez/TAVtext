@@ -96,10 +96,10 @@ class TripAdvisorDataset(DatasetClass):
         """Carga los datos de una ciudad, quedandose con las columnas relevantes"""
 
         # Cargar restaurantes
-        res = pd.read_pickle(self.CONFIG["data_path"] + city + "_data/restaurants.pkl")
+        res = pd.read_pickle(self.CONFIG["data_path"] + city + "/restaurants.pkl")
 
         # Cargar reviews
-        rev = pd.read_pickle(self.CONFIG["data_path"] + city + "_data/reviews.pkl")
+        rev = pd.read_pickle(self.CONFIG["data_path"] + city + "/reviews.pkl")
         rev = rev[['reviewId', 'userId', 'restaurantId', 'rating', 'date', 'language', 'text', 'title', 'url']]
         rev["city"] = city
 
