@@ -793,6 +793,9 @@ class ATT2ITM(RSTModel):
             query_item_relevance = list(zip(relevant_query_words.values, itm_query_att[relevant_query_words.index]))
             for qit, qtir in query_item_relevance:
                 print(f"\t\t{qit} {qtir:0.2f}")
+        
+        # Retornamos varios elementos por si se quiere hacer algún tipo de preprocesado
+        return att_query, att_query_df, all_att
 
     def get_item_word_att(self, items=[], words=[]):
 
