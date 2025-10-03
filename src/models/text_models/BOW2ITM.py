@@ -82,9 +82,9 @@ class BOW2ITM(RSTModel):
 
         return tf.data.Dataset.zip((data_x, data_y))
         
-    def eval_custom_text(self, text_src):
+    def eval_custom_text(self, raw_text, top_k=4, top_words=20):
 
-        text = self.DATASET.prerpocess_text(text_src)
+        text = self.DATASET.prerpocess_text(raw_text)
         bow = self.DATASET.DATA["VECTORIZER"].transform([text])
         normed_bow = normalize(bow.todense(), axis=1, norm='l1')
         bow_words = np.asarray(self.DATASET.DATA["FEATURES_NAME"])[np.argwhere(normed_bow[0] > 0)[:, 0]]
@@ -93,30 +93,42 @@ class BOW2ITM(RSTModel):
         rst_model = self.MODEL
         rst_model_weights = rst_model.get_layer("bow_2_rst").get_weights()[0]
 
-        # Predecir 5 restaurantes con la parte correspondiente del modelo
-        rev_rst_pred = rst_model.predict(normed_bow)
-        rev_rst_pred = np.apply_along_axis(lambda x: (-x).argsort()[:3], 1, rev_rst_pred)
-        recommended_rests = rev_rst_pred.flatten()
+        # Predecir top_k restaurantes con la parte correspondiente del modelo
+        rev_rst_pred = rst_model.predict(normed_bow, verbose=0)
+        rev_rst_pred_id = np.apply_along_axis(lambda x: (-x).argsort()[:top_k], 1, rev_rst_pred)
+        recommended_rests = rev_rst_pred_id.flatten()
 
         print("\n")
-        print_g("\'%s\'" % text_src)
-        print("\LEMM: %s" % (text))
-        print("\tBOW: %s" % (",".join(bow_words)))
+        print_g("\'%s\'" % raw_text)
+        # print("\LEMM: %s" % (text))
+        print("\t Relevant words: %s\n" % (",".join(bow_words)))
 
-        for rst in recommended_rests:
-            print("\t- %s" % (self.DATASET.DATA["TEST"].loc[self.DATASET.DATA["TEST"].id_item == rst]["name"].values[0]))
+        for idx, rst in enumerate(recommended_rests):
+
+            # Nombre del restaurante en negrita
+            rst_name = self.DATASET.DATA["TEST"].loc[self.DATASET.DATA["TEST"].id_item == rst]["name"].values[0]
+            print(f'\t\033[1m{idx+1}) {rst_name}\033[0m')
 
             # X Palabras más relevantes para predecir el restaurante seleccionado
             word_weights = rst_model_weights[:, rst]  # + rst_model_weights_bias
-            word_ids = np.argsort(-word_weights)[:20]
+            word_ids = np.argsort(-word_weights)[:top_words]
             most_relevant_w = np.asarray(self.DATASET.DATA["FEATURES_NAME"])[word_ids]
 
             # Intersección entre palabras del usuario y del restaurante
             usr_rst_intr = list(set(np.where(word_weights > 0)[0]).intersection(set(np.argwhere(normed_bow[0] > 0)[:, 0])))
             usr_rst_intr = np.asarray(self.DATASET.DATA["FEATURES_NAME"])[usr_rst_intr]
+           
+            # Resaltar en verde las palabras en la intersección y en rojo las palabras relevantes del usuario que no están en la intersección
+            highlighted_words = []
+            for w in bow_words:
+                if w in usr_rst_intr:
+                    highlighted_words.append(f"\033[32m{w}\033[0m")  # verde
+                else:
+                    highlighted_words.append(f"\033[31m{w}\033[0m")  # rojo
 
             print("\t\t▲ %s" % (",".join(most_relevant_w)))
-            print("\t\t∩ %s" % (",".join(usr_rst_intr)))
+            print("\t\t∩ %s" % (",".join(highlighted_words)))
+
 
     def explain_test_sample(self, test_real_sample):
         # Obtener el texto de la fila dataframe y codificar en formato adecuado (al ser un caso real, ya se ha codificado).

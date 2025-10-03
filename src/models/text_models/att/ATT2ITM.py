@@ -898,3 +898,73 @@ class ATT2ITM(RSTModel):
         print({it[0]: it[1] for it in relevant_query_words.values})
 
         return {"max": all_att.max(), "min": all_att.min(), "values": {it[0]: it[1] for it in relevant_query_words.values}}
+    
+    def eval_custom_text(self, raw_text, top_k=4, top_words=20):
+
+        # Preprocesar y limpiar el texto de la consulta (minúscula, quitar números, ...)
+        text_prepro = self.DATASET.prerpocess_text(raw_text)
+    
+        # Obtenemos los ids de las palabras utilizando solo las más frecuentes (lstm_text) y también utilizando todas (lstm_text_complete)
+        # Para ver cuantas palabras del texto original se pierden por utilizar solo populares
+        lstm_text = self.DATASET.DATA["TEXT_TOKENIZER"].texts_to_sequences([text_prepro]) 
+        lstm_text_complete = [list(map(lambda x: self.DATASET.DATA["TEXT_TOKENIZER"].word_index[x], text_prepro.split(" ")))] 
+        not_included_words = list(set(lstm_text_complete[0]) - set(lstm_text[0]))
+        if len(not_included_words) > 0:
+            not_included_words = list(map(lambda x: self.DATASET.DATA["TEXT_TOKENIZER"].index_word[x], not_included_words))
+            print_g(f"No se incluyen las palabras (poco frecuentes): {not_included_words}")
+
+        # Obtenemos TODA la matriz de attention (no solo la del texto)
+        all_att, itm_names, word_names, _, _ = self.get_item_word_att()
+
+        # Separamos la de la consulta para guardarla en un excel
+        att_query = all_att[lstm_text[0]]
+        att_query_df = pd.DataFrame(att_query, columns=itm_names)
+        att_query_df.insert(0, "text", np.array(word_names)[lstm_text[0]])
+
+        # Obtener la abs(mean)+ str para cada palabra de la query y de todas las palabras
+        att_query_df["mean"] = att_query.mean(1)
+        att_query_df["std"] = att_query.std(1)
+        att_query_df["mean_std"] = np.abs(att_query_df["mean"]) + att_query_df["std"]
+
+        # Este es el criterio de selección de palabras relevantes descrito en el artículo
+        # El método BOW elimina palabras irelevantes con el POS, pero este método no, para eso sirve este apartado.
+        n_bins = 3 + 1
+        bins = [-1,-0.15,0.15,1] if self.CONFIG["model"]["model_version"]=="2" else np.linspace(-1, 1, n_bins)
+        histograms = np.apply_along_axis(lambda x: np.histogram(x, bins=bins)[0], 1, all_att)
+        histograms = histograms/all_att.shape[1]
+        att_query_df.insert(1, "pct_0", np.array(histograms[:, n_bins//2-1])[lstm_text[0]])
+        relevant_query_words = att_query_df[(att_query_df["pct_0"] < .95)]["text"]
+
+        # Imprimir información
+        print("\n")
+        print_g("\'%s\'" % raw_text)
+        print("\t Relevant words: %s\n" % (",".join(relevant_query_words.values)))
+
+        # Añadir el padding para obtener una predicción de items
+        lstm_text_pad = tf.keras.preprocessing.sequence.pad_sequences(lstm_text, maxlen=self.DATASET.DATA["MAX_LEN_PADDING"])
+        # Obtener, para la review al completo, el top "top_k" de items predichos por el modelo
+        preds_rst = self.MODEL.predict([lstm_text_pad, np.arange(self.DATASET.DATA["N_ITEMS"])[None, :]], verbose=0)
+        preds_rst_arg = np.argsort(-preds_rst.flatten())[:top_k]
+        preds_rst_vls = np.sort(-preds_rst.flatten())[:top_k]
+
+        # Obtener los nombres de items y palabras relevantes
+        item_relevant_words = self.item_relevant_words(preds_rst_arg, words_shown=None)
+        longest_rest_name = max(list(map(lambda x: len(x["name"]), item_relevant_words.values())))
+
+        for i, itm_idx in enumerate(preds_rst_arg):
+            itm_data = item_relevant_words[itm_idx]
+            print(f"\t \033[1m{i+1}) {itm_data['name']:{longest_rest_name}s}\033[0m")
+    
+            most_relevant_w = list(itm_data['words'].keys())
+            usr_rst_intr = list(set(itm_data['words'].keys()).intersection(set(relevant_query_words.values)))
+
+            # Preparar palabras resaltadas: verdes para intersección, rojas para las que no están en intersección
+            highlighted_words = []
+            for w in relevant_query_words.values:
+                if w in usr_rst_intr:
+                    highlighted_words.append(f"\033[32m{w}\033[0m")  # verde
+                else:
+                    highlighted_words.append(f"\033[31m{w}\033[0m")  # rojo
+
+            print("\t\t▲ %s" % (",".join(most_relevant_w[:top_words])))
+            print("\t\t∩ %s" % (",".join(highlighted_words)))
