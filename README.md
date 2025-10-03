@@ -9,6 +9,7 @@ The project introduces a recommendation system that leverages attention mechanis
 ### 1. Clone main branch 
 ```bash
 git clone --branch main --single-branch --depth 1 https://github.com/pablo-pnunez/TAVtext AITREX
+cd AITREX
 ```
 
 ### 2. Create `conda` environment 
@@ -20,7 +21,6 @@ conda activate "AITREX"
 ### 3. Install libraries
 
 ```bash
-cd TAVtext
 pip install -r requirements.txt
 ```
 
