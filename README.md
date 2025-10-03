@@ -1,5 +1,7 @@
 # Attention-inspired text-based recommender system with explanatory capabilities
 
+<img src="models/fig.png" alt="figure" style="border-radius: 10px; padding: 20px; background:white">
+
 ## Overview
 This repository contains the code and resources for the article *“Attention-inspired Text-based Recommender System with Explanatory Capabilities”*.  
 The project introduces a recommendation system that leverages attention mechanisms to improve accuracy and generate interpretable explanations from textual data.
