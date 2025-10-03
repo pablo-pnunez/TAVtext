@@ -20,9 +20,9 @@ pip install -r requirements.txt
 
 ## Usage
 
-For **inference** follow the instructions of [Inference.ipynb](Inference.ipynb)
+For **inference** follow the instructions of [Inference.ipynb](1.%20Inference.ipynb)
 
-For **training** follow the instructions of [Train.ipynb](Train.ipynb)
+For **training** follow the instructions of [Train.ipynb](2.%20Train.ipynb)
 
 ## Citation
 
