@@ -4,17 +4,23 @@
 This repository contains the code and resources for the article *“Attention-inspired Text-based Recommender System with Explanatory Capabilities”*.  
 The project introduces a recommendation system that leverages attention mechanisms to improve accuracy and generate interpretable explanations from textual data.
 
-## Environment
+## Clone and environment
 
-### 1. Create `conda` environment 
+### 1. Clone main branch 
+```bash
+git clone --branch main --single-branch --depth 1 https://github.com/pablo-pnunez/TAVtext AITREX
+```
+
+### 2. Create `conda` environment 
 ```bash
 conda create --name "AITREX" python==3.9.18
 conda activate "AITREX"
 ```
 
-### 2. Install libraries
+### 3. Install libraries
 
 ```bash
+cd TAVtext
 pip install -r requirements.txt
 ```
 
